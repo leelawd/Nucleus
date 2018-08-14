@@ -24,6 +24,7 @@ import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.messages.ResourceMessageProvider;
 import io.github.nucleuspowered.nucleus.internal.qsml.NucleusConfigAdapter;
+import io.github.nucleuspowered.nucleus.internal.services.PermissionResolver;
 import io.github.nucleuspowered.nucleus.internal.services.WarmupManager;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.internal.text.TextParsingUtils;
@@ -280,8 +281,8 @@ public abstract class TestBase {
             // NOOP
         }
 
-        @Override protected void registerPermissions() {
-
+        @Override public PermissionResolver getPermissionResolver() {
+            return PermissionResolver.SIMPLE;
         }
 
         @Override public boolean isServer() {

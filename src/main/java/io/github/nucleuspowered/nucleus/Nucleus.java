@@ -21,6 +21,7 @@ import io.github.nucleuspowered.nucleus.internal.docgen.DocGenCache;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.qsml.NucleusConfigAdapter;
+import io.github.nucleuspowered.nucleus.internal.services.PermissionResolver;
 import io.github.nucleuspowered.nucleus.internal.services.WarmupManager;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.internal.text.TextParsingUtils;
@@ -37,7 +38,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public abstract class Nucleus {
 
@@ -141,7 +141,7 @@ public abstract class Nucleus {
 
     public abstract void setSessionDebug(boolean debug);
 
-    protected abstract void registerPermissions();
+    public abstract PermissionResolver getPermissionResolver();
 
     public abstract boolean isServer();
 

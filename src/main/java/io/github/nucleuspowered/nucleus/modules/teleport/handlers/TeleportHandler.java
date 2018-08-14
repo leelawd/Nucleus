@@ -14,7 +14,7 @@ import io.github.nucleuspowered.nucleus.internal.interfaces.CancellableTask;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
-import io.github.nucleuspowered.nucleus.internal.traits.PermissionHandlerTrait;
+import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
 import io.github.nucleuspowered.nucleus.modules.jail.JailModule;
 import io.github.nucleuspowered.nucleus.modules.jail.datamodules.JailUserDataModule;
 import io.github.nucleuspowered.nucleus.modules.teleport.commands.TeleportAcceptCommand;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class TeleportHandler implements MessageProviderTrait, PermissionHandlerTrait {
+public class TeleportHandler implements MessageProviderTrait, PermissionTrait {
 
     private final Map<UUID, TeleportPrep> ask = new HashMap<>();
     private final String acceptPerm = getPermissionHandlerFor(TeleportAcceptCommand.class).getBase();
@@ -56,7 +56,7 @@ public class TeleportHandler implements MessageProviderTrait, PermissionHandlerT
     }
 
     public static boolean canBypassTpToggle(Subject from) {
-        return from.hasPermission(tptoggleBypassPermission);
+        return Nucleus.getNucleus().getPermissionResolver().hasPermission(from, tptoggleBypassPermission);
     }
 
     public static boolean canTeleportTo(CommandSource source, User to)  {
@@ -157,7 +157,7 @@ public class TeleportHandler implements MessageProviderTrait, PermissionHandlerT
                                 .onHover(TextActions.showText(
                                         getMessageFor(forPlayer.getLocale(), "teleport.accept.hover")))
                                 .onClick(TextActions.executeCallback(src -> {
-                                    if (target.isExpired() || !src.hasPermission(this.acceptPerm) || !(src instanceof Player)) {
+                                    if (target.isExpired() || !hasPermission(src, this.acceptPerm) || !(src instanceof Player)) {
                                         sendMessageTo(src, "command.tpaccept.nothing");
                                         return;
                                     }
@@ -171,7 +171,7 @@ public class TeleportHandler implements MessageProviderTrait, PermissionHandlerT
                                 .style(TextStyles.UNDERLINE)
                                 .onHover(TextActions.showText(getMessageFor(forPlayer.getLocale(), "teleport.deny.hover")))
                                 .onClick(TextActions.executeCallback(src -> {
-                                    if (target.isExpired() || !src.hasPermission(this.denyPerm) || !(src instanceof Player)) {
+                                    if (target.isExpired() || !hasPermission(src, this.denyPerm) || !(src instanceof Player)) {
                                         sendMessageTo(src, "command.tpdeny.fail");
                                         return;
                                     }

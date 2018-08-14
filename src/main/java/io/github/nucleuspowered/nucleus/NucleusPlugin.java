@@ -42,9 +42,8 @@ import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.messages.ConfigMessageProvider;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.messages.ResourceMessageProvider;
-import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
+import io.github.nucleuspowered.nucleus.internal.permissions.PermissionResolverImpl;
 import io.github.nucleuspowered.nucleus.internal.permissions.ServiceChangeListener;
-import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.internal.qsml.ModuleRegistrationProxyService;
 import io.github.nucleuspowered.nucleus.internal.qsml.NucleusConfigAdapter;
 import io.github.nucleuspowered.nucleus.internal.qsml.NucleusLoggerProxy;
@@ -54,6 +53,7 @@ import io.github.nucleuspowered.nucleus.internal.services.CommandRemapperService
 import io.github.nucleuspowered.nucleus.internal.services.EnderchestAccessService;
 import io.github.nucleuspowered.nucleus.internal.services.HotbarFirstReorderService;
 import io.github.nucleuspowered.nucleus.internal.services.InventoryReorderService;
+import io.github.nucleuspowered.nucleus.internal.services.PermissionResolver;
 import io.github.nucleuspowered.nucleus.internal.services.UserEnderchestAccessService;
 import io.github.nucleuspowered.nucleus.internal.services.WarmupManager;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
@@ -89,8 +89,6 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.service.permission.PermissionDescription;
-import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.format.TextColors;
@@ -141,6 +139,7 @@ public class NucleusPlugin extends Nucleus {
     private KitService kitService;
     private TextParsingUtils textParsingUtils;
     private NameUtil nameUtil;
+    private PermissionResolver permissionResolver = PermissionResolverImpl.INSTANCE;
     private final List<Reloadable> reloadableList = Lists.newArrayList();
     private DocGenCache docGenCache = null;
     private final NucleusTeleportHandler teleportHandler = new NucleusTeleportHandler();
@@ -462,7 +461,9 @@ public class NucleusPlugin extends Nucleus {
 
         logMessageDefault();
         this.logger.info(this.messageProvider.getMessageWithFormat("startup.moduleloaded", PluginInfo.NAME));
-        registerPermissions();
+        PermissionResolverImpl.INSTANCE.registerPermissions();
+        registerReloadable(this::reloadPerm);
+        this.reloadPerm();
         Sponge.getEventManager().post(new BaseModuleEvent.Complete(this));
 
         this.logger.info(this.messageProvider.getMessageWithFormat("startup.completeinit", PluginInfo.NAME));
@@ -726,6 +727,14 @@ public class NucleusPlugin extends Nucleus {
         }
     }
 
+    private void reloadPerm() {
+        if (getInternalServiceManager().getServiceUnchecked(CoreConfigAdapter.class).getNodeOrDefault().isUseParentPerms()) {
+            this.permissionResolver = PermissionResolverImpl.INSTANCE;
+        } else {
+            this.permissionResolver = PermissionResolver.SIMPLE;
+        }
+    }
+
     @Override
     public boolean reloadMessages() {
         boolean r = true;
@@ -950,26 +959,9 @@ public class NucleusPlugin extends Nucleus {
         }
     }
 
-    @Override protected void registerPermissions() {
-        Optional<PermissionService> ops = Sponge.getServiceManager().provide(PermissionService.class);
-        ops.ifPresent(permissionService -> {
-            Map<String, PermissionInformation> m = this.getPermissionRegistry().getPermissions();
-            m.entrySet().stream().filter(x -> {
-                SuggestedLevel lvl = x.getValue().level;
-                return lvl == SuggestedLevel.ADMIN || lvl == SuggestedLevel.OWNER;
-            })
-                    .filter(x -> x.getValue().isNormal)
-                    .forEach(k -> permissionService.newDescriptionBuilder(this).assign(PermissionDescription.ROLE_ADMIN, true)
-                            .description(k.getValue().description).id(k.getKey()).register());
-            m.entrySet().stream().filter(x -> x.getValue().level == SuggestedLevel.MOD)
-                    .filter(x -> x.getValue().isNormal)
-                    .forEach(k -> permissionService.newDescriptionBuilder(this).assign(PermissionDescription.ROLE_STAFF, true)
-                            .description(k.getValue().description).id(k.getKey()).register());
-            m.entrySet().stream().filter(x -> x.getValue().level == SuggestedLevel.USER)
-                    .filter(x -> x.getValue().isNormal)
-                    .forEach(k -> permissionService.newDescriptionBuilder(this).assign(PermissionDescription.ROLE_USER, true)
-                            .description(k.getValue().description).id(k.getKey()).register());
-        });
+    @Override
+    public PermissionResolver getPermissionResolver() {
+        return this.permissionResolver;
     }
 
     @Override

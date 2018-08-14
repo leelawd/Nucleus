@@ -40,7 +40,7 @@ allprojects {
     apply plugin: 'java'
 }
 
-project.ext.versionno = '1.5.4'
+project.ext.versionno = '1.6.0'
 project.ext.minecraftversion = '1.12.2'
 project.ext.spongeapiversion = '7.0'
 project.ext.suffix = '-SNAPSHOT'

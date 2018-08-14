@@ -6,6 +6,8 @@ package io.github.nucleuspowered.nucleus.modules.kit;
 
 import io.github.nucleuspowered.nucleus.api.service.NucleusKitService;
 import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
+import io.github.nucleuspowered.nucleus.internal.permissions.PermissionResolverImpl;
+import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.modules.kit.config.KitConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.kit.handlers.KitHandler;
@@ -22,4 +24,7 @@ public class KitModule extends ConfigurableModule<KitConfigAdapter> {
         return new KitConfigAdapter();
     }
 
+    @Override protected void setPermissionPredicates() {
+        PermissionResolverImpl.INSTANCE.registerPermissionPredicate(perm -> perm.toLowerCase().startsWith("nucleus.kits."), SuggestedLevel.ADMIN);
+    }
 }

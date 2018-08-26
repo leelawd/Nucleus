@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'org.spongepowered:spongegradle:0.8.2-SNAPSHOT'
+        classpath 'org.spongepowered:spongegradle:0.8.2'
     }
 }
 
@@ -67,6 +67,10 @@ if (project.ext.suffix != '') {
 }
 
 rootProject.version = project.versionno + project.suffix + '-S' + project.spongeapiversion
+if (isSnapshot && project.hasProperty("appendGit")) {
+    rootProject.version += '-' + gitHash.hash
+}
+
 project.ext.fileVersion = project.versionno + project.suffix + project.ext.hash + '-S' + project.spongeapiversion
 
 project(":nucleus-api") {
@@ -240,7 +244,6 @@ artifacts {
 }
 
 // Release notes
-
 task relnotes {
     doLast {
         String complete
@@ -274,19 +277,19 @@ task relnotes {
 
 task printRelNotes(dependsOn: relnotes) {
     doLast {
-        println(relnotes.notes)
+        println(relnotes.ext.notes)
     }
 }
 
 task writeRelNotes(dependsOn: relnotes)  {
     doLast {
-        new File("$projectDir/changelogs/${version}.md").text = relnotes.notes
+        new File("$projectDir/changelogs/${version}.md").text = relnotes.ext.notes
     }
 }
 
 task writeRelNotesInOutput(dependsOn: relnotes)  {
     doLast {
-        new File("$projectDir/output/${version}.md").text = relnotes.notes
+        new File("$projectDir/output/${version}.md").text = relnotes.ext.notes
     }
 }
 
@@ -325,26 +328,43 @@ if (!project.hasProperty("nosign")) {
         dependsOn 'copyAsc'
     }
 
+    // needed because this is evaluated at runtime
+    task setChangelogOnDeploy(dependsOn: 'relnotes') {
+        doFirst {
+            oreDeploy.setChangelog(relnotes.ext.notes)
+        }
+    }
+
     signArchives.dependsOn(shadowJar)
     copyAsc.dependsOn(signArchives)
     signShadow.dependsOn(shadowJar).mustRunAfter(shadowJar)
     copyAsc.dependsOn(signShadow)
+    oreDeploy.dependsOn(setChangelogOnDeploy)
     oreDeploy.dependsOn(buildAndSign)
 
     oreDeploy.setRecommended(project.properties.containsKey("oreDeploy.recommended"))
     if (project.properties.containsKey("oreDeploy.channel")) {
         oreDeploy.setChannel(project.properties.get("oreDeploy.channel").toString())
+        oreDeploy.setForumPost(
+                !project.properties.getOrDefault("oreDeplot.post", "false")
+                        .toString()
+                        .equalsIgnoreCase("false")
+        )
     } else if (project.properties.containsKey("oreDeploy.select")) {
         if (isPR) {
             oreDeploy.setChannel("prerelease")
+            oreDeploy.setForumPost(true)
         } else if (isSnapshot) {
-            oreDeploy.setChannel("testing")
+            oreDeploy.setChannel("snapshot")
+            oreDeploy.setForumPost(false)
         } else {
             oreDeploy.setChannel("Release")
             oreDeploy.setRecommended(true)
+            oreDeploy.setForumPost(true)
         }
     } else {
-        oreDeploy.setChannel("testing")
+        oreDeploy.setChannel("snapshot")
+        oreDeploy.setForumPost(false)
     }
 
     oreDeploy.setDeploy(project.configurations.shadow) // yet another hack

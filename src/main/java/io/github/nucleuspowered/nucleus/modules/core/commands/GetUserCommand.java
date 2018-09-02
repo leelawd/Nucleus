@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 @NoModifiers
 @NonnullByDefault
-@Permissions(suggestedLevel = SuggestedLevel.NONE)
+@Permissions(prefix = "nucleus", suggestedLevel = SuggestedLevel.NONE)
 @RegisterCommand(value = "getuser", subcommandOf = NucleusCommand.class)
 public class GetUserCommand extends AbstractCommand<CommandSource> {
 

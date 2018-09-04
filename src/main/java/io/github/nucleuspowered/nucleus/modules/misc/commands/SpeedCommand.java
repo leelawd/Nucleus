@@ -87,7 +87,7 @@ public class SpeedCommand extends AbstractCommand.SimpleTargetOtherPlayer implem
                 .orElseGet(() -> pl.get(Keys.IS_FLYING).orElse(false) ? SpeedType.FLYING : SpeedType.WALKING);
         Integer speed = args.<Integer>getOne(this.speedKey).orElseGet(() -> {
             if (args.hasAny(this.resetKey)) {
-                return key == SpeedType.WALKING ? 1 : 2;
+                return key == SpeedType.WALKING ? 2 : 1;
             }
 
             return null;

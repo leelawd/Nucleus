@@ -15,7 +15,6 @@ import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEquivalent;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
-import io.github.nucleuspowered.nucleus.internal.services.EnderchestAccessService;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.modules.inventory.listeners.InvSeeListener;
 import org.spongepowered.api.command.CommandResult;
@@ -77,8 +76,7 @@ public class EnderChestCommand extends AbstractCommand<Player> implements Intern
                         Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.enderchest.targetexempt", target.getName()));
             }
 
-            Inventory ec = getServiceUnchecked(EnderchestAccessService.class).getEnderChest(target)
-                    .orElseThrow(() -> ReturnMessageException.fromKey("command.enderchest.nooffline"));
+            Inventory ec = target.getEnderChestInventory();
             Container container = src.openInventory(ec)
                         .orElseThrow(() -> ReturnMessageException.fromKey("command.invsee.failed"));
 

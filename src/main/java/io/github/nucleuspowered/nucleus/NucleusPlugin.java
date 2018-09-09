@@ -50,11 +50,7 @@ import io.github.nucleuspowered.nucleus.internal.qsml.NucleusLoggerProxy;
 import io.github.nucleuspowered.nucleus.internal.qsml.QuickStartModuleConstructor;
 import io.github.nucleuspowered.nucleus.internal.qsml.event.BaseModuleEvent;
 import io.github.nucleuspowered.nucleus.internal.services.CommandRemapperService;
-import io.github.nucleuspowered.nucleus.internal.services.EnderchestAccessService;
-import io.github.nucleuspowered.nucleus.internal.services.HotbarFirstReorderService;
-import io.github.nucleuspowered.nucleus.internal.services.InventoryReorderService;
 import io.github.nucleuspowered.nucleus.internal.services.PermissionResolver;
-import io.github.nucleuspowered.nucleus.internal.services.UserEnderchestAccessService;
 import io.github.nucleuspowered.nucleus.internal.services.WarmupManager;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTokenServiceImpl;
@@ -76,7 +72,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -119,7 +114,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-@Plugin(id = ID, name = NAME, version = VERSION, description = DESCRIPTION, dependencies = @Dependency(id = "spongeapi", version = "7.0.0"))
+@Plugin(id = ID, name = NAME, version = VERSION, description = DESCRIPTION, dependencies = @Dependency(id = "spongeapi", version = "7.1.0"))
 public class NucleusPlugin extends Nucleus {
 
     private static final String divider = "+------------------------------------------------------------+";
@@ -408,29 +403,6 @@ public class NucleusPlugin extends Nucleus {
             e.printStackTrace();
             return;
         }
-
-        // ---- API7 COMPAT
-
-        // Register the inventory service
-        // TODO: Remove for API 7.1
-        try {
-            Class.forName("org.spongepowered.api.item.inventory.InventoryTransformations");
-            this.serviceManager.registerService(InventoryReorderService.class, new HotbarFirstReorderService());
-        } catch (Throwable e) {
-            this.logger.warn("Hotbar transformations are not available: kits may be given in an unexpected order. Update Sponge to fix this.");
-            this.serviceManager.registerService(InventoryReorderService.class, InventoryReorderService.DEFAULT);
-        }
-
-        // Register the Enderchest Service
-        try {
-            User.class.getMethod("getEnderChestInventory");
-            this.serviceManager.registerService(EnderchestAccessService.class, new UserEnderchestAccessService());
-        } catch (Throwable e) {
-            this.logger.warn("Ender Chest access is only available for online players. Update Sponge to get access to offline players' enderchests.");
-            this.serviceManager.registerService(EnderchestAccessService.class, EnderchestAccessService.DEFAULT);
-        }
-
-        // ---- END API7 COMPAT
 
         try {
             Sponge.getEventManager().post(new BaseModuleEvent.AboutToConstructEvent(this));

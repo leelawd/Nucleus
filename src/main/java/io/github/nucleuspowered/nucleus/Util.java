@@ -8,7 +8,6 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
-import io.github.nucleuspowered.nucleus.internal.services.InventoryReorderService;
 import io.github.nucleuspowered.nucleus.util.PaginationBuilderWrapper;
 import io.github.nucleuspowered.nucleus.util.ThrownFunction;
 import org.spongepowered.api.CatalogType;
@@ -29,6 +28,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
+import org.spongepowered.api.item.inventory.InventoryTransformations;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
@@ -499,9 +499,9 @@ public class Util {
     }
 
     public static Inventory getStandardInventory(Carrier player) {
-        // TODO: Change for API 7.1
-        return Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(InventoryReorderService.class)
-            .getOrderedInventory(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)));
+        return player.getInventory()
+                .transform(InventoryTransformations.PLAYER_MAIN_HOTBAR_FIRST)
+                .query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
     }
 
     public static <T extends Event> void onPlayerSimulatedOrPlayer(T event, BiConsumer<T, Player> eventConsumer) {

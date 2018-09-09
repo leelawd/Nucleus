@@ -6,17 +6,14 @@ package io.github.nucleuspowered.nucleus.modules.warn;
 
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.api.service.NucleusWarningService;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.modules.warn.commands.CheckWarningsCommand;
 import io.github.nucleuspowered.nucleus.modules.warn.config.WarnConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.warn.handlers.WarnHandler;
+import io.github.nucleuspowered.nucleus.modules.warn.services.WarnHandler;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import uk.co.drnaylor.quickstart.annotations.ModuleData;
 
-@RegisterService(value = WarnHandler.class, apiService = NucleusWarningService.class)
 @ModuleData(id = WarnModule.ID, name = "Warn")
 public class WarnModule extends ConfigurableModule<WarnConfigAdapter> {
 

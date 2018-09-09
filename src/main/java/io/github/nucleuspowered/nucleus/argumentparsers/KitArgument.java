@@ -12,7 +12,7 @@ import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
 import io.github.nucleuspowered.nucleus.modules.kit.KitModule;
 import io.github.nucleuspowered.nucleus.modules.kit.commands.kit.KitCommand;
 import io.github.nucleuspowered.nucleus.modules.kit.config.KitConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.kit.handlers.KitHandler;
+import io.github.nucleuspowered.nucleus.modules.kit.services.KitHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;

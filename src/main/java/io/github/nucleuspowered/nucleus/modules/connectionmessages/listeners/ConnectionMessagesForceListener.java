@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.connectionmessages.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.connectionmessages.ConnectionMessagesModule;
 import io.github.nucleuspowered.nucleus.modules.connectionmessages.config.ConnectionMessagesConfig;
 import io.github.nucleuspowered.nucleus.modules.connectionmessages.config.ConnectionMessagesConfigAdapter;

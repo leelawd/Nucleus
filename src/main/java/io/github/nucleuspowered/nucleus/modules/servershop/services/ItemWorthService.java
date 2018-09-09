@@ -8,6 +8,8 @@ import com.google.common.base.Preconditions;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusServerShopService;
+import io.github.nucleuspowered.nucleus.internal.annotations.APIService;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ServiceBase;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.DataHolder;
@@ -23,8 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+@APIService(NucleusServerShopService.class)
 @NonnullByDefault
-public class ItemWorthService implements NucleusServerShopService {
+public class ItemWorthService implements NucleusServerShopService, ServiceBase {
 
     @Override public Map<CatalogType, Double> getBuyPrices() {
         return Nucleus.getNucleus().getItemDataService().getServerBuyPrices();

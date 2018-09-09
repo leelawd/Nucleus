@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.afk.listeners;
 
 import io.github.nucleuspowered.nucleus.Util;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.message.MessageChannelEvent;

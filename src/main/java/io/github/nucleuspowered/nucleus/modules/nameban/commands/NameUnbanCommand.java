@@ -13,7 +13,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
-import io.github.nucleuspowered.nucleus.modules.nameban.handlers.NameBanHandler;
+import io.github.nucleuspowered.nucleus.modules.nameban.services.NameBanHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.argumentparsers;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.nucleusdata.WarpCategory;
-import io.github.nucleuspowered.nucleus.modules.warp.handlers.WarpHandler;
+import io.github.nucleuspowered.nucleus.modules.warp.services.WarpHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;

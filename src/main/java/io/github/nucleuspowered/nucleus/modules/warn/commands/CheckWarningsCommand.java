@@ -13,7 +13,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCom
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.warn.data.WarnData;
-import io.github.nucleuspowered.nucleus.modules.warn.handlers.WarnHandler;
+import io.github.nucleuspowered.nucleus.modules.warn.services.WarnHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

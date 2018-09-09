@@ -18,7 +18,7 @@ import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEq
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.teleport.events.RequestEvent;
-import io.github.nucleuspowered.nucleus.modules.teleport.handlers.TeleportHandler;
+import io.github.nucleuspowered.nucleus.modules.teleport.services.TeleportHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

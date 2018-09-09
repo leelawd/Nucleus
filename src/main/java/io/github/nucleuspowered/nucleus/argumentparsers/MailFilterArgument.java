@@ -7,7 +7,7 @@ package io.github.nucleuspowered.nucleus.argumentparsers;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMailService;
-import io.github.nucleuspowered.nucleus.modules.mail.handlers.MailHandler;
+import io.github.nucleuspowered.nucleus.modules.mail.services.MailHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;

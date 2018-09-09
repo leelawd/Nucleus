@@ -18,7 +18,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.warn.config.WarnConfig;
 import io.github.nucleuspowered.nucleus.modules.warn.config.WarnConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.warn.data.WarnData;
-import io.github.nucleuspowered.nucleus.modules.warn.handlers.WarnHandler;
+import io.github.nucleuspowered.nucleus.modules.warn.services.WarnHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import io.github.nucleuspowered.nucleus.util.PermissionMessageChannel;
 import org.spongepowered.api.Sponge;

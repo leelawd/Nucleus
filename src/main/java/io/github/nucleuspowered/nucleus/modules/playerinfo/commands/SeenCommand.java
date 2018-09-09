@@ -21,7 +21,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.modules.core.datamodules.CoreUserDataModule;
 import io.github.nucleuspowered.nucleus.modules.misc.commands.SpeedCommand;
-import io.github.nucleuspowered.nucleus.modules.playerinfo.handlers.SeenHandler;
+import io.github.nucleuspowered.nucleus.modules.playerinfo.services.SeenHandler;
 import io.github.nucleuspowered.nucleus.modules.teleport.commands.TeleportPositionCommand;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

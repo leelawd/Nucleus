@@ -15,7 +15,7 @@ import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEq
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.vanish.datamodules.VanishUserDataModule;
-import io.github.nucleuspowered.nucleus.modules.vanish.service.VanishService;
+import io.github.nucleuspowered.nucleus.modules.vanish.services.VanishService;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;

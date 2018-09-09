@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.modules.spawn.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.events.NucleusFirstJoinEvent;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.spawn.SpawnModule;
 import io.github.nucleuspowered.nucleus.modules.spawn.config.SpawnConfig;
 import io.github.nucleuspowered.nucleus.modules.spawn.config.SpawnConfigAdapter;

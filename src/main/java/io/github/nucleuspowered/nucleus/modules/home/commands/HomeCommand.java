@@ -18,7 +18,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.home.config.HomeConfig;
 import io.github.nucleuspowered.nucleus.modules.home.config.HomeConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.home.events.UseHomeEvent;
-import io.github.nucleuspowered.nucleus.modules.home.handlers.HomeHandler;
+import io.github.nucleuspowered.nucleus.modules.home.services.HomeHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

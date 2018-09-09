@@ -5,8 +5,8 @@
 package io.github.nucleuspowered.nucleus.modules.jail.runnables;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
-import io.github.nucleuspowered.nucleus.modules.jail.handlers.JailHandler;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
+import io.github.nucleuspowered.nucleus.modules.jail.services.JailHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;

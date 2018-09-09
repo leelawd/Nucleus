@@ -11,7 +11,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
 import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import io.github.nucleuspowered.nucleus.modules.kit.commands.KitFallbackBase;
-import io.github.nucleuspowered.nucleus.modules.kit.handlers.KitHandler;
+import io.github.nucleuspowered.nucleus.modules.kit.services.KitHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;

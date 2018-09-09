@@ -6,14 +6,12 @@ package io.github.nucleuspowered.nucleus.modules.home;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.service.NucleusHomeService;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.modules.home.config.HomeConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.home.handlers.HomeHandler;
+import io.github.nucleuspowered.nucleus.modules.home.services.HomeHandler;
 import org.spongepowered.api.Sponge;
 import uk.co.drnaylor.quickstart.annotations.ModuleData;
 
-@RegisterService(value = HomeHandler.class, apiService = NucleusHomeService.class)
 @ModuleData(id = HomeModule.ID, name = "Home")
 public class HomeModule extends ConfigurableModule<HomeConfigAdapter> {
 

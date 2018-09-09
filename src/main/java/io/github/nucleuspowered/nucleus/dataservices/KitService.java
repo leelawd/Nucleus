@@ -11,7 +11,7 @@ import io.github.nucleuspowered.nucleus.configurate.datatypes.KitConfigDataNode;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.KitDataNode;
 import io.github.nucleuspowered.nucleus.configurate.wrappers.NucleusItemStackSnapshot;
 import io.github.nucleuspowered.nucleus.dataservices.dataproviders.DataProvider;
-import io.github.nucleuspowered.nucleus.modules.kit.handlers.SingleKit;
+import io.github.nucleuspowered.nucleus.modules.kit.misc.SingleKit;
 
 import java.time.Duration;
 import java.util.List;

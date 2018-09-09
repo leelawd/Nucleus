@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.modules.freezeplayer.listeners;
 
 import com.google.common.collect.Maps;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.freezeplayer.datamodules.FreezePlayerUserDataModule;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;

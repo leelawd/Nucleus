@@ -5,11 +5,11 @@
 package io.github.nucleuspowered.nucleus.modules.commandlogger.runnables;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
 import io.github.nucleuspowered.nucleus.modules.commandlogger.config.CommandLoggerConfig;
 import io.github.nucleuspowered.nucleus.modules.commandlogger.config.CommandLoggerConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.commandlogger.handlers.CommandLoggerHandler;
+import io.github.nucleuspowered.nucleus.modules.commandlogger.services.CommandLoggerHandler;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;

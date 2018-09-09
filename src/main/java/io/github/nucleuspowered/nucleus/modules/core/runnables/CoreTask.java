@@ -5,8 +5,8 @@
 package io.github.nucleuspowered.nucleus.modules.core.runnables;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
 import io.github.nucleuspowered.nucleus.modules.core.CoreModule;
 import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfig;
 import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfigAdapter;

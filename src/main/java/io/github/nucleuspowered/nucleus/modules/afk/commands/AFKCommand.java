@@ -15,7 +15,7 @@ import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEq
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.ServiceChangeListener;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
-import io.github.nucleuspowered.nucleus.modules.afk.handlers.AFKHandler;
+import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;

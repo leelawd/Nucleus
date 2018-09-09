@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.playerinfo.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.playerinfo.PlayerInfoModule;
 import io.github.nucleuspowered.nucleus.modules.playerinfo.config.PlayerInfoConfigAdapter;
 import org.spongepowered.api.Sponge;

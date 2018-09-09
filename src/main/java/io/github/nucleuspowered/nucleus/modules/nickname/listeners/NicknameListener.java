@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.nickname.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.modules.nickname.datamodules.NicknameUserDataModule;
 import io.github.nucleuspowered.nucleus.modules.nickname.services.NicknameService;

@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.argumentparsers;
 
 import io.github.nucleuspowered.nucleus.NucleusPlugin;
 import io.github.nucleuspowered.nucleus.modules.warn.data.WarnData;
-import io.github.nucleuspowered.nucleus.modules.warn.handlers.WarnHandler;
+import io.github.nucleuspowered.nucleus.modules.warn.services.WarnHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;

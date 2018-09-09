@@ -4,8 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.modules.afk.listeners;
 
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.afk.commands.AFKCommand;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfig;
 import org.spongepowered.api.entity.living.player.Player;

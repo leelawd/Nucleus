@@ -19,7 +19,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformati
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.mute.config.MuteConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.mute.data.MuteData;
-import io.github.nucleuspowered.nucleus.modules.mute.handler.MuteHandler;
+import io.github.nucleuspowered.nucleus.modules.mute.services.MuteHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import io.github.nucleuspowered.nucleus.util.PermissionMessageChannel;
 import org.spongepowered.api.command.CommandResult;

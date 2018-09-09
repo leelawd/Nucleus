@@ -17,7 +17,7 @@ import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
 import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.modules.nameban.config.NameBanConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.nameban.handlers.NameBanHandler;
+import io.github.nucleuspowered.nucleus.modules.nameban.services.NameBanHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

@@ -7,20 +7,17 @@ package io.github.nucleuspowered.nucleus.modules.message;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
-import io.github.nucleuspowered.nucleus.api.service.NucleusPrivateMessagingService;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.modules.message.commands.SocialSpyCommand;
 import io.github.nucleuspowered.nucleus.modules.message.config.MessageConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.message.datamodules.MessageUserDataModule;
-import io.github.nucleuspowered.nucleus.modules.message.handlers.MessageHandler;
+import io.github.nucleuspowered.nucleus.modules.message.services.MessageHandler;
 import org.spongepowered.api.text.Text;
 import uk.co.drnaylor.quickstart.annotations.ModuleData;
 
 import java.util.List;
 
-@RegisterService(value = MessageHandler.class, apiService = NucleusPrivateMessagingService.class)
 @ModuleData(id = MessageModule.ID, name = "Message")
 public class MessageModule extends ConfigurableModule<MessageConfigAdapter> {
 

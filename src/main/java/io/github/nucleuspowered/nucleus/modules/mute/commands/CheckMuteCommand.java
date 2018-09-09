@@ -14,7 +14,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCom
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.mute.data.MuteData;
-import io.github.nucleuspowered.nucleus.modules.mute.handler.MuteHandler;
+import io.github.nucleuspowered.nucleus.modules.mute.services.MuteHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

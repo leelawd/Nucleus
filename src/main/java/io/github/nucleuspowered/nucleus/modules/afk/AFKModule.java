@@ -9,17 +9,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
-import io.github.nucleuspowered.nucleus.api.service.NucleusAFKService;
 import io.github.nucleuspowered.nucleus.internal.annotations.RegisterCommandInterceptors;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
 import io.github.nucleuspowered.nucleus.modules.afk.commands.AFKCommand;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.afk.handlers.AFKHandler;
 import io.github.nucleuspowered.nucleus.modules.afk.interceptors.AFKCommandInterceptor;
+import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -31,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@RegisterService(value = AFKHandler.class, apiService = NucleusAFKService.class)
 @RegisterCommandInterceptors(AFKCommandInterceptor.class)
 @ModuleData(id = AFKModule.ID, name = "AFK")
 public class AFKModule extends ConfigurableModule<AFKConfigAdapter> implements PermissionTrait, MessageProviderTrait {

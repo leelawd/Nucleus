@@ -20,7 +20,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.jail.JailParameters;
 import io.github.nucleuspowered.nucleus.modules.jail.config.JailConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.jail.data.JailData;
-import io.github.nucleuspowered.nucleus.modules.jail.handlers.JailHandler;
+import io.github.nucleuspowered.nucleus.modules.jail.services.JailHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import io.github.nucleuspowered.nucleus.util.PermissionMessageChannel;
 import org.spongepowered.api.command.CommandResult;

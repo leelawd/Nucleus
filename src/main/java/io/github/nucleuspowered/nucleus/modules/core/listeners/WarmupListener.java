@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.modules.core.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.service.NucleusWarmupManagerService;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.modules.core.config.WarmupConfig;
 import org.spongepowered.api.entity.living.player.Player;

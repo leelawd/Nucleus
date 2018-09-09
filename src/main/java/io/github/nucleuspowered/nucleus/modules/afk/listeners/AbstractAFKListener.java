@@ -5,11 +5,11 @@
 package io.github.nucleuspowered.nucleus.modules.afk.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.afk.AFKModule;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfig;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.afk.handlers.AFKHandler;
+import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.function.Predicate;

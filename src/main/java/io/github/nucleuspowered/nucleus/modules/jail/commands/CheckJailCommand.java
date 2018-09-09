@@ -16,7 +16,7 @@ import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.jail.data.JailData;
-import io.github.nucleuspowered.nucleus.modules.jail.handlers.JailHandler;
+import io.github.nucleuspowered.nucleus.modules.jail.services.JailHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

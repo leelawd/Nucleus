@@ -5,8 +5,8 @@
 package io.github.nucleuspowered.nucleus.modules.chatlogger.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
-import io.github.nucleuspowered.nucleus.modules.chatlogger.handlers.ChatLoggerHandler;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
+import io.github.nucleuspowered.nucleus.modules.chatlogger.services.ChatLoggerHandler;
 
 public abstract class AbstractLoggerListener implements ListenerBase.Conditional {
 

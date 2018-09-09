@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.inventory.listeners;
 
 import com.google.common.collect.Maps;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;

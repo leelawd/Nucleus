@@ -4,14 +4,12 @@
  */
 package io.github.nucleuspowered.nucleus.modules.world;
 
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionResolverImpl;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.modules.world.config.WorldConfigAdapter;
 import uk.co.drnaylor.quickstart.annotations.ModuleData;
 
-@RegisterService(WorldHelper.class)
 @ModuleData(id = WorldModule.ID, name = "World")
 public class WorldModule extends ConfigurableModule<WorldConfigAdapter> {
 

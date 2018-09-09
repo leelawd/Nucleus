@@ -5,11 +5,11 @@
 package io.github.nucleuspowered.nucleus.modules.chatlogger.runnables;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
 import io.github.nucleuspowered.nucleus.modules.chatlogger.config.ChatLoggingConfig;
 import io.github.nucleuspowered.nucleus.modules.chatlogger.config.ChatLoggingConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.chatlogger.handlers.ChatLoggerHandler;
+import io.github.nucleuspowered.nucleus.modules.chatlogger.services.ChatLoggerHandler;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;

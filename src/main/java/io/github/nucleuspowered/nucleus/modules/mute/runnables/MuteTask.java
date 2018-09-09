@@ -4,8 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.modules.mute.runnables;
 
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
-import io.github.nucleuspowered.nucleus.modules.mute.handler.MuteHandler;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
+import io.github.nucleuspowered.nucleus.modules.mute.services.MuteHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;
 

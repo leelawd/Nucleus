@@ -8,14 +8,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
-import io.github.nucleuspowered.nucleus.api.service.NucleusMuteService;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import io.github.nucleuspowered.nucleus.modules.mute.commands.CheckMuteCommand;
 import io.github.nucleuspowered.nucleus.modules.mute.config.MuteConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.mute.data.MuteData;
-import io.github.nucleuspowered.nucleus.modules.mute.handler.MuteHandler;
+import io.github.nucleuspowered.nucleus.modules.mute.services.MuteHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -26,7 +24,6 @@ import uk.co.drnaylor.quickstart.annotations.ModuleData;
 import java.util.Map;
 import java.util.Optional;
 
-@RegisterService(value = MuteHandler.class, apiService = NucleusMuteService.class)
 @ModuleData(id = MuteModule.ID, name = "Mute")
 public class MuteModule extends ConfigurableModule<MuteConfigAdapter> {
 

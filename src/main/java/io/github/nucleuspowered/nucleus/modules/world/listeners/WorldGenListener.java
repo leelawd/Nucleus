@@ -5,9 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.world.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
-import io.github.nucleuspowered.nucleus.modules.world.WorldHelper;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.world.datamodules.WorldgenWorldDataModule;
+import io.github.nucleuspowered.nucleus.modules.world.services.WorldHelper;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;

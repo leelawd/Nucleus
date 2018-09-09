@@ -11,11 +11,8 @@ import io.github.nucleuspowered.nucleus.annotationprocessor.Store;
 import io.github.nucleuspowered.nucleus.config.CommandsConfig;
 import io.github.nucleuspowered.nucleus.internal.CommandPermissionHandler;
 import io.github.nucleuspowered.nucleus.internal.Constants;
-import io.github.nucleuspowered.nucleus.internal.InternalServiceManager;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
+import io.github.nucleuspowered.nucleus.internal.annotations.APIService;
 import io.github.nucleuspowered.nucleus.internal.annotations.RegisterCommandInterceptors;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.annotations.RequireExistenceOf;
 import io.github.nucleuspowered.nucleus.internal.annotations.RequiresPlatform;
 import io.github.nucleuspowered.nucleus.internal.annotations.ServerOnly;
@@ -26,15 +23,18 @@ import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.CommandBuilder;
 import io.github.nucleuspowered.nucleus.internal.command.ICommandInterceptor;
 import io.github.nucleuspowered.nucleus.internal.docgen.DocGenCache;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ServiceBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
 import io.github.nucleuspowered.nucleus.internal.permissions.ServiceChangeListener;
 import io.github.nucleuspowered.nucleus.internal.registry.NucleusRegistryModule;
 import io.github.nucleuspowered.nucleus.internal.services.CommandRemapperService;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
-import io.github.nucleuspowered.nucleus.modules.playerinfo.handlers.BasicSeenInformationProvider;
-import io.github.nucleuspowered.nucleus.modules.playerinfo.handlers.SeenHandler;
+import io.github.nucleuspowered.nucleus.modules.playerinfo.misc.BasicSeenInformationProvider;
+import io.github.nucleuspowered.nucleus.modules.playerinfo.services.SeenHandler;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
 import org.spongepowered.api.Platform;
@@ -75,7 +75,6 @@ public abstract class StandardModule implements Module, InternalServiceManagerTr
     private final String moduleName;
     private String packageName;
     protected final Nucleus plugin;
-    protected final InternalServiceManager serviceManager;
     private final CommandsConfig commandsConfig;
     @Nullable private Map<String, List<String>> msls;
     private final String message = NucleusPlugin.getNucleus().getMessageProvider().getMessageWithFormat("config.enabled");
@@ -85,7 +84,6 @@ public abstract class StandardModule implements Module, InternalServiceManagerTr
         this.moduleId = md.id();
         this.moduleName = md.name();
         this.plugin = NucleusPlugin.getNucleus();
-        this.serviceManager = this.plugin.getInternalServiceManager();
         this.commandsConfig = this.plugin.getCommandsConfig();
     }
 
@@ -118,7 +116,7 @@ public abstract class StandardModule implements Module, InternalServiceManagerTr
     public final void preEnable() {
         try {
             loadRegistries();
-            registerServices();
+            loadServices();
             performPreTasks();
             registerCommandInterceptors();
         } catch (Exception e) {
@@ -128,54 +126,69 @@ public abstract class StandardModule implements Module, InternalServiceManagerTr
     }
 
     @SuppressWarnings("unchecked")
-    private void registerServices() throws Exception {
-        RegisterService[] annotations = getClass().getAnnotationsByType(RegisterService.class);
-        if (annotations != null && annotations.length > 0) {
-            // for each annotation, attempt to register the service.
-            for (RegisterService service : annotations) {
-                Class<?> impl = service.value();
-                // create the impl
-                Object serviceImpl = getInstance(service.value());
-                if (serviceImpl == null) {
-                    String error = "ERROR: Cannot instantiate " + impl.getName();
-                    Nucleus.getNucleus().getLogger().error(error);
-                    if (!service.optional()) {
-                        throw new IllegalStateException(error);
-                    }
+    private void loadServices() throws Exception {
+        Set<Class<? extends ServiceBase>> servicesToLoad;
+        if (this.msls != null) {
+            servicesToLoad = new HashSet<>();
+            List<String> l = this.msls.get(Constants.SERVICE);
+            if (l == null) {
+                return;
+            }
+
+            for (String s : l) {
+                try {
+                    checkPlatformOpt((Class<? extends ServiceBase>) Class.forName(s)).ifPresent(servicesToLoad::add);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
+            }
+        } else {
+            servicesToLoad = getStreamForModule(ServiceBase.class).collect(Collectors.toSet());
+        }
 
-                Class<?> api = service.apiService();
+        for (Class<? extends ServiceBase> serviceClass : servicesToLoad) {
+            registerService(serviceClass);
+        }
+    }
 
-                if (api != Object.class) {
-                    if (api.isInstance(serviceImpl)) {
-                        // OK
-                        register((Class) api, (Class) impl, serviceImpl, service.replaceInternal());
-                    } else {
-                        String error = "ERROR: " + api.getName() + " does not inherit from " + impl.getName();
-                        Nucleus.getNucleus().getLogger().error(error);
-                        throw new IllegalStateException(error);
-                    }
-                } else {
-                    register((Class) impl, serviceImpl, service.replaceInternal());
-                }
+    private <T extends ServiceBase> void registerService(Class<T> serviceClass) throws Exception {
+        T serviceImpl = getInstance(serviceClass);
+        if (serviceImpl == null) {
+            String error = "ERROR: Cannot instantiate " + serviceClass.getName();
+            Nucleus.getNucleus().getLogger().error(error);
+            throw new IllegalStateException(error);
+        }
 
-                if (serviceImpl instanceof Reloadable) {
-                    Reloadable reloadable = (Reloadable) serviceImpl;
-                    Nucleus.getNucleus().registerReloadable(reloadable);
-                    reloadable.onReload();
-                }
+        APIService apiService = serviceClass.getAnnotation(APIService.class);
+        if (apiService != null) {
+            Class<?> apiInterface = apiService.value();
+            if (apiInterface.isInstance(serviceImpl)) {
+                // OK
+                register((Class) apiInterface, serviceClass, serviceImpl);
+            } else {
+                String error = "ERROR: " + apiInterface.getName() + " does not inherit from " + serviceClass.getName();
+                Nucleus.getNucleus().getLogger().error(error);
+                throw new IllegalStateException(error);
+            }
+        } else {
+            register(serviceClass, serviceImpl);
+        }
 
-                if (serviceImpl instanceof ContextCalculator) {
-                    try {
-                        // boolean matches(Context context, T calculable);
-                        serviceImpl.getClass().getMethod("matches", Context.class, Subject.class);
+        if (serviceImpl instanceof Reloadable) {
+            Reloadable reloadable = (Reloadable) serviceImpl;
+            Nucleus.getNucleus().registerReloadable(reloadable);
+            reloadable.onReload();
+        }
 
-                        // register it
-                        ServiceChangeListener.getInstance().registerCalculator((ContextCalculator<Subject>) serviceImpl);
-                    } catch (NoSuchMethodException e) {
-                        // ignored
-                    }
-                }
+        if (serviceImpl instanceof ContextCalculator) {
+            try {
+                // boolean matches(Context context, T calculable);
+                serviceImpl.getClass().getMethod("matches", Context.class, Subject.class);
+
+                // register it
+                ServiceChangeListener.getInstance().registerCalculator((ContextCalculator<Subject>) serviceImpl);
+            } catch (NoSuchMethodException e) {
+                // ignored
             }
         }
     }
@@ -596,20 +609,20 @@ public abstract class StandardModule implements Module, InternalServiceManagerTr
         Nucleus.getNucleus().getInternalServiceManager().registerService(impl, impl.newInstance());
     }
 
-    protected final <I, S extends I> void register(Class<I> api, Class<S> impl, boolean re) throws IllegalAccessException, InstantiationException {
+    protected final <I, S extends I> void register(Class<I> api, Class<S> impl) throws IllegalAccessException, InstantiationException {
         S object = impl.newInstance();
         Sponge.getServiceManager().setProvider(Nucleus.getNucleus(), api, object);
         Nucleus.getNucleus().getInternalServiceManager().registerService(api, object);
-        register(impl, object, re);
+        register(impl, object);
     }
 
-    protected final <I, S extends I> void register(Class<S> impl, S object, boolean re) {
-        Nucleus.getNucleus().getInternalServiceManager().registerService(impl, object, re);
+    protected final <I, S extends I> void register(Class<S> impl, S object) {
+        Nucleus.getNucleus().getInternalServiceManager().registerService(impl, object);
     }
 
-    protected final <I, S extends I> void register(Class<I> api, Class<S> impl, S object, boolean re) {
+    protected final <I, S extends I> void register(Class<I> api, Class<S> impl, S object) {
         Sponge.getServiceManager().setProvider(Nucleus.getNucleus(), api, object);
-        Nucleus.getNucleus().getInternalServiceManager().registerService(api, object, re);
-        register(impl, object, re);
+        Nucleus.getNucleus().getInternalServiceManager().registerService(api, object);
+        register(impl, object);
     }
 }

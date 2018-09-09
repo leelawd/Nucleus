@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.mute.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.mute.MuteModule;
 import io.github.nucleuspowered.nucleus.modules.mute.config.MuteConfig;
 import io.github.nucleuspowered.nucleus.modules.mute.config.MuteConfigAdapter;

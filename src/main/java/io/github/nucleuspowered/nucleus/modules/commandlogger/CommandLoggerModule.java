@@ -4,13 +4,10 @@
  */
 package io.github.nucleuspowered.nucleus.modules.commandlogger;
 
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.modules.commandlogger.config.CommandLoggerConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.commandlogger.handlers.CommandLoggerHandler;
 import uk.co.drnaylor.quickstart.annotations.ModuleData;
 
-@RegisterService(value = CommandLoggerHandler.class)
 @ModuleData(id = CommandLoggerModule.ID, name = "Command Logger")
 public class CommandLoggerModule extends ConfigurableModule<CommandLoggerConfigAdapter> {
 

@@ -13,7 +13,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCom
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEquivalent;
 import io.github.nucleuspowered.nucleus.modules.teleport.events.RequestEvent;
-import io.github.nucleuspowered.nucleus.modules.teleport.handlers.TeleportHandler;
+import io.github.nucleuspowered.nucleus.modules.teleport.services.TeleportHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

@@ -500,8 +500,8 @@ public class Util {
 
     public static Inventory getStandardInventory(Carrier player) {
         return player.getInventory()
-                .transform(InventoryTransformations.PLAYER_MAIN_HOTBAR_FIRST)
-                .query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
+                .query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
+                .transform(InventoryTransformations.PLAYER_MAIN_HOTBAR_FIRST);
     }
 
     public static <T extends Event> void onPlayerSimulatedOrPlayer(T event, BiConsumer<T, Player> eventConsumer) {

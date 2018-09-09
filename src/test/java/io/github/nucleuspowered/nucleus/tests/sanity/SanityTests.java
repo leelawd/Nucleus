@@ -6,9 +6,8 @@ package io.github.nucleuspowered.nucleus.tests.sanity;
 
 import com.google.common.collect.Lists;
 import com.google.common.reflect.ClassPath;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterServices;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ServiceBase;
 import io.github.nucleuspowered.nucleus.internal.qsml.NucleusConfigAdapter;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.StandardModule;
 import org.junit.Assert;
@@ -29,7 +28,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -57,22 +55,18 @@ public class SanityTests {
     public void testThatAnyServicesHaveANoArgsCtor() throws IOException {
         Set<ClassPath.ClassInfo> ci = ClassPath.from(this.getClass().getClassLoader())
                 .getTopLevelClassesRecursive("io.github.nucleuspowered.nucleus.modules");
-        Set<Class<? extends StandardModule>> sc = ci.stream().map(ClassPath.ClassInfo::load).filter(StandardModule.class::isAssignableFrom)
-                .map(x -> (Class<? extends StandardModule>)x).collect(Collectors.toSet());
-
-        List<RegisterService> serviceList =
-                sc.stream()
-                        .flatMap(x -> Stream.of(x.getAnnotationsByType(RegisterService.class)))
-                        .collect(Collectors.toList());
         List<Class<?>> fails = Lists.newArrayList();
-        serviceList.forEach(x -> {
-            try {
-                Constructor<?> ctor = x.value().getConstructor();
-            } catch (NoSuchMethodException e) {
-                // Nope
-                fails.add(x.value());
-            }
-        });
+        ci.stream().map(ClassPath.ClassInfo::load)
+                .filter(ServiceBase.class::isAssignableFrom)
+                .map(x -> (Class<? extends ServiceBase>)x)
+                .forEach(x -> {
+                    try {
+                        Constructor<?> ctor = x.getConstructor();
+                    } catch (NoSuchMethodException e) {
+                        // Nope
+                        fails.add(x);
+                    }
+                });
 
         if (!fails.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder("Some services do not have no-args ctors:")

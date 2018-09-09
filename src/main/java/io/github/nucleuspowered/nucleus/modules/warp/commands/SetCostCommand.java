@@ -15,7 +15,7 @@ import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.modules.warp.WarpParameters;
 import io.github.nucleuspowered.nucleus.modules.warp.config.WarpConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.warp.handlers.WarpHandler;
+import io.github.nucleuspowered.nucleus.modules.warp.services.WarpHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;

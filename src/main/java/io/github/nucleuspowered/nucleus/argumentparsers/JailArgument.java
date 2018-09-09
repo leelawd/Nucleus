@@ -7,7 +7,7 @@ package io.github.nucleuspowered.nucleus.argumentparsers;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.nucleusdata.NamedLocation;
-import io.github.nucleuspowered.nucleus.modules.jail.handlers.JailHandler;
+import io.github.nucleuspowered.nucleus.modules.jail.services.JailHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;

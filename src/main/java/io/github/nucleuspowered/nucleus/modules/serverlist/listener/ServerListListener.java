@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.modules.serverlist.listener;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTextTemplateImpl;
 import io.github.nucleuspowered.nucleus.modules.serverlist.ServerListModule;

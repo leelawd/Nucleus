@@ -5,8 +5,8 @@
 package io.github.nucleuspowered.nucleus.modules.mail.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
-import io.github.nucleuspowered.nucleus.modules.mail.handlers.MailHandler;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
+import io.github.nucleuspowered.nucleus.modules.mail.services.MailHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;

@@ -6,8 +6,8 @@ package io.github.nucleuspowered.nucleus.modules.world.listeners;
 
 import com.google.common.collect.Sets;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.PermissionRegistry;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.world.WorldModule;
 import io.github.nucleuspowered.nucleus.modules.world.config.WorldConfig;
 import io.github.nucleuspowered.nucleus.modules.world.config.WorldConfigAdapter;

@@ -12,7 +12,7 @@ import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEquivalent;
 import io.github.nucleuspowered.nucleus.modules.warp.WarpParameters;
 import io.github.nucleuspowered.nucleus.modules.warp.event.CreateWarpEvent;
-import io.github.nucleuspowered.nucleus.modules.warp.handlers.WarpHandler;
+import io.github.nucleuspowered.nucleus.modules.warp.services.WarpHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

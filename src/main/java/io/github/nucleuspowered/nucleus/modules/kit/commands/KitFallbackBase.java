@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.argumentparsers.KitArgument;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
-import io.github.nucleuspowered.nucleus.modules.kit.handlers.KitHandler;
+import io.github.nucleuspowered.nucleus.modules.kit.services.KitHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;

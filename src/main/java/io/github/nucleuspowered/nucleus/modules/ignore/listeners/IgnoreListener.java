@@ -12,7 +12,7 @@ import io.github.nucleuspowered.nucleus.api.events.NucleusMailEvent;
 import io.github.nucleuspowered.nucleus.api.events.NucleusMessageEvent;
 import io.github.nucleuspowered.nucleus.dataservices.loaders.UserDataManager;
 import io.github.nucleuspowered.nucleus.internal.CommandPermissionHandler;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.ignore.commands.IgnoreCommand;
 import io.github.nucleuspowered.nucleus.modules.ignore.datamodules.IgnoreUserDataModule;
 import org.spongepowered.api.entity.living.player.Player;

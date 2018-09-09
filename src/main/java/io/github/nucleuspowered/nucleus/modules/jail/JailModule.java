@@ -8,14 +8,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
-import io.github.nucleuspowered.nucleus.api.service.NucleusJailService;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import io.github.nucleuspowered.nucleus.modules.jail.commands.CheckJailCommand;
 import io.github.nucleuspowered.nucleus.modules.jail.config.JailConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.jail.data.JailData;
-import io.github.nucleuspowered.nucleus.modules.jail.handlers.JailHandler;
+import io.github.nucleuspowered.nucleus.modules.jail.services.JailHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -27,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @ModuleData(id = JailModule.ID, name = "Jail")
-@RegisterService(value = JailHandler.class, apiService = NucleusJailService.class)
 public class JailModule extends ConfigurableModule<JailConfigAdapter> {
 
     public static final String ID = "jail";

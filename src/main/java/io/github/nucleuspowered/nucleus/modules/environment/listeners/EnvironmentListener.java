@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.environment.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.environment.datamodule.EnvironmentWorldDataModule;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.world.ChangeWorldWeatherEvent;

@@ -6,11 +6,10 @@ package io.github.nucleuspowered.nucleus.modules.vanish;
 
 import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.annotations.RegisterService;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import io.github.nucleuspowered.nucleus.modules.vanish.config.VanishConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.vanish.service.VanishService;
+import io.github.nucleuspowered.nucleus.modules.vanish.services.VanishService;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -20,7 +19,6 @@ import uk.co.drnaylor.quickstart.annotations.ModuleData;
 import java.util.Map;
 import java.util.Optional;
 
-@RegisterService(VanishService.class)
 @ModuleData(id = "vanish", name = "Vanish")
 public class VanishModule extends ConfigurableModule<VanishConfigAdapter> {
 

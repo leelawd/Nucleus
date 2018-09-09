@@ -23,7 +23,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.modules.core.datamodules.CoreUserDataModule;
 import io.github.nucleuspowered.nucleus.modules.teleport.config.TeleportConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.teleport.handlers.TeleportHandler;
+import io.github.nucleuspowered.nucleus.modules.teleport.services.TeleportHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

@@ -10,7 +10,7 @@ import io.github.nucleuspowered.nucleus.api.nucleusdata.MailMessage;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMailService;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.modules.mail.data.MailData;
-import io.github.nucleuspowered.nucleus.modules.mail.handlers.MailHandler;
+import io.github.nucleuspowered.nucleus.modules.mail.services.MailHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.mob.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.modules.mob.MobModule;
 import io.github.nucleuspowered.nucleus.modules.mob.config.BlockSpawnsConfig;

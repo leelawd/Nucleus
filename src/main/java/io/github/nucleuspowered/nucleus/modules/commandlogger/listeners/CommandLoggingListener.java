@@ -6,11 +6,11 @@ package io.github.nucleuspowered.nucleus.modules.commandlogger.listeners;
 
 import com.google.common.collect.Sets;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.modules.commandlogger.config.CommandLoggerConfig;
 import io.github.nucleuspowered.nucleus.modules.commandlogger.config.CommandLoggerConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.commandlogger.handlers.CommandLoggerHandler;
+import io.github.nucleuspowered.nucleus.modules.commandlogger.services.CommandLoggerHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandMapping;
 import org.spongepowered.api.command.CommandSource;

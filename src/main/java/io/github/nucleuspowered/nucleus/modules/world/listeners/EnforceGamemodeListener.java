@@ -7,7 +7,7 @@ package io.github.nucleuspowered.nucleus.modules.world.listeners;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.world.WorldModule;

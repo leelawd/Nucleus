@@ -4,8 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.modules.teleport.runnables;
 
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
-import io.github.nucleuspowered.nucleus.modules.teleport.handlers.TeleportHandler;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
+import io.github.nucleuspowered.nucleus.modules.teleport.services.TeleportHandler;
 import org.spongepowered.api.scheduler.Task;
 
 import java.time.Duration;

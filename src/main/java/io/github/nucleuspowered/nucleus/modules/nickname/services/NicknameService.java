@@ -13,7 +13,9 @@ import io.github.nucleuspowered.nucleus.api.exceptions.NicknameException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusNicknameService;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.CommandPermissionHandler;
+import io.github.nucleuspowered.nucleus.internal.annotations.APIService;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ServiceBase;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
 import io.github.nucleuspowered.nucleus.modules.nickname.NicknameModule;
@@ -47,7 +49,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class NicknameService implements NucleusNicknameService, Reloadable, PermissionTrait {
+@APIService(NucleusNicknameService.class)
+public class NicknameService implements NucleusNicknameService, Reloadable, PermissionTrait, ServiceBase {
 
     private Text prefix = Text.EMPTY;
     private Pattern pattern;

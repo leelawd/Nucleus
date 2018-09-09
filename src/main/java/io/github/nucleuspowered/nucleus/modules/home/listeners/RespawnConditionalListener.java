@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.modules.home.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.service.NucleusHomeService;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.home.HomeModule;
 import io.github.nucleuspowered.nucleus.modules.home.config.HomeConfig;
 import io.github.nucleuspowered.nucleus.modules.home.config.HomeConfigAdapter;

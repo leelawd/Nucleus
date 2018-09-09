@@ -6,15 +6,15 @@ package io.github.nucleuspowered.nucleus.modules.note.listeners;
 
 import com.google.common.collect.Maps;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.PermissionRegistry;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.note.NoteModule;
 import io.github.nucleuspowered.nucleus.modules.note.config.NoteConfig;
 import io.github.nucleuspowered.nucleus.modules.note.config.NoteConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.note.data.NoteData;
-import io.github.nucleuspowered.nucleus.modules.note.handlers.NoteHandler;
+import io.github.nucleuspowered.nucleus.modules.note.services.NoteHandler;
 import io.github.nucleuspowered.nucleus.util.PermissionMessageChannel;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;

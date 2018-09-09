@@ -18,7 +18,7 @@ import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEq
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
-import io.github.nucleuspowered.nucleus.modules.afk.handlers.AFKHandler;
+import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import io.github.nucleuspowered.nucleus.modules.chat.util.TemplateUtil;
 import io.github.nucleuspowered.nucleus.modules.playerinfo.config.ListConfig;
 import io.github.nucleuspowered.nucleus.modules.playerinfo.config.PlayerInfoConfigAdapter;

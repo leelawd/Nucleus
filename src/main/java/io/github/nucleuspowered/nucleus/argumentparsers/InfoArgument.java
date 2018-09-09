@@ -7,7 +7,7 @@ package io.github.nucleuspowered.nucleus.argumentparsers;
 import com.google.common.base.Preconditions;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.internal.TextFileController;
-import io.github.nucleuspowered.nucleus.modules.info.handlers.InfoHandler;
+import io.github.nucleuspowered.nucleus.modules.info.services.InfoHandler;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;

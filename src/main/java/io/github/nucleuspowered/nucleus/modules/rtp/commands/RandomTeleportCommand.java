@@ -21,7 +21,7 @@ import io.github.nucleuspowered.nucleus.modules.rtp.RTPModule;
 import io.github.nucleuspowered.nucleus.modules.rtp.config.RTPConfig;
 import io.github.nucleuspowered.nucleus.modules.rtp.config.RTPConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.rtp.events.RTPSelectedLocationEvent;
-import io.github.nucleuspowered.nucleus.modules.rtp.service.RTPOptions;
+import io.github.nucleuspowered.nucleus.modules.rtp.options.RTPOptions;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;

@@ -6,7 +6,7 @@ package io.github.nucleuspowered.nucleus.modules.powertool.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.internal.CommandPermissionHandler;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.powertool.commands.PowertoolCommand;
 import io.github.nucleuspowered.nucleus.modules.powertool.datamodules.PowertoolUserDataModule;
 import org.spongepowered.api.Sponge;

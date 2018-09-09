@@ -5,8 +5,8 @@
 package io.github.nucleuspowered.nucleus.modules.afk.runnables;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.TaskBase;
-import io.github.nucleuspowered.nucleus.modules.afk.handlers.AFKHandler;
+import io.github.nucleuspowered.nucleus.internal.interfaces.TaskBase;
+import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 

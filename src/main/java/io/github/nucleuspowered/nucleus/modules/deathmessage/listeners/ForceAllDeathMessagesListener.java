@@ -5,7 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.deathmessage.listeners;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.modules.deathmessage.DeathMessageModule;
 import io.github.nucleuspowered.nucleus.modules.deathmessage.config.DeathMessageConfigAdapter;
 import org.spongepowered.api.entity.living.Living;

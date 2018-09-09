@@ -11,8 +11,8 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
-import io.github.nucleuspowered.nucleus.modules.world.WorldHelper;
 import io.github.nucleuspowered.nucleus.modules.world.datamodules.WorldgenWorldDataModule;
+import io.github.nucleuspowered.nucleus.modules.world.services.WorldHelper;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;

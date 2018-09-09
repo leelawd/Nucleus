@@ -13,7 +13,7 @@ import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfig;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.afk.events.AFKEvents;
-import io.github.nucleuspowered.nucleus.modules.afk.handlers.AFKHandler;
+import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;

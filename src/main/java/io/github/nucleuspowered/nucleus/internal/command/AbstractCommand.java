@@ -349,7 +349,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
         try {
             // If we have a child command to execute, then we execute it.
             if (args.hasNext() && this.dispatcher.containsAlias(args.peek())) {
-                Object state = args.getState();
+                CommandArgs.Snapshot state = args.getSnapshot();
                 String next = args.next();
                 try {
                     // If this works, then we're A-OK.
@@ -369,7 +369,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
                     // If the Exception is _not_ of right type, wrap it and add it. This shouldn't happen though.
                     thrown.add(Tuple.of(command + " " + next, e));
                 } finally {
-                    args.setState(state);
+                    args.applySnapshot(state);
                 }
             }
 
@@ -555,9 +555,9 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
         context.putArg(CommandContext.TAB_COMPLETION, true); // We don't care for the value.
 
         // Subcommand
-        Object state = args.getState();
+        CommandArgs.Snapshot state = args.getSnapshot();
         options.addAll(this.dispatcher.getSuggestions(source, arguments, targetPosition));
-        args.setState(state);
+        args.applySnapshot(state);
 
         options.addAll(this.argumentParser.complete(source, args, context));
         return options.stream().distinct().collect(Collectors.toList());

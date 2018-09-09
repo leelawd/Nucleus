@@ -7,7 +7,7 @@ package io.github.nucleuspowered.nucleus.modules.fly.listeners;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.CommandPermissionHandler;
-import io.github.nucleuspowered.nucleus.internal.ListenerBase;
+import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.modules.fly.commands.FlyCommand;

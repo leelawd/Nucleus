@@ -21,7 +21,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformati
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.info.config.InfoConfig;
 import io.github.nucleuspowered.nucleus.modules.info.config.InfoConfigAdapter;
-import io.github.nucleuspowered.nucleus.modules.info.handlers.InfoHandler;
+import io.github.nucleuspowered.nucleus.modules.info.services.InfoHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;

@@ -33,7 +33,7 @@ public class RTPService implements NucleusRTPService, Reloadable, InternalServic
 
     @Override
     public RTPKernel getDefaultKernel() {
-        return null;
+        return this.config.getKernel();
     }
 
     @Override

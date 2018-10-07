@@ -239,13 +239,8 @@ public class NucleusPlugin extends Nucleus {
             return;
         }
 
-        s.sendMessage(Text.of(TextColors.WHITE, "--------------------------"));
         s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.welcome", PluginInfo.NAME,
                 PluginInfo.VERSION, Sponge.getPlatform().getContainer(Platform.Component.API).getVersion().orElse("unknown")));
-        s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.welcome2"));
-        s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.welcome3"));
-        s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.welcome4"));
-        s.sendMessage(Text.of(TextColors.WHITE, "--------------------------"));
 
         this.logger.info(this.messageProvider.getMessageWithFormat("startup.preinit", PluginInfo.NAME));
         Game game = Sponge.getGame();

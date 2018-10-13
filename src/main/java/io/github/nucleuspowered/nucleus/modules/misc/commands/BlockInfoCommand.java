@@ -4,13 +4,13 @@
  */
 package io.github.nucleuspowered.nucleus.modules.misc.commands;
 
-import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.internal.DataScanner;
 import io.github.nucleuspowered.nucleus.internal.annotations.RunAsync;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
+import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import org.spongepowered.api.Sponge;
@@ -19,8 +19,10 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.trait.BlockTrait;
 import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.CommandFlags;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.Property;
 import org.spongepowered.api.entity.living.player.Player;
@@ -44,12 +46,13 @@ import java.util.Optional;
 @RegisterCommand({"blockinfo"})
 @RunAsync
 @NonnullByDefault
-public class BlockInfoCommand extends AbstractCommand<Player> {
+public class BlockInfoCommand extends AbstractCommand<CommandSource> {
 
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[] {
             GenericArguments.flags()
+                    .setUnknownShortFlagBehavior(CommandFlags.UnknownFlagBehavior.IGNORE)
                     .permissionFlag(this.permissions.getPermissionWithSuffix("extended"), "e", "-extended")
                     .buildWith(NucleusParameters.OPTIONAL_LOCATION)
         };
@@ -63,14 +66,18 @@ public class BlockInfoCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) {
+    public CommandResult executeCommand(CommandSource source, CommandContext args) throws Exception {
         Location<World> loc = null;
         if (args.hasAny(NucleusParameters.Keys.LOCATION)) {
             // get the location
             loc = args.<Location<World>>getOne(NucleusParameters.Keys.LOCATION)
                     .filter(x -> x.getBlockType() != BlockTypes.AIR).orElse(null);
         } else {
-            BlockRay<World> bl = BlockRay.from(player).distanceLimit(10).stopFilter(BlockRay.continueAfterFilter(BlockRay.onlyAirFilter(), 1)).build();
+            if (!(source instanceof Player)) {
+                throw ReturnMessageException.fromKey("command.blockinfo.player");
+            }
+            BlockRay<World> bl =
+                    BlockRay.from((Player) source).distanceLimit(10).stopFilter(BlockRay.continueAfterFilter(BlockRay.onlyAirFilter(), 1)).build();
             Optional<BlockRayHit<World>> ob = bl.end();
 
             // If the last block is not air...
@@ -86,15 +93,15 @@ public class BlockInfoCommand extends AbstractCommand<Player> {
             BlockType it = b.getType();
 
             List<Text> lt = new ArrayList<>();
-            lt.add(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.blockinfo.id", it.getId(), it.getTranslation().get()));
-            lt.add(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.iteminfo.extendedid", b.getId()));
+            lt.add(getMessageFor(source.getLocale(), "command.blockinfo.id", it.getId(), it.getTranslation().get()));
+            lt.add(getMessageFor(source.getLocale(), "command.iteminfo.extendedid", b.getId()));
 
             if (args.hasAny("e") || args.hasAny("extended")) {
                 Collection<Property<?, ?>> cp = b.getApplicableProperties();
                 if (!cp.isEmpty()) {
                     cp.forEach(x -> {
                         if (x.getValue() != null) {
-                            DataScanner.getText(player, "command.blockinfo.property.item", x.getKey().toString(), x.getValue()).ifPresent(lt::add);
+                            DataScanner.getText(source, "command.blockinfo.property.item", x.getKey().toString(), x.getValue()).ifPresent(lt::add);
                         }
                     });
                 }
@@ -102,21 +109,21 @@ public class BlockInfoCommand extends AbstractCommand<Player> {
                 Collection<BlockTrait<?>> cb = b.getTraits();
                 if (!cb.isEmpty()) {
                     cb.forEach(x -> b.getTraitValue(x)
-                            .ifPresent(v -> DataScanner.getText(player, "command.blockinfo.traits.item", x.getName(), v).ifPresent(lt::add)));
+                            .ifPresent(v -> DataScanner.getText(source, "command.blockinfo.traits.item", x.getName(), v).ifPresent(lt::add)));
                 }
             }
 
             Sponge.getServiceManager().provideUnchecked(PaginationService.class).builder().contents(lt).padding(Text.of(TextColors.GREEN, "-"))
-                    .title(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.blockinfo.list.header",
+                    .title(getMessageFor(source.getLocale(), "command.blockinfo.list.header",
                             String.valueOf(loc.getBlockX()),
                             String.valueOf(loc.getBlockY()),
                             String.valueOf(loc.getBlockZ())))
-                    .sendTo(player);
+                    .sendTo(source);
 
             return CommandResult.success();
         }
 
-        player.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.blockinfo.none"));
+        sendMessageTo(source, "command.blockinfo.none");
         return CommandResult.empty();
     }
 }

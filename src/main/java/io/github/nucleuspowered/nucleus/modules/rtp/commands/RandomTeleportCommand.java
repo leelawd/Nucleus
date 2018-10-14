@@ -4,6 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.modules.rtp.commands;
 
+import co.aikar.timings.Timing;
+import co.aikar.timings.Timings;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.rtp.RTPKernel;
 import io.github.nucleuspowered.nucleus.api.service.NucleusRTPService;
@@ -50,6 +52,7 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
     private RTPConfig rc = new RTPConfig();
 
     private final String WORLD_KEY = "world";
+    private final Timing TIMINGS = Timings.of(Nucleus.getNucleus(), "RTP task");
 
     @Override protected Map<String, PermissionInformation> permissionSuffixesToRegister() {
         return new HashMap<String, PermissionInformation>() {{
@@ -145,54 +148,58 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
                 return;
             }
 
-            Nucleus.getNucleus()
-                    .getLogger().debug(String.format("RTP of %s, attempt %s of %s", this.target.getName(), this.maxCount - this.count, this.maxCount));
+            try (Timing dummy = TIMINGS.startTiming()) {
+                Nucleus.getNucleus()
+                        .getLogger()
+                        .debug(String.format("RTP of %s, attempt %s of %s", this.target.getName(), this.maxCount - this.count, this.maxCount));
 
-            int counter = 0;
-            while (++counter <= 10) {
-                try {
-                    Optional<Location<World>> optionalLocation = this.kernel.getLocation(this.target.getLocation(), this.targetWorld, this.options);
-                    if (optionalLocation.isPresent()) {
-                        Location<World> targetLocation = optionalLocation.get();
-                        if (Sponge.getEventManager().post(new RTPSelectedLocationEvent(
-                                targetLocation,
-                                this.target,
-                                this.cause
-                        ))) {
-                            continue;
-                        }
+                int counter = 0;
+                while (++counter <= 10) {
+                    try {
+                        Optional<Location<World>> optionalLocation =
+                                this.kernel.getLocation(this.target.getLocation(), this.targetWorld, this.options);
+                        if (optionalLocation.isPresent()) {
+                            Location<World> targetLocation = optionalLocation.get();
+                            if (Sponge.getEventManager().post(new RTPSelectedLocationEvent(
+                                    targetLocation,
+                                    this.target,
+                                    this.cause
+                            ))) {
+                                continue;
+                            }
 
-                        Nucleus.getNucleus().getLogger().debug(String.format("RTP of %s, found location %s, %s, %s", this.target.getName(),
-                                String.valueOf(targetLocation.getBlockX()),
-                                String.valueOf(targetLocation.getBlockY()),
-                                String.valueOf(targetLocation.getBlockZ())));
-                        if (NucleusTeleportHandler.setLocation(this.target, targetLocation)) {
-                            if (!this.isSelf) {
-                                sendMessageTo(this.target, "command.rtp.other");
-                                sendMessageTo(this.source, "command.rtp.successother",
-                                        this.target.getName(),
+                            Nucleus.getNucleus().getLogger().debug(String.format("RTP of %s, found location %s, %s, %s", this.target.getName(),
+                                    String.valueOf(targetLocation.getBlockX()),
+                                    String.valueOf(targetLocation.getBlockY()),
+                                    String.valueOf(targetLocation.getBlockZ())));
+                            if (NucleusTeleportHandler.setLocation(this.target, targetLocation)) {
+                                if (!this.isSelf) {
+                                    sendMessageTo(this.target, "command.rtp.other");
+                                    sendMessageTo(this.source, "command.rtp.successother",
+                                            this.target.getName(),
+                                            targetLocation.getBlockX(),
+                                            targetLocation.getBlockY(),
+                                            targetLocation.getBlockZ());
+                                }
+
+                                sendMessageTo(this.target, "command.rtp.success",
                                         targetLocation.getBlockX(),
                                         targetLocation.getBlockY(),
                                         targetLocation.getBlockZ());
+                                return;
+                            } else {
+                                sendMessageTo(this.source, "command.rtp.cancelled");
+                                onCancel();
+                                return;
                             }
-
-                            sendMessageTo(this.target, "command.rtp.success",
-                                    targetLocation.getBlockX(),
-                                    targetLocation.getBlockY(),
-                                    targetLocation.getBlockZ());
-                            return;
-                        } else {
-                            sendMessageTo(this.source, "command.rtp.cancelled");
-                            onCancel();
-                            return;
                         }
+                    } catch (PositionOutOfBoundsException ignore) {
+                        // treat as fail.
                     }
-                } catch (PositionOutOfBoundsException ignore) {
-                    // treat as fail.
                 }
-            }
 
-            onUnsuccesfulAttempt();
+                onUnsuccesfulAttempt();
+            }
         }
 
         private void onUnsuccesfulAttempt() {

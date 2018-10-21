@@ -6,10 +6,11 @@ package io.github.nucleuspowered.nucleus.modules.mute;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.internal.qsml.module.ConfigurableModule;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
+import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
+import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
 import io.github.nucleuspowered.nucleus.modules.mute.commands.CheckMuteCommand;
 import io.github.nucleuspowered.nucleus.modules.mute.config.MuteConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.mute.data.MuteData;
@@ -25,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @ModuleData(id = MuteModule.ID, name = "Mute")
-public class MuteModule extends ConfigurableModule<MuteConfigAdapter> {
+public class MuteModule extends ConfigurableModule<MuteConfigAdapter> implements MessageProviderTrait, InternalServiceManagerTrait {
 
     public static final String ID = "mute";
 
@@ -39,25 +40,26 @@ public class MuteModule extends ConfigurableModule<MuteConfigAdapter> {
         createSeenModule(CheckMuteCommand.class, (c, u) -> {
 
             // If we have a ban service, then check for a ban.
-            MuteHandler jh = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(MuteHandler.class);
+            MuteHandler jh = getServiceUnchecked(MuteHandler.class);
             if (jh.isMuted(u)) {
                 MuteData jd = jh.getPlayerMuteData(u).get();
                 // Lightweight checkban.
                 Text.Builder m;
                 if (jd.getRemainingTime().isPresent()) {
-                    m =
-                            Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("seen.ismuted.temp", Util.getTimeToNow(jd.getEndTimestamp().get())).toBuilder();
+                    m = getMessageFor(c, "seen.ismuted.temp",
+                            Util.getTimeStringFromSeconds(jd.getRemainingTime().get().getSeconds())).toBuilder();
                 } else {
-                    m = Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("seen.ismuted.perm").toBuilder();
+                    m = getMessageFor(c, "seen.ismuted.perm").toBuilder();
                 }
 
                 return Lists.newArrayList(
                         m.onClick(TextActions.runCommand("/checkmute " + u.getName()))
-                                .onHover(TextActions.showText(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("standard.clicktoseemore"))).build(),
-                        Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("standard.reason", jd.getReason()));
+                                .onHover(TextActions.showText(
+                                        getMessageFor(c.getLocale(), "standard.clicktoseemore"))).build(),
+                            getMessageFor(c, "standard.reason", jd.getReason()));
             }
 
-            return Lists.newArrayList(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("seen.notmuted"));
+            return Lists.newArrayList(getMessageFor(c, "seen.notmuted"));
         });
     }
 
@@ -73,7 +75,7 @@ public class MuteModule extends ConfigurableModule<MuteConfigAdapter> {
 
                     @Override protected boolean condition(CommandSource commandSource) {
                         return commandSource instanceof Player &&
-                                Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(MuteHandler.class).isMuted((Player) commandSource);
+                                getServiceUnchecked(MuteHandler.class).isMuted((Player) commandSource);
                     }
                 })
                 .build();

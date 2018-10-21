@@ -54,6 +54,22 @@ public interface MessageProviderTrait {
         return getMessage(key, replacements);
     }
 
+    default Text getMessageFor(CommandSource source, String key) {
+        return getMessageFor(source.getLocale(), key);
+    }
+
+    default Text getMessageFor(CommandSource source, String key, Object... replacements) {
+        return getMessageFor(source.getLocale(), key, replacements);
+    }
+
+    default Text getMessageFor(CommandSource source, String key, Text... replacements) {
+        return getMessageFor(source.getLocale(), key, replacements);
+    }
+
+    default Text getMessageFor(CommandSource source, String key, String... replacements) {
+        return getMessageFor(source.getLocale(), key, replacements);
+    }
+
     default void sendMessageTo(CommandSource receiver, String key) {
         receiver.sendMessage(getMessageFor(receiver.getLocale(), key));
     }

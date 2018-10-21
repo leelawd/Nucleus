@@ -45,7 +45,7 @@ public abstract class ClearInventoryEvent extends AbstractEvent implements Targe
         }
 
         @Override public boolean isCancelled() {
-            return this.isCancelled();
+            return this.cancelled;
         }
 
         @Override public void setCancelled(boolean cancel) {

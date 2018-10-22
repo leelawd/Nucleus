@@ -1,0 +1,13 @@
+A lot of time and effort goes into Nucleus and it couldn't be done without the help of a lot of people. For the code, 
+the commit history has the contributors, and I encourage people to look at the contributors in Github for those.
+
+We also have people who have stepped up to the plate and translated for us, and these people do not show up in the contributors
+(mostly). I will try to keep up with who is involved here, thank you for your time!
+
+### Chinese (Simplified) - (zh-CN)
+
+Tollainmear
+
+### Italian (it-IT)
+
+O2Miki

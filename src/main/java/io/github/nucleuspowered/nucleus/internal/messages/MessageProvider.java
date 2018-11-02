@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 public abstract class MessageProvider {
 
+    private final static Pattern STRING_REPLACER = Pattern.compile("\\{+[^0-9]+}+");
     public abstract Locale getLocale();
 
     public abstract Optional<String> getMessageFromKey(String key);
@@ -40,7 +41,11 @@ public abstract class MessageProvider {
 
     public String getMessageWithFormat(String key, String... substitutions) {
         try {
-            return MessageFormat.format(getMessageFromKey(key).get(), (Object[]) substitutions);
+            String valueReplacement = STRING_REPLACER.matcher(getMessageFromKey(key)
+                    .orElseThrow(() -> new IllegalArgumentException("The key " + key + " does not exist!"))
+                    .replaceAll("'", "''")
+            ).replaceAll("'$0'");
+            return MessageFormat.format(valueReplacement, (Object[]) substitutions);
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("The message key " + key + " does not exist!");
         }

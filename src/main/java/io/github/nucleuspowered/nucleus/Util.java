@@ -34,7 +34,6 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
-import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
@@ -531,11 +530,6 @@ public class Util {
     }
 
     private static Optional<Player> checkSimulated(Event event) {
-        if (event.getContext().containsKey(EventContextKeys.PLAYER_SIMULATED)) {
-            GameProfile gp = event.getContext().get(EventContextKeys.PLAYER_SIMULATED).get();
-            return Sponge.getServer().getPlayer(gp.getUniqueId());
-        }
-
-        return Optional.empty();
+        return event.getContext().get(EventContextKeys.PLAYER_SIMULATED).map(x -> Sponge.getServer().getPlayer(x.getUniqueId()).orElse(null));
     }
 }

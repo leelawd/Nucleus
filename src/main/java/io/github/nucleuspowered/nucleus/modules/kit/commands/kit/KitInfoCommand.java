@@ -49,7 +49,7 @@ public class KitInfoCommand extends KitFallbackBase<CommandSource> {
                         mp.getTextMessageWithFormat("command.kit.info.firstjoin", yesno(mp, kit.isFirstJoinKit())),
                         mp.getTextMessageWithFormat("command.kit.info.cost", String.valueOf(kit.getCost())),
                         mp.getTextMessageWithFormat("command.kit.info.cooldown", kit.getCooldown().map(x ->
-                            Util.getTimeStringFromSeconds(x.getSeconds())).orElse(mp.getMessageWithFormat("standard.none"))),
+                            Util.getTimeStringFromSeconds(x.getSeconds())).orElse(mp.getMessageWithFormat("standard.nocooldown"))),
                         mp.getTextMessageWithFormat("command.kit.info.onetime", yesno(mp, kit.isOneTime())),
                         mp.getTextMessageWithFormat("command.kit.info.autoredeem", yesno(mp, kit.isAutoRedeem())),
                         mp.getTextMessageWithFormat("command.kit.info.hidden", yesno(mp, kit.isHiddenFromList())),

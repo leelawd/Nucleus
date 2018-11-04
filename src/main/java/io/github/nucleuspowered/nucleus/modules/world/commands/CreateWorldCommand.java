@@ -313,7 +313,7 @@ public class CreateWorldCommand extends AbstractCommand<CommandSource> implement
 
     static String modifierString(Collection<WorldGeneratorModifier> cw) {
         if (cw.isEmpty()) {
-            return Nucleus.getNucleus().getMessageProvider().getMessageWithFormat("standard.none");
+            return Nucleus.getNucleus().getMessageProvider().getMessageWithFormat("command.world.create.nomodifiers");
         }
 
         StringBuilder sb = new StringBuilder();

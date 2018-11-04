@@ -4,6 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.modules.playerinfo.commands;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.ImmutableMap;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
@@ -23,6 +25,7 @@ import io.github.nucleuspowered.nucleus.modules.core.datamodules.CoreUserDataMod
 import io.github.nucleuspowered.nucleus.modules.misc.commands.SpeedCommand;
 import io.github.nucleuspowered.nucleus.modules.playerinfo.services.SeenHandler;
 import io.github.nucleuspowered.nucleus.modules.teleport.commands.TeleportPositionCommand;
+import io.github.nucleuspowered.nucleus.util.TriFunction;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -32,16 +35,19 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.util.Tuple;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.storage.WorldProperties;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -62,15 +68,150 @@ import javax.annotation.Nullable;
 @NonnullByDefault
 public class SeenCommand extends AbstractCommand<CommandSource> {
 
+    private static final NumberFormat NUMBER_FORMATTER = new DecimalFormat("0.00");
     private final SeenHandler seenHandler = getServiceUnchecked(SeenHandler.class);
 
     private static final String EXTENDED_SUFFIX = "extended";
     public static final String EXTENDED_PERMISSION = PermissionRegistry.PERMISSIONS_PREFIX + "seen." + EXTENDED_SUFFIX;
+    private static final String IP_PERMISSION = EXTENDED_PERMISSION + ".ip";
+    private static final String UUID_PERMISSION = EXTENDED_PERMISSION + ".uuid";
+    private static final String FIRST_PLAYED_PERMISSION = EXTENDED_PERMISSION + ".firstplayed";
+    private static final String LAST_PLAYED_PERMISSION = EXTENDED_PERMISSION + ".lastplayed";
+    private static final String SPEED_PERMISSION = EXTENDED_PERMISSION + ".speed";
+    private static final String WALKING_SPEED_PERMISSION = SPEED_PERMISSION + ".walking";
+    private static final String FLYING_SPEED_PERMISSION = SPEED_PERMISSION + ".flying";
+    private static final String LOCATION_PERMISSION = EXTENDED_PERMISSION + ".location";
+    private static final String FLYING_PERMISSION = EXTENDED_PERMISSION + ".flying";
+    private static final String CANFLY_FLYING_PERMISSION = FLYING_PERMISSION + ".canfly";
+    private static final String ISFLYING_FLYING_PERMISSION = FLYING_PERMISSION + ".isflying";
+    private static final String GAMEMODE_PERMISSION = EXTENDED_PERMISSION + ".gamemode";
 
-    @Override
-    public Map<String, PermissionInformation> permissionSuffixesToRegister() {
+    // keeps order!
+    private final ImmutableMap<String, TriFunction<CommandSource, User, CoreUserDataModule, Text>> entries
+            = ImmutableMap.<String, TriFunction<CommandSource, User, CoreUserDataModule, Text>>builder()
+                    .put(UUID_PERMISSION, this::getUUID)
+                    .put(IP_PERMISSION, this::getIP)
+                    .put(FIRST_PLAYED_PERMISSION, this::getFirstPlayed)
+                    .put(LAST_PLAYED_PERMISSION, this::getLastPlayed)
+                    .put(WALKING_SPEED_PERMISSION, this::getWalkingSpeed)
+                    .put(FLYING_SPEED_PERMISSION, this::getFlyingSpeed)
+                    .put(LOCATION_PERMISSION, this::getLocation)
+                    .put(FLYING_PERMISSION, this::getFlyingSpeed)
+                    .put(CANFLY_FLYING_PERMISSION, this::getCanFly)
+                    .put(ISFLYING_FLYING_PERMISSION, this::getIsFlying)
+                    .put(GAMEMODE_PERMISSION, this::getGameMode)
+                    .build();
+
+    @Nullable
+    private Text getUUID(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        return getMessageFor(source, "command.seen.uuid", user.getUniqueId());
+    }
+
+    @Nullable
+    private Text getIP(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        @Nullable Tuple<Text, String> res = user.getPlayer()
+                    .map(pl -> Tuple.of(
+                            getMessageFor(source, "command.seen.ipaddress", pl.getConnection().getAddress().getAddress().toString()),
+                            pl.getConnection().getAddress().getAddress().toString()))
+                    .orElseGet(() -> userDataModule.getLastIp().map(x ->
+                            Tuple.of(
+                                    getMessageFor(source, "command.seen.lastipaddress", x),
+                                    x
+                            )).orElse(null));
+        if (res != null) {
+            if (Sponge.getCommandManager().get("nucleus:getfromip").isPresent()) {
+                return res.getFirst().toBuilder()
+                        .onHover(TextActions.showText(getMessageFor(source, "command.seen.ipclick")))
+                        .onClick(TextActions.runCommand("/nucleus:getfromip " + res.getSecond().replaceAll("^/", "")))
+                        .build();
+            }
+            return res.getFirst();
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private Text getFirstPlayed(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        Optional<Instant> i = user.get(Keys.FIRST_DATE_PLAYED);
+        if (!i.isPresent()) {
+            i = userDataModule.getFirstJoin();
+        }
+
+        return i.map(x -> getMessageFor(source, "command.seen.firstplayed",
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                        .withLocale(source.getLocale())
+                        .withZone(ZoneId.systemDefault()).format(x))).orElse(null);
+    }
+
+    @Nullable
+    private Text getLastPlayed(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        if (user.isOnline()) {
+            return null;
+        }
+
+        return user.get(Keys.LAST_DATE_PLAYED).map(x -> getMessageFor(source, "command.seen.lastplayed",
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                        .withLocale(source.getLocale())
+                        .withZone(ZoneId.systemDefault()).format(x))).orElse(null);
+    }
+
+    @Nullable
+    private Text getLocation(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        if (user.isOnline()) {
+            return getLocationString("command.seen.currentlocation", user.getPlayer().get().getLocation(), source);
+        }
+
+        Optional<WorldProperties> wp = user.getWorldUniqueId().map(x -> Sponge.getServer().getWorldProperties(x).orElse(null));
+        if (wp.isPresent()) {
+            return getLocationString("command.seen.lastlocation", wp.get(), user.getPosition(), source);
+        }
+
+        // TODO: Remove - this is a fallback
+        return userDataModule.getLogoutLocation()
+                .map(worldLocation -> getLocationString("command.seen.lastlocation", worldLocation, source)).orElse(null);
+    }
+
+    @Nullable
+    private Text getWalkingSpeed(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        return user.get(Keys.WALKING_SPEED)
+                .map(x -> getMessageFor(source, "command.seen.speed.walk", NUMBER_FORMATTER.format(x * SpeedCommand.multiplier)))
+                .orElse(null);
+    }
+
+    @Nullable
+    private Text getFlyingSpeed(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        return user.get(Keys.FLYING_SPEED)
+                .map(x -> getMessageFor(source, "command.seen.speed.fly", NUMBER_FORMATTER.format(x * SpeedCommand.multiplier)))
+                .orElse(null);
+    }
+
+    @Nullable
+    private Text getCanFly(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        return getMessageFor(source, "command.seen.canfly", getYesNo(user.get(Keys.CAN_FLY).orElse(false)));
+    }
+
+    @Nullable
+    private Text getIsFlying(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        return getMessageFor(source, "command.seen.isflying", getYesNo(user.get(Keys.IS_FLYING).orElse(false)));
+    }
+
+    @Nullable
+    private Text getGameMode(CommandSource source, User user, CoreUserDataModule userDataModule) {
+        return user.get(Keys.GAME_MODE).map(x -> getMessageFor(source, "command.seen.gamemode", x.getName())).orElse(null);
+    }
+
+    @Override protected Map<String, PermissionInformation> permissionsToRegister() {
         Map<String, PermissionInformation> m = new HashMap<>();
-        m.put(EXTENDED_SUFFIX, PermissionInformation.getWithTranslation("permission.seen.extended", SuggestedLevel.ADMIN));
+        m.put(EXTENDED_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extended", SuggestedLevel.NONE));
+        m.put(IP_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.ip", SuggestedLevel.ADMIN));
+        m.put(UUID_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.uuid", SuggestedLevel.ADMIN));
+        m.put(FIRST_PLAYED_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.firstplayed", SuggestedLevel.ADMIN));
+        m.put(LAST_PLAYED_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.lastplayed", SuggestedLevel.ADMIN));
+        m.put(SPEED_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.speed", SuggestedLevel.ADMIN));
+        m.put(FLYING_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.flying", SuggestedLevel.ADMIN));
+        m.put(GAMEMODE_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.gamemode", SuggestedLevel.ADMIN));
+        m.put(LOCATION_PERMISSION, PermissionInformation.getWithTranslation("permission.seen.extendedperms.location", SuggestedLevel.ADMIN));
         return m;
     }
 
@@ -86,8 +227,8 @@ public class SeenCommand extends AbstractCommand<CommandSource> {
 
     @Override
     public CommandResult executeCommand(CommandSource src, CommandContext args) {
-        User user = args.<User>getOne(NucleusParameters.Keys.USER_UUID).isPresent() ?
-                args.<User>getOne(NucleusParameters.Keys.USER_UUID).get() : args.<User>getOne(NucleusParameters.Keys.USER).get();
+        User user = args.<User>getOne(NucleusParameters.Keys.USER_UUID)
+                .orElseGet(() -> args.<User>getOne(NucleusParameters.Keys.USER).get());
         // Get the player in case the User is displaying the wrong name.
         user = user.getPlayer().map(x -> (User) x).orElse(user);
 
@@ -111,67 +252,13 @@ public class SeenCommand extends AbstractCommand<CommandSource> {
         messages.add(messageProvider.getTextMessageWithFormat("command.seen.displayname", TextSerializers.FORMATTING_CODE.serialize(
                 Nucleus.getNucleus().getNameUtil().getName(user))));
 
-        if (this.permissions.testSuffix(src, EXTENDED_SUFFIX)) {
-            messages.add(Util.SPACE);
-            messages.add(messageProvider.getTextMessageWithFormat("command.seen.uuid", user.getUniqueId().toString()));
-
-            if (user.isOnline()) {
-                Player pl = user.getPlayer().get();
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.ipaddress",
-                        pl.getConnection().getAddress().getAddress().toString()));
-
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.firstplayed",
-                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                .withLocale(src.getLocale())
-                                .withZone(ZoneId.systemDefault()).format(pl.getJoinData().firstPlayed().get())));
-
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.speed.walk",
-                        String.valueOf(Math.round(pl.get(Keys.WALKING_SPEED).orElse(0.1d) * SpeedCommand.multiplier))));
-
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.speed.fly",
-                        String.valueOf(Math.round(pl.get(Keys.FLYING_SPEED).orElse(0.05d) * SpeedCommand.multiplier))));
-
-                messages.add(getLocationString("command.seen.currentlocation", pl.getLocation(), src));
-
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.canfly", getYesNo(pl.get(Keys.CAN_FLY).orElse(false))));
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.isflying", getYesNo(pl.get(Keys.IS_FLYING).orElse(false))));
-                messages.add(messageProvider.getTextMessageWithFormat("command.seen.gamemode",
-                        pl.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).getName()));
-            } else {
-                coreUserDataModule.getLastIp().ifPresent(x ->
-                    messages.add(messageProvider.getTextMessageWithFormat("command.seen.lastipaddress", x))
-                );
-
-                Optional<Instant> i = user.get(Keys.FIRST_DATE_PLAYED);
-                if (!i.isPresent()) {
-                    i = coreUserDataModule.getFirstJoin();
+        messages.add(Util.SPACE);
+        for (Map.Entry<String, TriFunction<CommandSource, User, CoreUserDataModule, Text>> entry : this.entries.entrySet()) {
+            if (src.hasPermission(entry.getKey())) {
+                @Nullable Text m = entry.getValue().accept(src, user, coreUserDataModule);
+                if (m != null) {
+                    messages.add(m);
                 }
-
-                i.ifPresent(x -> messages.add(messageProvider.getTextMessageWithFormat("command.seen.firstplayed",
-                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                .withLocale(src.getLocale())
-                                .withZone(ZoneId.systemDefault()).format(x))));
-
-                user.get(Keys.LAST_DATE_PLAYED).ifPresent(x -> messages.add(messageProvider.getTextMessageWithFormat("command.seen.lastplayed",
-                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-                                .withLocale(src.getLocale())
-                                .withZone(ZoneId.systemDefault()).format(x))));
-
-                user.get(Keys.WALKING_SPEED).ifPresent(x ->
-                    messages.add(messageProvider.getTextMessageWithFormat("command.seen.speed.walk", String.valueOf(x * SpeedCommand.multiplier))));
-                user.get(Keys.FLYING_SPEED).ifPresent(x ->
-                        messages.add(messageProvider.getTextMessageWithFormat("command.seen.speed.fly", String.valueOf(x * SpeedCommand.multiplier))));
-
-                coreUserDataModule.getLogoutLocation().ifPresent(worldLocation -> messages
-                    .add(getLocationString("command.seen.lastlocation", worldLocation, src)));
-
-                user.get(Keys.CAN_FLY).ifPresent(x ->
-                        messages.add(messageProvider.getTextMessageWithFormat("command.seen.canfly", getYesNo(x))));
-                user.get(Keys.IS_FLYING).ifPresent(x ->
-                    messages.add(messageProvider.getTextMessageWithFormat("command.seen.isflying", getYesNo(x))));
-                user.get(Keys.GAME_MODE).ifPresent(x ->
-                    messages.add(messageProvider.getTextMessageWithFormat("command.seen.gamemode", x.getName())));
-
             }
         }
 
@@ -185,19 +272,28 @@ public class SeenCommand extends AbstractCommand<CommandSource> {
     }
 
     private Text getLocationString(String key, Location<World> lw, CommandSource source) {
-        Text text = Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat(key,
-                Nucleus.getNucleus()
-                        .getMessageProvider().getMessageWithFormat("command.seen.locationtemplate", lw.getExtent().getName(), lw.getBlockPosition().toString()));
+        return getLocationString(key, lw.getExtent().getProperties(), lw.getPosition(), source);
+    }
+
+    private Text getLocationString(String key, WorldProperties worldProperties, Vector3d position, CommandSource source) {
+        Text text = getMessageFor(source, key, getMessageFor(source,"command.seen.locationtemplate", worldProperties.getWorldName(),
+                position.toInt().toString()));
         if (CommandBuilder.isCommandRegistered(TeleportPositionCommand.class)
             && Nucleus.getNucleus().getPermissionRegistry().getPermissionsForNucleusCommand(TeleportPositionCommand.class).testBase(source)) {
 
-            return text.toBuilder().onHover(TextActions.showText(
-                    Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.seen.teleportposition")
-            )).onClick(TextActions.executeCallback(cs -> {
-                if (cs instanceof Player) {
-                    NucleusTeleportHandler.setLocation((Player) cs, lw);
-                }
-            })).build();
+            final Text.Builder building = text.toBuilder().onHover(TextActions.showText(
+                    getMessageFor(source, "command.seen.teleportposition")
+            ));
+
+            Sponge.getServer().getWorld(worldProperties.getUniqueId()).ifPresent(
+                    x -> building.onClick(TextActions.executeCallback(cs -> {
+                        if (cs instanceof Player) {
+                            NucleusTeleportHandler.setLocation((Player) cs, new Location<>(x, position));
+                        }
+                    })
+            ));
+
+            return building.build();
         }
 
         return text;

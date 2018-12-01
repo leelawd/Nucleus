@@ -43,7 +43,7 @@ public class LightningCommand extends AbstractCommand<CommandSource> {
     public CommandElement[] getArguments() {
         return new CommandElement[]{
                 GenericArguments.optional(
-                    GenericArguments.requiringPermission(NucleusParameters.MANY_LIVING, this.permissions.getPermissionWithSuffix("others")))
+                    requirePermissionArg(NucleusParameters.MANY_LIVING, this.permissions.getPermissionWithSuffix("others")))
         };
     }
 

@@ -67,7 +67,7 @@ public class KittyCannonCommand extends AbstractCommand<CommandSource> {
                 .permissionFlag(this.permissions.getPermissionWithSuffix("fire"), "f", "-fire")
                 .buildWith(
                     GenericArguments.optional(
-                        GenericArguments.requiringPermission(NucleusParameters.MANY_PLAYER, this.permissions.getOthers())))
+                        requirePermissionArg(NucleusParameters.MANY_PLAYER, this.permissions.getOthers())))
         };
     }
 

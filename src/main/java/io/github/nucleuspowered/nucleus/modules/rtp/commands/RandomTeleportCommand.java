@@ -63,7 +63,7 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
     @Override public CommandElement[] additionalArguments() {
         return new CommandElement[] {
             GenericArguments.optionalWeak(
-                GenericArguments.requiringPermission(
+                requirePermissionArg(
                         NucleusParameters.WORLD_PROPERTIES_ENABLED_ONLY, this.permissions.getPermissionWithSuffix("world")
                 ))
         };

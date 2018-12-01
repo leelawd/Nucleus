@@ -75,7 +75,7 @@ public class TeleportCommand extends AbstractCommand<CommandSource> implements R
                 GenericArguments.flags().flag("f")
                     .permissionFlag(this.permissions.getPermissionWithSuffix("exempt.bordercheck"),"b", "-border")
                     .setAnchorFlags(true)
-                    .valueFlag(GenericArguments.requiringPermission(GenericArguments.bool(Text.of(this.quietKey)), this.permissions.getPermissionWithSuffix("quiet")), "q")
+                    .valueFlag(requirePermissionArg(GenericArguments.bool(Text.of(this.quietKey)), this.permissions.getPermissionWithSuffix("quiet")), "q")
                     .buildWith(GenericArguments.none()),
 
                     new AlternativeUsageArgument(

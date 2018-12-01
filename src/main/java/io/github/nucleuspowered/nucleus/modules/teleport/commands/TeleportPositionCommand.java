@@ -7,7 +7,6 @@ package io.github.nucleuspowered.nucleus.modules.teleport.commands;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.NoModifiers;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
@@ -62,7 +61,7 @@ public class TeleportPositionCommand extends AbstractCommand<CommandSource> {
                         GenericArguments.seq(
                             // Actual arguments
                             GenericArguments.optionalWeak(
-                                    GenericArguments.requiringPermission(NucleusParameters.ONE_PLAYER, this.permissions.getOthers())),
+                                    requirePermissionArg(NucleusParameters.ONE_PLAYER, this.permissions.getOthers())),
                             GenericArguments.onlyOne(GenericArguments.optionalWeak(GenericArguments.world(Text.of(this.location)))),
                             NucleusParameters.POSITION
                         )

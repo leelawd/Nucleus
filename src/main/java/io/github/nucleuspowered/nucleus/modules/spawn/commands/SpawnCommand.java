@@ -62,7 +62,7 @@ public class SpawnCommand extends AbstractCommand<Player> implements Reloadable 
     public CommandElement[] getArguments() {
         return new CommandElement[] {
             GenericArguments.flags().permissionFlag(this.permissions.getPermissionWithSuffix("force"), "f", "-force").buildWith(
-                GenericArguments.optional(GenericArguments.requiringPermission(GenericArguments.onlyOne(GenericArguments.world(Text.of(this.key))),
+                GenericArguments.optional(requirePermissionArg(GenericArguments.onlyOne(GenericArguments.world(Text.of(this.key))),
                         this.permissions.getPermissionWithSuffix("otherworlds"))))
         };
     }

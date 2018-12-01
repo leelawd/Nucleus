@@ -90,7 +90,7 @@ public class WarpCommand extends AbstractCommand<CommandSource> implements Reloa
                         .optionalWeak(GenericArguments.flags()
                                 .flag("y", "a", "-accept")
                                 .flag("f", "-force").setAnchorFlags(false).buildWith(GenericArguments.none()))),
-            GenericArguments.optionalWeak(RequiredArgumentsArgument.r2(GenericArguments.requiringPermission(
+            GenericArguments.optionalWeak(RequiredArgumentsArgument.r2(requirePermissionArg(
                 new NoModifiersArgument<>(
                         NucleusParameters.ONE_PLAYER,
                         NoModifiersArgument.PLAYER_NOT_CALLER_PREDICATE), this.permissions.getOthers()))),

@@ -47,7 +47,7 @@ public class TeleportWorldCommand extends AbstractCommand<CommandSource> {
         return new CommandElement[] {
             NucleusParameters.WORLD_PROPERTIES_ENABLED_ONLY,
             GenericArguments.optional(
-                    GenericArguments.requiringPermission(NucleusParameters.ONE_PLAYER, this.permissions.getPermissionWithSuffix("others")
+                    requirePermissionArg(NucleusParameters.ONE_PLAYER, this.permissions.getPermissionWithSuffix("others")
             ))
         };
     }

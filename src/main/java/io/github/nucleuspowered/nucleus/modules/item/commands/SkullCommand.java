@@ -21,7 +21,6 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -68,7 +67,7 @@ public class SkullCommand extends AbstractCommand<Player> implements Reloadable 
     public CommandElement[] getArguments() {
         return new CommandElement[] {
             GenericArguments.optionalWeak(
-                GenericArguments.requiringPermission(
+                requirePermissionArg(
                     GenericArguments.onlyOne(GenericArguments.user(Text.of(this.player))), this.permissions.getPermissionWithSuffix("others"))),
             GenericArguments.optional(new PositiveIntegerArgument(Text.of(this.amountKey)))
         };

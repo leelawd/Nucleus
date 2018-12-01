@@ -59,7 +59,7 @@ public class EnderChestCommand extends AbstractCommand<Player> implements Intern
     public CommandElement[] getArguments() {
         return new CommandElement[] {
                 GenericArguments.optional(
-                    GenericArguments.requiringPermission(
+                    requirePermissionArg(
                             this.element,
                             this.permissions.getPermissionWithSuffix("others")
                     ))

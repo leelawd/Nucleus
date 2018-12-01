@@ -62,7 +62,7 @@ public class ListHomeCommand extends AbstractCommand<CommandSource> {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[] {
-                GenericArguments.optional(GenericArguments.requiringPermission(
+                GenericArguments.optional(requirePermissionArg(
                         NucleusParameters.ONE_USER, this.permissions.getPermissionWithSuffix("others")))
         };
     }

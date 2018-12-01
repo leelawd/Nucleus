@@ -34,7 +34,7 @@ public class TopCommand extends AbstractCommand<CommandSource> {
         return new CommandElement[] {
             GenericArguments.flags().flag("f").buildWith(
                 GenericArguments.optional(
-                        GenericArguments.requiringPermission(NucleusParameters.ONE_PLAYER, this.permissions.getOthers()))
+                        requirePermissionArg(NucleusParameters.ONE_PLAYER, this.permissions.getOthers()))
             )
         };
     }

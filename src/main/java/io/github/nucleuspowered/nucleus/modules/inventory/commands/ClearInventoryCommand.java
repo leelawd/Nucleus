@@ -36,7 +36,7 @@ public class ClearInventoryCommand extends AbstractCommand<CommandSource> {
         return new CommandElement[] {
             GenericArguments.flags().flag("a", "-all").buildWith(
                 GenericArguments.optional(
-                        GenericArguments.requiringPermission(
+                        requirePermissionArg(
                                 NucleusParameters.ONE_USER,
                                 this.permissions.getPermissionWithSuffix("others")
                         ))

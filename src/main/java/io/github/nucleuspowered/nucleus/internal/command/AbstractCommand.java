@@ -1357,7 +1357,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
                 // One element - optional
                 return new CommandElement[] {
                         GenericArguments.optional(
-                                GenericArguments.requiringPermission(
+                                requirePermissionArg(
                                         new NoModifiersArgument<>(
                                                 NucleusParameters.ONE_PLAYER,
                                                 NoModifiersArgument.PLAYER_NOT_CALLER_PREDICATE
@@ -1370,7 +1370,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
 
             return ArrayUtils.addAll(new CommandElement[] {
                 GenericArguments.optionalWeak(
-                    GenericArguments.requiringPermission(
+                    requirePermissionArg(
                         new NoModifiersArgument<>(
                                 NucleusParameters.ONE_PLAYER,
                                 NoModifiersArgument.PLAYER_NOT_CALLER_PREDICATE
@@ -1403,7 +1403,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
                 // One element - optional
                 return new CommandElement[] {
                         GenericArguments.optional(
-                                GenericArguments.requiringPermission(
+                                requirePermissionArg(
                                         new NoModifiersArgument<>(
                                                 NucleusParameters.ONE_USER,
                                                 NoModifiersArgument.USER_NOT_CALLER_PREDICATE
@@ -1416,7 +1416,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
 
             return ArrayUtils.addAll(new CommandElement[] {
                     GenericArguments.optionalWeak(
-                            GenericArguments.requiringPermission(
+                            requirePermissionArg(
                                     new NoModifiersArgument<>(
                                             NucleusParameters.ONE_USER,
                                             NoModifiersArgument.USER_NOT_CALLER_PREDICATE

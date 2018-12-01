@@ -49,7 +49,7 @@ public class GetPosCommand extends AbstractCommand<CommandSource> {
 
     @Override public CommandElement[] getArguments() {
         return new CommandElement[] {
-            GenericArguments.optionalWeak(GenericArguments.requiringPermission(GenericArguments.user(Text.of(this.playerKey)), this.permissions.getOthers()))
+            GenericArguments.optionalWeak(requirePermissionArg(GenericArguments.user(Text.of(this.playerKey)), this.permissions.getOthers()))
         };
     }
 

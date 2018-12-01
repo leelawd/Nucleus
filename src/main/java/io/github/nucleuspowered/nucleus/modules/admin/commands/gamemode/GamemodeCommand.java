@@ -53,7 +53,7 @@ public class GamemodeCommand extends GamemodeBase<CommandSource> {
     public CommandElement[] getArguments() {
         return new CommandElement[] {
                 GenericArguments.firstParsing(
-                        GenericArguments.requiringPermission(GenericArguments.seq(
+                        requirePermissionArg(GenericArguments.seq(
                                 NucleusParameters.ONE_PLAYER,
                                 GenericArguments.onlyOne(new ImprovedGameModeArgument(Text.of(this.gamemodeKey)))
                         ), this.permissions.getOthers()),

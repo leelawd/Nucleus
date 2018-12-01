@@ -26,7 +26,7 @@ public class FreezePlayerCommand extends AbstractCommand<CommandSource> {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[] {
-                GenericArguments.optionalWeak(GenericArguments.requiringPermission(
+                GenericArguments.optionalWeak(requirePermissionArg(
                         NucleusParameters.ONE_PLAYER, this.permissions.getPermissionWithSuffix("others"))),
                 GenericArguments.optional(NucleusParameters.ONE_TRUE_FALSE)
         };

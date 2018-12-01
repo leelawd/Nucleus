@@ -35,7 +35,7 @@ public class HomeLimitCommand extends AbstractCommand<CommandSource> {
     protected CommandElement[] getArguments() {
         return new CommandElement[] {
                 GenericArguments.optional(
-                        GenericArguments.requiringPermission(
+                        requirePermissionArg(
                                 GenericArguments.user(Text.of(this.player)), this.permissions.getOthers()))
         };
     }

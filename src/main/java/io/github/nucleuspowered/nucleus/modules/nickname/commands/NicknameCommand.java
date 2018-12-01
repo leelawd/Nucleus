@@ -89,7 +89,7 @@ public class NicknameCommand extends AbstractCommand<CommandSource> {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[] {
-                GenericArguments.optionalWeak(GenericArguments.requiringPermission(
+                GenericArguments.optionalWeak(requirePermissionArg(
                         GenericArguments.onlyOne(GenericArguments.user(Text.of(this.playerKey))), this.permissions.getPermissionWithSuffix("others"))),
                 GenericArguments.onlyOne(GenericArguments.string(Text.of(this.nickName)))};
     }

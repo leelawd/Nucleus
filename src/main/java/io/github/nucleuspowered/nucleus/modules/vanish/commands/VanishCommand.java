@@ -44,7 +44,7 @@ public class VanishCommand extends AbstractCommand<CommandSource> {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[] {
-                GenericArguments.optionalWeak(GenericArguments.requiringPermission(GenericArguments.user(Text.of(this.player)), this.permissions.getOthers())),
+                GenericArguments.optionalWeak(requirePermissionArg(GenericArguments.user(Text.of(this.player)), this.permissions.getOthers())),
                 GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.bool(Text.of(this.b))))
         };
     }

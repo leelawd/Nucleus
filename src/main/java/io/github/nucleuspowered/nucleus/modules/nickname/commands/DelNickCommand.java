@@ -29,7 +29,7 @@ public class DelNickCommand extends AbstractCommand<CommandSource> {
     @Override
     public CommandElement[] getArguments() {
         return new CommandElement[] {
-                GenericArguments.optional(GenericArguments.requiringPermission(GenericArguments.onlyOne(GenericArguments.user(Text.of(this.playerKey))),
+                GenericArguments.optional(requirePermissionArg(GenericArguments.onlyOne(GenericArguments.user(Text.of(this.playerKey))),
                         this.permissions.getPermissionWithSuffix("others")))};
     }
 

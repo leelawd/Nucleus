@@ -7,6 +7,7 @@ package io.github.nucleuspowered.nucleus.argumentparsers;
 import static org.spongepowered.api.util.SpongeApiTranslationHelper.t;
 
 import com.google.common.collect.ImmutableList;
+import io.github.nucleuspowered.nucleus.argumentparsers.util.WrappedElement;
 import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
@@ -19,21 +20,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class NucleusRequirePermissionArgument extends CommandElement implements PermissionTrait {
+public class NucleusRequirePermissionArgument extends WrappedElement implements PermissionTrait {
 
-    private final CommandElement wrapped;
     private final String permission;
 
     public NucleusRequirePermissionArgument(CommandElement wrapped, String permission) {
-        super(wrapped.getKey());
-        this.wrapped = wrapped;
+        super(wrapped);
         this.permission = permission;
-    }
-
-    @Nullable
-    @Override
-    public Text getKey() {
-        return this.wrapped.getKey();
     }
 
     @Nullable
@@ -45,10 +38,10 @@ public class NucleusRequirePermissionArgument extends CommandElement implements 
     @Override
     public void parse(CommandSource source, CommandArgs args, CommandContext context) throws ArgumentParseException {
         if (!hasPermission(source, this.permission)) {
-            Text key = this.wrapped.getKey();
+            Text key = getKey();
             throw args.createError(t("You do not have permission to use the %s argument", key != null ? key : t("unknown")));
         }
-        this.wrapped.parse(source, args, context);
+        getWrappedElement().parse(source, args, context);
     }
 
     @Override
@@ -56,6 +49,6 @@ public class NucleusRequirePermissionArgument extends CommandElement implements 
         if (!hasPermission(src, this.permission)) {
             return ImmutableList.of();
         }
-        return this.wrapped.complete(src, args, context);
+        return getWrappedElement().complete(src, args, context);
     }
 }

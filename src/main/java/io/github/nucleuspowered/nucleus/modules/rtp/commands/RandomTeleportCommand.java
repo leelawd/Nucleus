@@ -12,6 +12,7 @@ import io.github.nucleuspowered.nucleus.api.service.NucleusRTPService;
 import io.github.nucleuspowered.nucleus.internal.CostCancellableTask;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
+import io.github.nucleuspowered.nucleus.internal.annotations.command.SetCooldownManually;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
 import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
@@ -43,15 +44,18 @@ import uk.co.drnaylor.quickstart.config.TypedAbstractConfigAdapter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
+@SetCooldownManually
 @NonnullByDefault
 @Permissions(supportsOthers = true)
 @RegisterCommand({"rtp", "randomteleport", "rteleport"})
 public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlayer implements Reloadable {
 
     private RTPConfig rc = new RTPConfig();
+    private final Map<Task, UUID> cachedTasks = new WeakHashMap<>();
 
-    private final String WORLD_KEY = "world";
     private final Timing TIMINGS = Timings.of(Nucleus.getNucleus(), "RTP task");
 
     @Override protected Map<String, PermissionInformation> permissionSuffixesToRegister() {
@@ -72,13 +76,19 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
     @Override
     protected CommandResult executeWithPlayer(CommandSource src, Player player, CommandContext args, boolean self)
             throws Exception {
+        synchronized (this.cachedTasks) {
+            this.cachedTasks.keySet().removeIf(task -> !Sponge.getScheduler().getTaskById(task.getUniqueId()).isPresent());
+            if (this.cachedTasks.containsValue(player.getUniqueId())) {
+                throw ReturnMessageException.fromKey("command.rtp.inprogress", player.getName());
+            }
+        }
 
         // Get the current world.
         final WorldProperties wp;
         if (this.rc.getDefaultWorld().isPresent()) {
-            wp = args.<WorldProperties>getOne(this.WORLD_KEY).orElseGet(() -> this.rc.getDefaultWorld().get());
+            wp = args.<WorldProperties>getOne(NucleusParameters.Keys.WORLD).orElseGet(() -> this.rc.getDefaultWorld().get());
         } else {
-            wp = this.getWorldFromUserOrArgs(src, this.WORLD_KEY, args);
+            wp = this.getWorldFromUserOrArgs(src, NucleusParameters.Keys.WORLD, args);
         }
 
         if (this.rc.isPerWorldPermissions()) {
@@ -94,11 +104,12 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
         sendMessageTo(src, "command.rtp.searching");
 
         RTPOptions options = new RTPOptions(this.rc, currentWorld.getName());
-        Sponge.getScheduler().createTaskBuilder().execute(
-                new RTPTask(currentWorld, src, player, this.rc.getNoOfAttempts(),
-                        options,
-                        this.rc.getKernel(wp.getWorldName()),
-                        getCost(src, args))).submit(Nucleus.getNucleus());
+        RTPTask rtask = new RTPTask(currentWorld, src, player, this.rc.getNoOfAttempts(),
+                options,
+                this.rc.getKernel(wp.getWorldName()),
+                getCost(src, args));
+        Task task = Sponge.getScheduler().createTaskBuilder().execute(rtask).submit(Nucleus.getNucleus());
+        this.cachedTasks.put(task, player.getUniqueId());
 
         return CommandResult.success();
     }
@@ -186,6 +197,12 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
                                         targetLocation.getBlockX(),
                                         targetLocation.getBlockY(),
                                         targetLocation.getBlockZ());
+                                if (this.isSelf) {
+                                    RandomTeleportCommand.this.setCooldown(this.target);
+                                    synchronized (RandomTeleportCommand.this.cachedTasks) {
+                                        RandomTeleportCommand.this.cachedTasks.remove(task);
+                                    }
+                                }
                                 return;
                             } else {
                                 sendMessageTo(this.source, "command.rtp.cancelled");
@@ -198,27 +215,26 @@ public class RandomTeleportCommand extends AbstractCommand.SimpleTargetOtherPlay
                     }
                 }
 
-                onUnsuccesfulAttempt();
+                onUnsuccesfulAttempt(task);
             }
         }
 
-        private void onUnsuccesfulAttempt() {
-            if (this.count <= 0) {
-                Nucleus.getNucleus().getLogger().debug(String.format("RTP of %s was unsuccessful", this.subject.getName()));
-                sendMessageTo(this.subject, "command.rtp.error");
-                onCancel();
-            } else {
-                // We're using a scheduler to allow some ticks to go by between attempts to find a
-                // safe place.
-                Sponge.getScheduler().createTaskBuilder().delayTicks(2).execute(this).submit(Nucleus.getNucleus());
-            }
-        }
+        private void onUnsuccesfulAttempt(Task task) {
+            synchronized (RandomTeleportCommand.this.cachedTasks) {
+                if (this.count <= 0) {
+                    Nucleus.getNucleus().getLogger().debug(String.format("RTP of %s was unsuccessful", this.subject.getName()));
+                    sendMessageTo(this.subject, "command.rtp.error");
+                    onCancel();
+                } else {
+                    // We're using a scheduler to allow some ticks to go by between attempts to find a
+                    // safe place.
+                    RandomTeleportCommand.this.cachedTasks.put(
+                            Sponge.getScheduler().createTaskBuilder().delayTicks(2).execute(this).submit(Nucleus.getNucleus()),
+                            target.getUniqueId()
+                    );
+                }
 
-        @Override
-        public void onCancel() {
-            super.onCancel();
-            if (this.isSelf) {
-                RandomTeleportCommand.this.removeCooldown(this.target.getUniqueId());
+                RandomTeleportCommand.this.cachedTasks.remove(task);
             }
         }
     }

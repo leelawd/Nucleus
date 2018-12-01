@@ -31,6 +31,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.NoWarmup;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.PermissionsFrom;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RedirectModifiers;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
+import io.github.nucleuspowered.nucleus.internal.annotations.command.SetCooldownManually;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
@@ -131,6 +132,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
     private final boolean bypassWarmup;
     private final boolean generateWarmupAnyway;
     private final boolean bypassCooldown;
+    private final boolean manualCooldownOnly;
     private final boolean bypassCost;
     private final boolean requiresEconomy;
     private final String configSection;
@@ -223,6 +225,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
             this.generateWarmupAnyway = false;
             this.bypassCooldown = true;
             this.bypassCost = true;
+            this.manualCooldownOnly = true;
         } else {
             // For these flags, we simply need to get whether the annotation was
             // declared. If they were not, we simply get back
@@ -233,6 +236,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
 
             this.bypassCooldown = this.getClass().getAnnotation(NoCooldown.class) != null;
             this.bypassCost = this.getClass().getAnnotation(NoCost.class) != null;
+            this.manualCooldownOnly = this.getClass().getAnnotation(SetCooldownManually.class) != null;
         }
 
         RedirectModifiers cca = this.getClass().getAnnotation(RedirectModifiers.class);
@@ -242,7 +246,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
         } else {
             configSect = this.commandPath.replaceAll("\\.[^.]+$", ".");
         }
-        generateConfigEntries = cca == null ? true : cca.requireGeneration();
+        generateConfigEntries = cca == null || cca.requireGeneration();
 
         this.configSection = configSect + (cca == null ? getAliases()[0].toLowerCase() : cca.value().toLowerCase());
 
@@ -519,7 +523,9 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
                 final Player p = (Player) src;
 
                 if (isSuccess) {
-                    setCooldown(p, args);
+                    if (!this.manualCooldownOnly) {
+                        setCooldown(p, args);
+                    }
                 } else {
                     // For the tests, keep this here so we can skip the hard to test
                     // code below.
@@ -1103,14 +1109,20 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
     }
 
     private void setCooldown(Player src, CommandContext args) {
-        if (!args.hasAny(NoModifiersArgument.NO_COOLDOWN_ARGUMENT) && !this.permissions.testCooldownExempt(src)) {
+        if (!args.hasAny(NoModifiersArgument.NO_COOLDOWN_ARGUMENT)) {
+            setCooldown(src);
+        }
+    }
+
+    public void setCooldown(Player player) {
+        if (!this.permissions.testCooldownExempt(player)) {
             // Get the cooldown time.
-            int cooldownTime = Util.getPositiveIntOptionFromSubject(src, this.cooldownKey)
-                .orElseGet(() -> this.plugin.getCommandsConfig().getCommandNode(this.configSection).getNode("cooldown").getInt());
+            int cooldownTime = Util.getPositiveIntOptionFromSubject(player, this.cooldownKey)
+                    .orElseGet(() -> this.plugin.getCommandsConfig().getCommandNode(this.configSection).getNode("cooldown").getInt());
             if (cooldownTime > 0) {
                 // If there is a cooldown, add the cooldown to the list, with
                 // the end time as an Instant.
-                this.cooldownStore.put(src.getUniqueId(), Instant.now().plus(cooldownTime, ChronoUnit.SECONDS));
+                this.cooldownStore.put(player.getUniqueId(), Instant.now().plus(cooldownTime, ChronoUnit.SECONDS));
             }
         }
     }

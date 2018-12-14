@@ -25,6 +25,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -63,7 +64,7 @@ public class SellAllCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(final Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final Player src, CommandContext args, Cause cause) throws Exception {
         boolean accepted = args.hasAny("a");
         CatalogType ct = getCatalogTypeFromHandOrArgs(src, this.itemKey, args);
         String name = Util.getTranslatableIfPresentOnCatalogType(ct);

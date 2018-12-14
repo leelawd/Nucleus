@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.util.Tuple;
@@ -56,7 +57,7 @@ public class SetCategoryCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         String warpName = args.<Warp>getOne(WarpParameters.WARP_KEY).get().getName();
         if (args.hasAny("r")) {
             // Remove the category.

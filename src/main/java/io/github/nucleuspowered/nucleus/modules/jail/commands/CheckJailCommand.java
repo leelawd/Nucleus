@@ -24,6 +24,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -52,7 +53,7 @@ public class CheckJailCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         User user = args.<User>getOne(this.playerKey).get();
         Optional<JailData> jail = this.handler.getPlayerJailDataInternal(user);
         MessageProvider mp = Nucleus.getNucleus().getMessageProvider();

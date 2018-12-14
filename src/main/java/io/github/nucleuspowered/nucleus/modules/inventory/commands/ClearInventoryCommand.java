@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @RegisterCommand({"clear", "clearinv", "clearinventory", "ci", "clearinvent"})
@@ -44,7 +45,7 @@ public class ClearInventoryCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override protected CommandResult executeCommand(CommandSource source, CommandContext args) throws Exception {
+    @Override protected CommandResult executeCommand(CommandSource source, CommandContext args, Cause cause) throws Exception {
         User user = this.getUserFromArgs(User.class, source, NucleusParameters.Keys.USER, args);
         boolean all = args.hasAny("a");
         if (user.getPlayer().isPresent()) {

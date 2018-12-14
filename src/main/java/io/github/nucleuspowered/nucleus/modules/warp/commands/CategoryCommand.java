@@ -21,6 +21,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -42,7 +43,7 @@ public class CategoryCommand extends AbstractCommand<CommandSource> {
     private static final String displayname = "displayname";
     private static final String description = "description";
 
-    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         return CommandResult.empty();
     }
 
@@ -54,7 +55,7 @@ public class CategoryCommand extends AbstractCommand<CommandSource> {
 
         private final WarpHandler handler = getServiceUnchecked(WarpHandler.class);
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             // Get all the categories.
             Util.getPaginationBuilder(src).contents(
                     this.handler.getWarpsWithCategories().keySet().stream().filter(Objects::nonNull)
@@ -89,7 +90,7 @@ public class CategoryCommand extends AbstractCommand<CommandSource> {
             };
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             WarpCategory category = args.<WarpCategory>getOne(key).get();
             String displayName = args.<String>getOne(displayname).get();
             this.handler.setWarpCategoryDisplayName(category.getId(), TextSerializers.FORMATTING_CODE.deserialize(args.<String>getOne(displayname).get()));
@@ -113,7 +114,7 @@ public class CategoryCommand extends AbstractCommand<CommandSource> {
             };
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             WarpCategory category = args.<WarpCategory>getOne(key).get();
             this.handler.setWarpCategoryDisplayName(category.getId(), null);
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.warp.category.displayname.removed", category.getId()));
@@ -136,7 +137,7 @@ public class CategoryCommand extends AbstractCommand<CommandSource> {
             };
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             WarpCategory category = args.<WarpCategory>getOne(key).get();
             String d = args.<String>getOne(description).get();
             this.handler.setWarpCategoryDescription(category.getId(), TextSerializers.FORMATTING_CODE.deserialize(d));
@@ -159,7 +160,7 @@ public class CategoryCommand extends AbstractCommand<CommandSource> {
             };
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             WarpCategory category = args.<WarpCategory>getOne(key).get();
             this.handler.setWarpCategoryDescription(category.getId(), null);
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.warp.category.description.removed", category.getId()));

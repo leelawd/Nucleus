@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.service.user.UserStorageService;
@@ -62,7 +63,7 @@ public class ResetUserCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         final User user = args.<User>getOne(this.userKey).orElseGet(() -> args.<User>getOne(this.uuidKey).get());
         final boolean deleteall = args.hasAny("a");
 

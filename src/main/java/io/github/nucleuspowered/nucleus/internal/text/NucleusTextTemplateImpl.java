@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
+import io.github.nucleuspowered.nucleus.util.JsonConfigurateStringHelper;
 import io.github.nucleuspowered.nucleus.util.Tuples;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.SimpleConfigurationNode;
@@ -36,20 +37,36 @@ public abstract class NucleusTextTemplateImpl implements NucleusTextTemplate {
 
     private static final Map<String, Object> emptyVariables = Maps.newHashMap();
 
+    @Nullable private final Text prefix;
+    @Nullable private final Text suffix;
     private final String representation;
     private final TextTemplate textTemplate;
     private final Map<String, Function<CommandSource, Text>> tokenMap = Maps.newHashMap();
 
-    public NucleusTextTemplateImpl(String representation) {
+    public NucleusTextTemplateImpl(String representation, @Nullable Text prefix, @Nullable Text suffix) {
         this.representation = representation;
         Tuple<TextTemplate, Map<String, Function<CommandSource, Text>>> t = parse(representation);
         this.textTemplate = t.getFirst();
 
         this.tokenMap.putAll(t.getSecond());
+        this.prefix = prefix;
+        this.suffix = suffix;
+    }
+
+    public NucleusTextTemplateImpl(String representation) {
+        this(representation, null, null);
     }
 
     @Override public boolean isEmpty() {
         return false;
+    }
+
+    @Override public Optional<Text> getPrefix() {
+        return Optional.ofNullable(this.prefix);
+    }
+
+    @Override public Optional<Text> getSuffix() {
+        return Optional.ofNullable(this.suffix);
     }
 
     public String getRepresentation() {
@@ -67,7 +84,8 @@ public abstract class NucleusTextTemplateImpl implements NucleusTextTemplate {
     }
 
     @Override @SuppressWarnings("SameParameterValue")
-    public Text getForCommandSource(CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokensArray,
+    public Text getForCommandSource(CommandSource source,
+            @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokensArray,
             @Nullable Map<String, Object> variables) {
         final Map<String, Object> variables2 = variables == null ? emptyVariables : variables;
 
@@ -91,7 +109,10 @@ public abstract class NucleusTextTemplateImpl implements NucleusTextTemplate {
             }
         });
 
-        return this.textTemplate.apply(finalArgs).build();
+        return Text.of(
+                getPrefix().orElse(Text.EMPTY),
+                this.textTemplate.apply(finalArgs).build(),
+                getSuffix().orElse(Text.EMPTY));
     }
 
     public Text toText() {
@@ -109,6 +130,10 @@ public abstract class NucleusTextTemplateImpl implements NucleusTextTemplate {
 
         Ampersand(String representation) {
             super(representation);
+        }
+
+        Ampersand(String representation, @Nullable Text prefix, @Nullable Text suffix) {
+            super(representation, prefix, suffix);
         }
 
         @Override Tuple<TextTemplate, Map<String, Function<CommandSource, Text>>> parse(String input) {
@@ -196,17 +221,33 @@ public abstract class NucleusTextTemplateImpl implements NucleusTextTemplate {
 
         @Nullable private static TypeSerializer<TextTemplate> textTemplateTypeSerializer = null;
 
+        private static TypeSerializer<TextTemplate> getSerialiser() {
+            if (textTemplateTypeSerializer == null) {
+                textTemplateTypeSerializer = ConfigurationOptions.defaults().getSerializers().get(TypeToken.of(TextTemplate.class));
+            }
+            return textTemplateTypeSerializer;
+        }
+
+        Json(String representation, @Nullable Text prefix, @Nullable Text suffix) {
+            super(representation, prefix, suffix);
+        }
+
         Json(String representation) {
             super(representation);
         }
 
-        @Override Tuple<TextTemplate, Map<String, Function<CommandSource, Text>>> parse(String parser) {
-            if (textTemplateTypeSerializer == null) {
-                textTemplateTypeSerializer = ConfigurationOptions.defaults().getSerializers().get(TypeToken.of(TextTemplate.class));
-            }
+        Json(TextTemplate textTemplate) {
+            super(JsonConfigurateStringHelper.getJsonStringFrom(textTemplate));
+        }
 
+        @Override
+        Tuple<TextTemplate, Map<String, Function<CommandSource, Text>>> parse(String parser) {
             try {
-                return Tuple.of(textTemplateTypeSerializer.deserialize(TypeToken.of(TextTemplate.class), SimpleConfigurationNode.root().setValue(parser)),
+                return Tuple.of(
+                        getSerialiser().deserialize(
+                                TypeToken.of(TextTemplate.class),
+                                JsonConfigurateStringHelper.getNodeFromJson(parser)
+                                        .orElseGet(() -> SimpleConfigurationNode.root().setValue(parser))),
                         Maps.newHashMap());
             } catch (ObjectMappingException e) {
                 throw new RuntimeException(e);

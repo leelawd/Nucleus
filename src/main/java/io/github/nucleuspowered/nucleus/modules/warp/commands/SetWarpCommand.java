@@ -20,6 +20,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -46,7 +47,7 @@ public class SetWarpCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         String warp = args.<String>getOne(WarpParameters.WARP_KEY).get();
 
         // Needs to match the name...

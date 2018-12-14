@@ -14,6 +14,7 @@ import io.github.nucleuspowered.nucleus.modules.teleport.services.TeleportHandle
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(prefix = "teleport", suggestedLevel = SuggestedLevel.USER)
@@ -26,7 +27,7 @@ public class TeleportAcceptCommand extends AbstractCommand<Player> {
     private final TeleportHandler teleportHandler = getServiceUnchecked(TeleportHandler.class);
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         return this.teleportHandler.accept(src);
     }
 }

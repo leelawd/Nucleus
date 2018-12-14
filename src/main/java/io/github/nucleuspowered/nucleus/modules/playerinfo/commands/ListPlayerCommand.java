@@ -28,6 +28,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.context.Contextual;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
@@ -79,7 +80,7 @@ public class ListPlayerCommand extends AbstractCommand<CommandSource> implements
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         boolean showVanished = this.permissions.testSuffix(src, "seevanished");
 
         Collection<Player> players = Sponge.getServer().getOnlinePlayers();

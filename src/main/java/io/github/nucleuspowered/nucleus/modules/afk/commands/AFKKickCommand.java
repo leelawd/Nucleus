@@ -15,6 +15,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
@@ -36,7 +37,7 @@ public class AFKKickCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Optional<Text> reason = args.<String>getOne(NucleusParameters.Keys.REASON).map(TextSerializers.FORMATTING_CODE::deserialize);
 
         Collection<Player> playersToKick = getServiceUnchecked(AFKHandler.class).getAfk(x -> !hasPermission(x, this.permission));

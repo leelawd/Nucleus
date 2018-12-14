@@ -24,6 +24,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -65,7 +66,7 @@ public class ListWarpCommand extends AbstractCommand<CommandSource> implements R
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) {
         if (this.service.getWarpNames().isEmpty()) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.warps.list.nowarps"));
             return CommandResult.empty();

@@ -29,6 +29,7 @@ import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 import java.util.Map;
@@ -77,7 +78,7 @@ public class KitCommand extends KitFallbackBase<Player> implements Reloadable {
     }
 
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) throws ReturnMessageException {
+    public CommandResult executeCommand(Player player, CommandContext args, Cause cause) throws ReturnMessageException {
         Kit kit = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
 
         EconHelper econHelper = Nucleus.getNucleus().getEconHelper();

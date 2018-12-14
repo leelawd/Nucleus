@@ -19,6 +19,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
@@ -45,7 +46,7 @@ public class UnbanCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         GameProfile gp;
         if (args.hasAny(NucleusParameters.Keys.USER_UUID)) {
             gp = args.<GameProfile>getOne(NucleusParameters.Keys.USER_UUID).get();

@@ -23,6 +23,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -64,7 +65,7 @@ public class GamemodeCommand extends GamemodeBase<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player user;
         Optional<GameMode> ogm;
         if (args.hasAny(this.gamemodeself)) {

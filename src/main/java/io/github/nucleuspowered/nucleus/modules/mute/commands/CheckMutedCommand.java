@@ -15,6 +15,7 @@ import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 public class CheckMutedCommand extends AbstractCommand<CommandSource> {
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         // Using the cache, tell us who is jailed.
         MessageProvider provider = Nucleus.getNucleus().getMessageProvider();
         List<UUID> usersInMute = Nucleus.getNucleus().getUserCacheService().getMuted();

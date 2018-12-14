@@ -17,6 +17,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -37,7 +38,7 @@ public class ItemNameSetCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         MessageProvider provider = Nucleus.getNucleus().getMessageProvider();
         if (!src.getItemInHand(HandTypes.MAIN_HAND).isPresent()) {
             throw ReturnMessageException.fromKey("command.itemname.set.noitem");

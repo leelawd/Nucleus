@@ -24,6 +24,7 @@ import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -60,7 +61,7 @@ public class EntityInfoCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) {
+    public CommandResult executeCommand(Player player, CommandContext args, Cause cause) {
         // Get all the entities in the world.
         Vector3i playerPos = player.getLocation().getBlockPosition();
         Collection<Entity> entities = player.getWorld().getEntities().stream()

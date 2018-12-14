@@ -18,6 +18,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(prefix = "mail", suggestedLevel = SuggestedLevel.USER)
@@ -38,7 +39,7 @@ public class SendMailCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         User pl = args.<User>getOne(NucleusParameters.Keys.USER).orElseThrow(() -> new CommandException(
                 Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("args.user.none")));
 

@@ -63,6 +63,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
@@ -453,26 +454,28 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
                 }
             }
 
+            final Cause cause = Sponge.getCauseStackManager().getCurrentCause();
+
             // If we're running async...
             if (this.isAsync) {
                 // Create an executor that runs the command async.
                 Nucleus.getNucleus().getLogger().debug("Running " + this.getClass().getName() + " in async mode.");
-                Sponge.getScheduler().createAsyncExecutor(Nucleus.getNucleus()).execute(() -> onExecute(castedSource, context));
+                Sponge.getScheduler().createAsyncExecutor(Nucleus.getNucleus()).execute(() -> onExecute(castedSource, context, cause));
 
                 // Tell Sponge we're done.
                 return CommandResult.success();
             }
 
-            return onExecute(castedSource, context);
+            return onExecute(castedSource, context, cause);
         } finally {
             this.commandTimings.stopTimingIfSync();
         }
     }
 
-    private CommandResult onExecute(T source, CommandContext context) {
+    private CommandResult onExecute(T source, CommandContext context, Cause cause) {
         // Phase five - let's execute! As we got this far,
         try {
-            return startExecute(source, context);
+            return startExecute(source, context, cause);
         } catch (TextMessageException ex) {
             if (this.plugin.isDebugMode()) {
                 ex.printStackTrace();
@@ -499,7 +502,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
     }
 
     @SuppressWarnings({"unchecked"})
-    private CommandResult startExecute(T src, CommandContext args) throws Exception {
+    private CommandResult startExecute(T src, CommandContext args, Cause cause) throws Exception {
         CommandResult cr;
         boolean isSuccess = false;
         try {
@@ -509,7 +512,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
             ));
 
             // Execute the command in the specific executor.
-            cr = executeCommand(src, args);
+            cr = executeCommand(src, args, cause);
 
             isSuccess = cr.getSuccessCount().orElse(0) > 0;
         } catch (ReturnMessageException e) {
@@ -669,11 +672,12 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
      *
      * @param src The executor of the command
      * @param args The arguments for the command.
+     * @param cause The cause of the command invocation.
      * @return The {@link CommandResult}
      * @throws Exception If thrown, {@link TextMessageException#getText()} or
      *         {@link Exception#getMessage()} will be sent to the user.
      */
-    protected abstract CommandResult executeCommand(T src, CommandContext args) throws Exception;
+    protected abstract CommandResult executeCommand(T src, CommandContext args, Cause cause) throws Exception;
 
     // -------------------------------------
     // Metadata
@@ -1048,6 +1052,8 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
             return ContinueMode.CONTINUE;
         }
 
+        final Cause cause = Sponge.getCauseStackManager().getCurrentCause();
+
         // We create a task that executes the command at a later time. Because
         // we already know we have permission,
         // we can skip those checks.
@@ -1058,7 +1064,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
                     public void accept(Task task) {
                         src.sendMessage(NucleusPlugin.getNucleus().getMessageProvider().getTextMessageWithFormat("warmup.end"));
                         this.plugin.getWarmupManager().removeWarmup(src.getUniqueId());
-                        onExecute((T) src, args);
+                        onExecute((T) src, args, cause);
                     }
                 }).name("Command Warmup - " + src.getName());
 
@@ -1393,7 +1399,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
             }, additional);
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
             Player target = this.getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args);
             return executeWithPlayer(src, target, args, src instanceof Player && ((Player) src).getUniqueId().equals(target.getUniqueId()));
         }
@@ -1439,7 +1445,7 @@ public abstract class AbstractCommand<T extends CommandSource> implements Comman
             }, additional);
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
             User target = this.getUserFromArgs(User.class, src, NucleusParameters.Keys.USER, args);
             return executeWithPlayer(src, target, args, src instanceof Player && ((Player) src).getUniqueId().equals(target.getUniqueId()));
         }

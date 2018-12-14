@@ -16,6 +16,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -33,7 +34,7 @@ public class DeletePowertoolCommand extends AbstractCommand<Player> {
 
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         Optional<ItemStack> itemStack = src.getItemInHand(HandTypes.MAIN_HAND);
         if (!itemStack.isPresent()) {
             throw ReturnMessageException.fromKey("command.powertool.noitem");

@@ -16,6 +16,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.World;
 
@@ -29,7 +30,7 @@ public class FirstSpawnCommand extends AbstractCommand<Player> implements Reload
     private boolean isSafeTeleport = true;
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
 
         Optional<Transform<World>> olwr = Nucleus.getNucleus().getGeneralService().get(SpawnGeneralDataModule.class).getFirstSpawn();
         if (!olwr.isPresent()) {

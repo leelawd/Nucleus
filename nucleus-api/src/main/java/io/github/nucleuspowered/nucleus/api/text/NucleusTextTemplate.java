@@ -29,6 +29,20 @@ public interface NucleusTextTemplate extends TextRepresentable {
     boolean isEmpty();
 
     /**
+     * Gets the static {@link Text} this message will be prefixed with, if any.
+     *
+     * @return The text
+     */
+    Optional<Text> getPrefix();
+
+    /**
+     * Gets the static {@link Text} this message will be suffixed with, if any.
+     *
+     * @return The text
+     */
+    Optional<Text> getSuffix();
+
+    /**
      * Gets the underlying {@link TextTemplate}
      *
      * @return The {@link TextTemplate}

@@ -13,6 +13,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @NonnullByDefault
@@ -22,7 +23,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class GamemodeToggleCommand extends GamemodeBase<Player> {
 
     @Override
-    protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         GameMode mode = src.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL);
         if (mode.equals(GameModes.SURVIVAL) || mode.equals(GameModes.NOT_SET)) {
             mode = GameModes.CREATIVE;

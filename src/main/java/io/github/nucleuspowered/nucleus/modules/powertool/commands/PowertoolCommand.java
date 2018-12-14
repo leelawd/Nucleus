@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -48,7 +49,7 @@ public class PowertoolCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         ItemStack itemStack = src.getItemInHand(HandTypes.MAIN_HAND)
                 .orElseThrow(() -> ReturnMessageException.fromKey("command.powertool.noitem"));
 

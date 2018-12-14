@@ -16,6 +16,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -32,7 +33,7 @@ public class ShowAttributesCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         ItemStack itemStack = src.getItemInHand(HandTypes.MAIN_HAND)
                 .orElseThrow(() -> ReturnMessageException.fromKey("command.generalerror.handempty"));
 

@@ -27,6 +27,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -74,7 +75,7 @@ public class InfoCommand extends AbstractCommand<CommandSource> implements Reloa
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Optional<InfoArgument.Result> oir = args.getOne(this.key);
         if (this.infoConfig.isUseDefaultFile() && !oir.isPresent() && !args.hasAny("l")) {
             // Do we have a default?

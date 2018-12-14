@@ -19,6 +19,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -35,7 +36,7 @@ public class UnstuckCommand extends AbstractCommand<Player> implements Reloadabl
     private int height = 1;
 
     @Override
-    protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         // Get the player location, find a safe location. Prevent players trying this to get out of sticky situations, height and width is 1.
         Location<World> location = Sponge.getGame().getTeleportHelper().getSafeLocation(src.getLocation(), this.height, this.radius)
             .orElseThrow(() -> ReturnMessageException.fromKey("command.unstuck.nolocation"));

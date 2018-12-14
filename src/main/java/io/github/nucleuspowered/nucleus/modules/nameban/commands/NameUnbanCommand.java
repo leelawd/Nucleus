@@ -19,6 +19,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -38,7 +39,7 @@ public class NameUnbanCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         String name = args.<String>getOne(this.nameKey).get().toLowerCase();
 
         if (this.handler.removeName(name, CauseStackHelper.createCause(src))) {

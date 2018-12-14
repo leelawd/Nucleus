@@ -15,6 +15,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 /**
@@ -36,7 +37,7 @@ public class KitSetCommand extends KitFallbackBase<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(final Player player, CommandContext args) {
+    public CommandResult executeCommand(final Player player, CommandContext args, Cause cause) {
         Kit kitInfo = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
         kitInfo.updateKitInventory(player);
         KIT_HANDLER.saveKit(kitInfo);

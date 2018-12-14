@@ -12,6 +12,7 @@ import io.github.nucleuspowered.nucleus.modules.core.commands.NucleusCommand;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @NoModifiers
@@ -21,7 +22,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class ItemAliasCommand extends AbstractCommand<CommandSource> {
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         return CommandResult.empty();
     }
 }

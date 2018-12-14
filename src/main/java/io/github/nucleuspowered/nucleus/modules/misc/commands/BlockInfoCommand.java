@@ -26,6 +26,7 @@ import org.spongepowered.api.command.args.CommandFlags;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.Property;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -66,7 +67,7 @@ public class BlockInfoCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource source, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource source, CommandContext args, Cause cause) throws Exception {
         Location<World> loc = null;
         if (args.hasAny(NucleusParameters.Keys.LOCATION)) {
             // get the location

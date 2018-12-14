@@ -13,6 +13,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -31,7 +32,7 @@ public abstract class AvailableBaseCommand extends AbstractCommand<CommandSource
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         MessageProvider mp = Nucleus.getNucleus().getMessageProvider();
 
         List<Text> types = Sponge.getRegistry().getAllOf(this.catalogType).stream()

@@ -35,6 +35,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -226,7 +227,7 @@ public class SeenCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         User user = args.<User>getOne(NucleusParameters.Keys.USER_UUID)
                 .orElseGet(() -> args.<User>getOne(NucleusParameters.Keys.USER).get());
         // Get the player in case the User is displaying the wrong name.

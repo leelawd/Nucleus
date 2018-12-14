@@ -18,6 +18,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -40,7 +41,7 @@ public class BlockZapCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Location<World> location = args.<Location<World>>getOne(this.locationKey).get();
         if (location.getBlockType() == BlockTypes.AIR) {
             throw new ReturnMessageException(Nucleus.getNucleus()

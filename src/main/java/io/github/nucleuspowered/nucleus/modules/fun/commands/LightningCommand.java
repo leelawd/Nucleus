@@ -21,6 +21,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -48,7 +49,7 @@ public class LightningCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) throws Exception {
         Collection<Living> playerCollection = args.getAll(NucleusParameters.Keys.SUBJECT);
 
         // No argument, let's not smite the subject.

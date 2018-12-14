@@ -13,6 +13,7 @@ import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class ServerTimeCommand extends AbstractCommand<CommandSource> {
 
     private static DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
 
-    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         src.sendMessage(
             Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.servertime.time", dtf.format(LocalDateTime.now()))
         );

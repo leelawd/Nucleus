@@ -16,7 +16,6 @@ import io.github.nucleuspowered.nucleus.internal.docgen.annotations.EssentialsEq
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTextTemplateFactory;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTextTemplateMessageSender;
-import io.github.nucleuspowered.nucleus.internal.text.TextParsingUtils;
 import io.github.nucleuspowered.nucleus.modules.admin.AdminModule;
 import io.github.nucleuspowered.nucleus.modules.admin.config.AdminConfig;
 import io.github.nucleuspowered.nucleus.modules.admin.config.AdminConfigAdapter;
@@ -25,6 +24,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -45,14 +45,16 @@ public class BroadcastCommand extends AbstractCommand<CommandSource> implements 
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
-        String m = args.<String>getOne(NucleusParameters.Keys.MESSAGE).get();
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
+        String m = args.requireOne(NucleusParameters.Keys.MESSAGE);
 
-        NucleusTextTemplate textTemplate = NucleusTextTemplateFactory.createFromAmpersandString(m);
         Text p = this.bc.getPrefix().getForCommandSource(src);
         Text s = this.bc.getSuffix().getForCommandSource(src);
 
-        new NucleusTextTemplateMessageSender(textTemplate, src, t -> TextParsingUtils.joinTextsWithColoursFlowing(p, t, s)).send();
+        NucleusTextTemplate textTemplate =
+                NucleusTextTemplateFactory.createFromAmpersandString(m, p, s);
+
+        new NucleusTextTemplateMessageSender(textTemplate, src).send(cause);
         return CommandResult.success();
     }
 

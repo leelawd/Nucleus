@@ -22,6 +22,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
@@ -48,7 +49,7 @@ public class KitListCommand extends KitFallbackBase<CommandSource> {
             .getPermissionsForNucleusCommand(KitCommand.class);
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) {
         Set<String> kits = KIT_HANDLER.getKitNames();
         if (kits.isEmpty()) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.kit.list.empty"));

@@ -20,6 +20,7 @@ import io.github.nucleuspowered.nucleus.modules.info.config.InfoConfigAdapter;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -38,7 +39,7 @@ public class MotdCommand extends AbstractCommand<CommandSource> implements Reloa
     private boolean usePagination = true;
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         Optional<TextFileController> otfc = Nucleus.getNucleus().getTextFileController(InfoModule.MOTD_KEY);
         if (!otfc.isPresent()) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.motd.nocontroller"));

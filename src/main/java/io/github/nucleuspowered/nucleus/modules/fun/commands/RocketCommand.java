@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.explosion.Explosion;
@@ -49,7 +50,7 @@ public class RocketCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player target = getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args);
         boolean isSelf = target.equals(src);
         if (!isSelf && !this.permissions.testOthers(src)) {

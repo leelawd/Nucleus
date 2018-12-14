@@ -18,9 +18,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.permission.Subject;
 
 import java.util.Arrays;
@@ -33,13 +38,16 @@ public class PermissionsTest extends TestBase {
     /**
      * Tests that the specified permissions are in the permission list.
      */
+    @RunWith(PowerMockRunner.class)
+    @PrepareForTest(Sponge.class)
     @SuppressWarnings("CanBeFinal")
-    @RunWith(Parameterized.class)
+    @PowerMockRunnerDelegate(Parameterized.class)
     public static class ValidTest {
 
         @BeforeClass
         public static void setup() throws Exception {
             TestBase.testSetup();
+            setupSpongeMock();
         }
 
         @Parameterized.Parameters(name = "{index}: Permission {0} on {1}")
@@ -78,12 +86,15 @@ public class PermissionsTest extends TestBase {
      * Tests that the specified permissions are not in the permission list.
      */
     @SuppressWarnings("CanBeFinal")
-    @RunWith(Parameterized.class)
+    @PrepareForTest(Sponge.class)
+    @RunWith(PowerMockRunner.class)
+    @PowerMockRunnerDelegate(Parameterized.class)
     public static class InvalidTest {
 
         @BeforeClass
         public static void setup() throws Exception {
             TestBase.testSetup();
+            setupSpongeMock();
         }
 
         @Parameterized.Parameters
@@ -122,7 +133,7 @@ public class PermissionsTest extends TestBase {
     public static class PermissionOne extends AbstractCommand<CommandSource> {
 
         @Override
-        public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+        public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
             return null;
         }
     }

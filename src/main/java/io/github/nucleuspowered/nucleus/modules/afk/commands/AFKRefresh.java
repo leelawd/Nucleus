@@ -12,6 +12,7 @@ import io.github.nucleuspowered.nucleus.modules.afk.services.AFKHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions
@@ -21,7 +22,7 @@ public class AFKRefresh extends AbstractCommand<CommandSource> {
 
     private final AFKHandler handler = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(AFKHandler.class);
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         this.handler.invalidateAfkCache();
         src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.afkrefresh.complete"));
         return CommandResult.success();

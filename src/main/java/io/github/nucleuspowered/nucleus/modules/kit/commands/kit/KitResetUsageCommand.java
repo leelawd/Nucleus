@@ -21,6 +21,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(prefix = "kit", suggestedLevel = SuggestedLevel.ADMIN)
@@ -39,7 +40,7 @@ public class KitResetUsageCommand extends KitFallbackBase<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource player, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final CommandSource player, CommandContext args, Cause cause) throws Exception {
         Kit kitInfo = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
         User u = args.<User>getOne(NucleusParameters.Keys.USER).get();
         KitUserDataModule inu = Nucleus.getNucleus().getUserDataManager().getUnchecked(u).get(KitUserDataModule.class);

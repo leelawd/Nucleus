@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
@@ -56,7 +57,7 @@ public class KitCreateCommand extends KitFallbackBase<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource source, CommandContext args) throws ReturnMessageException {
+    public CommandResult executeCommand(final CommandSource source, CommandContext args, Cause cause) throws ReturnMessageException {
         String kitName = args.<String>getOne(this.name).get();
 
         if (KIT_HANDLER.getKitNames().stream().anyMatch(kitName::equalsIgnoreCase)) {

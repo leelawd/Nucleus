@@ -20,6 +20,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 @RegisterCommand(value = "debug", subcommandOf = NucleusCommand.class, hasExecutor = false)
 public class DebugCommand extends AbstractCommand<CommandSource> {
 
-    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         return CommandResult.empty();
     }
 
@@ -49,7 +50,7 @@ public class DebugCommand extends AbstractCommand<CommandSource> {
             };
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             boolean set = args.<Boolean>getOne(NucleusParameters.Keys.BOOL).orElseGet(() -> !Nucleus.getNucleus().isSessionDebug());
             Nucleus.getNucleus().setSessionDebug(set);
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.nucleus.debug.setsession", String.valueOf(set)));
@@ -69,7 +70,7 @@ public class DebugCommand extends AbstractCommand<CommandSource> {
             };
         }
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
             Collection<User> users = args.getAll(NucleusParameters.Keys.USER);
             if (users.isEmpty()) {
                 throw ReturnMessageException.fromKey("command.nucleus.debug.uuid.none");
@@ -99,7 +100,7 @@ public class DebugCommand extends AbstractCommand<CommandSource> {
     @RegisterCommand(value = "refreshuniquevisitors", subcommandOf = DebugCommand.class)
     public static class RefreshUniqueVisitors extends AbstractCommand<CommandSource> {
 
-        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+        @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.nucleus.debug.refreshuniquevisitors.started",
                 String.valueOf(Nucleus.getNucleus().getGeneralService().getTransient(UniqueUserCountTransientModule.class).getUniqueUserCount())));
             Nucleus.getNucleus().getGeneralService().getTransient(UniqueUserCountTransientModule.class).resetUniqueUserCount(l ->

@@ -18,6 +18,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 import java.util.Map;
@@ -39,7 +40,7 @@ public class CommandSpyCommand extends AbstractCommand<Player> {
         };
     }
 
-    @Override public CommandResult executeCommand(Player src, CommandContext args) {
+    @Override public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         ModularUserService service = Nucleus.getNucleus().getUserDataManager().getUnchecked(src);
         CommandSpyUserDataModule c = service.get(CommandSpyUserDataModule.class);
         boolean to = args.<Boolean>getOne(NucleusParameters.Keys.BOOL).orElseGet(() -> !c.isCommandSpy());

@@ -24,6 +24,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.profile.GameProfileManager;
 import org.spongepowered.api.service.ban.BanService;
@@ -77,7 +78,7 @@ public class BanCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) throws Exception {
         final String r = args.<String>getOne(NucleusParameters.Keys.REASON).orElseGet(() ->
                 Nucleus.getNucleus().getMessageProvider().getMessageWithFormat("ban.defaultreason"));
         Optional<GameProfile> ou = Optional.ofNullable(

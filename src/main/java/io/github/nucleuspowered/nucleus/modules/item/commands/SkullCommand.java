@@ -25,6 +25,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -74,7 +75,7 @@ public class SkullCommand extends AbstractCommand<Player> implements Reloadable 
     }
 
     @Override
-    public CommandResult executeCommand(Player pl, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player pl, CommandContext args, Cause cause) throws Exception {
         User user = this.getUserFromArgs(User.class, pl, this.player, args);
         int amount = args.<Integer>getOne(this.amountKey).orElse(1);
 

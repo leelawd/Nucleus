@@ -18,6 +18,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -41,7 +42,7 @@ public class GetFromIpCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         String ip = args.requireOne(this.ipKey);
         if (Arrays.stream(ip.split("\\.")).anyMatch(x -> Integer.parseInt(x) > 255)) {
             throw ReturnMessageException.fromKey("command.getfromip.notvalid");

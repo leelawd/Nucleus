@@ -15,6 +15,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -35,7 +36,7 @@ public class StopCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         Optional<String> opt = args.getOne(NucleusParameters.Keys.MESSAGE);
         if (opt.isPresent()) {
             Sponge.getServer().shutdown(TextSerializers.FORMATTING_CODE.deserialize(opt.get()));

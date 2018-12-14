@@ -19,6 +19,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 import java.util.Map;
@@ -45,7 +46,7 @@ public class MsgToggleCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    protected CommandResult executeCommand(Player src, CommandContext args) {
+    protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         ModularUserService mus = Nucleus.getNucleus().getUserDataManager().getUnchecked(src);
         boolean flip = args.<Boolean>getOne(NucleusParameters.Keys.BOOL).orElseGet(() -> !mus.get(MessageUserDataModule.class).isMsgToggle());
 

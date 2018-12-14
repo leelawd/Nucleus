@@ -20,6 +20,7 @@ import io.github.nucleuspowered.nucleus.modules.rules.config.RulesConfigAdapter;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -35,7 +36,7 @@ public class RulesCommand extends AbstractCommand<CommandSource> implements Relo
     private Text title = Text.EMPTY;
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Nucleus.getNucleus().getTextFileController(RulesModule.RULES_KEY)
                 .orElseThrow(() -> ReturnMessageException.fromKey("command.rules.empty"))
                 .sendToPlayer(src, this.title);

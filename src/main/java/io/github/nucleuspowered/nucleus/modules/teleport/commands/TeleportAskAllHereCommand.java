@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 import java.time.Instant;
@@ -47,7 +48,7 @@ public class TeleportAskAllHereCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         //Cause cause = Cause.of(NamedCause.owner(src));
         List<Player> cancelled = Lists.newArrayList();
         Sponge.getServer().getOnlinePlayers().forEach(x -> {

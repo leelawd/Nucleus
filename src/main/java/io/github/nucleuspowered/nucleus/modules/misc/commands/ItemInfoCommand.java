@@ -30,6 +30,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.pagination.PaginationService;
@@ -72,7 +73,7 @@ public class ItemInfoCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player player, CommandContext args, Cause cause) throws Exception {
         Optional<CatalogType> catalogTypeOptional = args.getOne(this.key);
         ItemStack it;
         if (catalogTypeOptional.isPresent()) {

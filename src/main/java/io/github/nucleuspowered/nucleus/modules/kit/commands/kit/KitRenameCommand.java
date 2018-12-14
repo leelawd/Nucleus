@@ -17,6 +17,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -39,7 +40,7 @@ public class KitRenameCommand extends KitFallbackBase<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         try {
             String name1 = args.<Kit>getOne(KitFallbackBase.KIT_PARAMETER_KEY).get().getName();
             String name2 = args.<String>getOne(this.name).get();

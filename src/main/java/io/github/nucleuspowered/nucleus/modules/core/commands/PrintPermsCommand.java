@@ -15,6 +15,7 @@ import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 import java.io.BufferedWriter;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 public class PrintPermsCommand extends AbstractCommand<CommandSource> {
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Map<String, PermissionInformation> l = Nucleus.getNucleus().getPermissionRegistry().getPermissions();
         List<String> notsuggested =
                 l.entrySet().stream().filter(x -> x.getValue().level == SuggestedLevel.NONE).map(Map.Entry::getKey).collect(Collectors.toList());

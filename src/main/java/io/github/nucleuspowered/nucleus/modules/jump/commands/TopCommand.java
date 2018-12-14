@@ -18,6 +18,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -39,7 +40,7 @@ public class TopCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player playerToTeleport = this.getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args);
 
         // Get the topmost block for the subject.

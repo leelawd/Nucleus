@@ -18,6 +18,7 @@ import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -39,7 +40,7 @@ public class NucleusCommand extends AbstractCommand<CommandSource> {
     @Nullable private Text modules = null;
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         if (this.modules == null) {
             Text.Builder tb = Text.builder("Modules: ").color(TextColors.GREEN);
 

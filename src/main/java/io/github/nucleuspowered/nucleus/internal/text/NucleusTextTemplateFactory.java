@@ -8,12 +8,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.util.Tuple;
 
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 public class NucleusTextTemplateFactory {
 
@@ -25,6 +29,14 @@ public class NucleusTextTemplateFactory {
 
     public static NucleusTextTemplateImpl createFromAmpersandString(String string) {
         return new NucleusTextTemplateImpl.Ampersand(string);
+    }
+
+    public static NucleusTextTemplateImpl createFromAmpersandString(String string, @Nullable Text prefix, @Nullable Text suffix) {
+        return new NucleusTextTemplateImpl.Ampersand(string, prefix, suffix);
+    }
+
+    public static NucleusTextTemplateImpl createFromTextTemplate(TextTemplate textTemplate) {
+        return new NucleusTextTemplateImpl.Json(textTemplate);
     }
 
     private final Set<Tuple<String, String>> registered = Sets.newHashSet();
@@ -69,6 +81,10 @@ public class NucleusTextTemplateFactory {
 
     public NucleusTextTemplateImpl createFromAmpersand(String string) {
         return new NucleusTextTemplateImpl.Ampersand(string);
+    }
+
+    public NucleusTextTemplateImpl.Json fromTextTemplate(TextTemplate textTemplate) {
+        return new NucleusTextTemplateImpl.Json(textTemplate);
     }
 
     String performReplacements(String string) {

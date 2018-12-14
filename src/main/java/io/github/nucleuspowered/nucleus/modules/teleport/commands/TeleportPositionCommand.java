@@ -77,7 +77,7 @@ public class TeleportPositionCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player pl = this.getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args);
         WorldProperties wp = args.<WorldProperties>getOne(this.location).orElse(pl.getWorld().getProperties());
         World world = Sponge.getServer().loadWorld(wp.getUniqueId()).get();
@@ -109,7 +109,6 @@ public class TeleportPositionCommand extends AbstractCommand<CommandSource> {
         // Create the location
         Location<World> loc = new Location<>(world, xx, yy, zz);
         NucleusTeleportHandler teleportHandler = Nucleus.getNucleus().getTeleportHandler();
-        Cause cause = CauseStackHelper.createCause(src);
 
         // Don't bother with the safety if the flag is set.
         if (args.<Boolean>getOne("f").orElse(false)) {

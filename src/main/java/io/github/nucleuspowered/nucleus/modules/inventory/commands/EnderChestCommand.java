@@ -23,6 +23,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.Container;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -67,7 +68,7 @@ public class EnderChestCommand extends AbstractCommand<Player> implements Intern
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         User target = args.<User>getOne(NucleusParameters.Keys.PLAYER).orElse(src);
 
         if (!target.getUniqueId().equals(src.getUniqueId())) {

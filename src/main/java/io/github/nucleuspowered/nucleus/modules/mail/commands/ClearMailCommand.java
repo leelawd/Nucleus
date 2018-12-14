@@ -15,6 +15,7 @@ import io.github.nucleuspowered.nucleus.modules.mail.services.MailHandler;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(mainOverride = "mail", suggestedLevel = SuggestedLevel.USER)
@@ -27,7 +28,7 @@ public class ClearMailCommand extends AbstractCommand<Player> {
     private final MailHandler handler = getServiceUnchecked(MailHandler.class);
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         if (this.handler.clearUserMail(src)) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.mail.clear.success"));
         } else {

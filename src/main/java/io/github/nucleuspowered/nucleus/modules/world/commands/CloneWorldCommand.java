@@ -20,6 +20,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MessageReceiver;
@@ -45,7 +46,7 @@ public class CloneWorldCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         WorldProperties worldToCopy = args.<WorldProperties>getOne(NucleusParameters.Keys.WORLD).get();
         final String oldName = worldToCopy.getWorldName();
         final String newName = args.<String>getOne(this.newKey).get();

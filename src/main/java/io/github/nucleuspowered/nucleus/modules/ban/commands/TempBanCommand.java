@@ -25,6 +25,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -69,7 +70,7 @@ public class TempBanCommand extends AbstractCommand<CommandSource> implements Re
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         User u = args.<User>getOne(NucleusParameters.Keys.USER).get();
         Long time = args.<Long>getOne(NucleusParameters.Keys.DURATION).get();
         String reason = args.<String>getOne(NucleusParameters.Keys.REASON)

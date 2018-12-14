@@ -36,6 +36,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -143,7 +144,7 @@ public class WarpCommand extends AbstractCommand<CommandSource> implements Reloa
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource source, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource source, CommandContext args, Cause cause) throws Exception {
         Player player = this.getUserFromArgs(Player.class, source, NucleusParameters.Keys.PLAYER, args);
         boolean isOther = !(source instanceof Player) || !((Player) source).getUniqueId().equals(player.getUniqueId());
 

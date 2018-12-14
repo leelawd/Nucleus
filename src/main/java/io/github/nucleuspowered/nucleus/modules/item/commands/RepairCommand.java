@@ -23,6 +23,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.DurabilityData;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -77,7 +78,7 @@ public class RepairCommand extends AbstractCommand<Player> implements Reloadable
         return mspi;
     }
 
-    @Override protected CommandResult executeCommand(Player pl, CommandContext args) throws Exception {
+    @Override protected CommandResult executeCommand(Player pl, CommandContext args, Cause cause) throws Exception {
         EnumMap<ResultType, Integer> resultCount = new EnumMap<ResultType, Integer>(ResultType.class) {{
             put(ResultType.SUCCESS, 0);
             put(ResultType.ERROR, 0);

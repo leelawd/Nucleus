@@ -18,6 +18,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -42,7 +43,7 @@ public class KitCommandCommand extends KitFallbackBase<CommandSource> {
         };
     }
 
-    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         // List all commands on a kit.
         Kit kit = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
         List<String> commands = kit.getCommands();

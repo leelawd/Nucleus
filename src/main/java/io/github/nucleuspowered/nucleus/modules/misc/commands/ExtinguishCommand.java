@@ -16,6 +16,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 
 @Permissions(supportsOthers = true, suggestedLevel = SuggestedLevel.MOD)
 @RegisterCommand(value = { "extinguish", "ext" })
@@ -29,7 +30,7 @@ public class ExtinguishCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player target = this.getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args);
         if (target.get(Keys.FIRE_TICKS).orElse(-1) > 0 && target.offer(Keys.FIRE_TICKS, 0).isSuccessful()) {
             sendMessageTo(src, "command.ext.success", target.getName());

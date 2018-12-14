@@ -23,6 +23,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -42,7 +43,7 @@ public class SellCommand extends AbstractCommand<Player> {
     private final EconHelper econHelper = Nucleus.getNucleus().getEconHelper();
 
     @Override
-    public CommandResult executeCommand(final Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final Player src, CommandContext args, Cause cause) throws Exception {
         // Get the item in the hand.
         ItemStack is = src.getItemInHand(HandTypes.MAIN_HAND).orElseThrow(() -> new ReturnMessageException(
                 Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.generalerror.handempty")));

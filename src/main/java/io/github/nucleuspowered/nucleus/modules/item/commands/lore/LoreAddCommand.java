@@ -10,6 +10,7 @@ import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(prefix = "lore", mainOverride = "set")
@@ -18,7 +19,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class LoreAddCommand extends LoreSetBaseCommand {
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         return setLore(src, args.<String>getOne(NucleusParameters.Keys.LORE).get(), false);
     }
 }

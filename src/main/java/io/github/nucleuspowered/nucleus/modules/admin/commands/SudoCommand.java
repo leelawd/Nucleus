@@ -22,6 +22,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.text.Text;
@@ -53,7 +54,7 @@ public class SudoCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player pl = args.<Player>getOne(NucleusParameters.Keys.PLAYER).get();
         String cmd = args.<String>getOne(NucleusParameters.Keys.COMMAND).get();
         if (pl.equals(src) || this.permissions.testSuffix(pl, "exempt.target", src, false)) {

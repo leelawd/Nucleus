@@ -21,6 +21,7 @@ import org.spongepowered.api.data.manipulator.mutable.entity.ExperienceHolderDat
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @RegisterCommand({"exp", "experience", "xp"})
@@ -41,7 +42,7 @@ public class ExperienceCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws ReturnMessageException {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws ReturnMessageException {
         Player pl = getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args);
 
         ExperienceHolderData ehd = pl.get(ExperienceHolderData.class).get();

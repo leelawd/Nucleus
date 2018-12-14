@@ -26,6 +26,7 @@ import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.yaml.snakeyaml.DumperOptions;
 
@@ -56,7 +57,7 @@ public class DocGenCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.nucleus.docgen.start"));
         DocGenCache genCache = Nucleus.getNucleus().getDocGenCache().get();
 

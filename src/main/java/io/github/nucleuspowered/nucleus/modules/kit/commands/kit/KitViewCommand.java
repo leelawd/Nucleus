@@ -20,6 +20,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -46,7 +47,7 @@ public class KitViewCommand extends KitFallbackBase<Player> implements Reloadabl
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         final Kit kitInfo = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
 
         Inventory inventory = Util.getKitInventoryBuilder()

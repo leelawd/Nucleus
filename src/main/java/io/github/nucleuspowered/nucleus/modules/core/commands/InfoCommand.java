@@ -21,6 +21,7 @@ import org.spongepowered.api.command.CommandMapping;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.util.TextMessageException;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -43,7 +44,7 @@ import java.util.Set;
 @NonnullByDefault
 public class InfoCommand extends AbstractCommand<CommandSource> {
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         // Sponge versions
         List<String> information = Lists.newArrayList();
 

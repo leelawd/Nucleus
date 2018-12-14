@@ -27,6 +27,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.event.SpongeEventFactory;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.message.MessageEvent;
@@ -58,7 +59,7 @@ public class MeCommand extends AbstractCommand<CommandSource> implements Reloada
     }
 
     @Override
-    public CommandResult executeCommand(@Nonnull CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(@Nonnull CommandSource src, CommandContext args, Cause cause) throws Exception {
         String message = ChatListener.stripPermissionless(src, args.<String>getOne(NucleusParameters.Keys.MESSAGE).get());
         Text header = config.getMePrefix().getForCommandSource(src);
         TextParsingUtils.StyleTuple t = Nucleus.getNucleus().getTextParsingUtils().getLastColourAndStyle(header, null);

@@ -20,6 +20,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -51,7 +52,7 @@ public class KickCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player pl = args.<Player>getOne(NucleusParameters.Keys.PLAYER).get();
         String r = args.<String>getOne(NucleusParameters.Keys.REASON).orElse(Nucleus.getNucleus().getMessageProvider()
                 .getMessageWithFormat("command.kick.defaultreason"));

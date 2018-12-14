@@ -67,13 +67,13 @@ public class NicknameArgumentTests extends TestBase {
 
     private NicknameArgument getParser() {
         // Setup the mock UserStorageService
-        setupSpongeMock();
+        setupSpongeMockLocal();
 
         // We're testing the UserParser
         return new NicknameArgument(Text.of("name"), NicknameArgument.Target.USER);
     }
 
-    private void setupSpongeMock() {
+    private void setupSpongeMockLocal() {
         PowerMockito.mockStatic(Sponge.class);
         ServiceManager manager = Mockito.mock(ServiceManager.class);
         UserStorageService service = getMockUserStorageService();

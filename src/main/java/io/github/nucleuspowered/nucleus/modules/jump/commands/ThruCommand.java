@@ -16,6 +16,7 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.util.blockray.BlockRay;
 import org.spongepowered.api.util.blockray.BlockRayHit;
@@ -31,7 +32,7 @@ public class ThruCommand extends AbstractCommand<Player> implements Reloadable {
     // Original code taken from EssentialCmds. With thanks to 12AwsomeMan34 for
     // the initial contribution.
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) {
+    public CommandResult executeCommand(Player player, CommandContext args, Cause cause) {
         BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(this.maxThru).build();
         World world = player.getWorld();
 

@@ -15,6 +15,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.storage.WorldProperties;
@@ -37,7 +38,7 @@ public class SetGameruleCommand extends AbstractCommand<CommandSource> {
         };
     }
 
-    @Override public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    @Override public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         WorldProperties worldProperties = getWorldFromUserOrArgs(src, worldKey, args);
         String gameRule = args.<String>getOne(gameRuleKey).get();
         String value = args.<String>getOne(valueKey).get();

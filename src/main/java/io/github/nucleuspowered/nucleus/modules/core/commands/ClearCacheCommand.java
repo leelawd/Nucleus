@@ -14,6 +14,7 @@ import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 
 /**
  * Clears the {@link UserDataManager} cache, so any offline user's files wll be read on next login.
@@ -26,7 +27,7 @@ import org.spongepowered.api.command.args.CommandContext;
 public class ClearCacheCommand extends AbstractCommand<CommandSource> {
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Nucleus.getNucleus().getUserDataManager().invalidateOld();
         src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.nucleus.clearcache.success"));
         return CommandResult.success();

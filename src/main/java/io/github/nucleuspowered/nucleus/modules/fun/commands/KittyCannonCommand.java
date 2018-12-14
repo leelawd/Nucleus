@@ -28,6 +28,7 @@ import org.spongepowered.api.data.type.OcelotType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.World;
@@ -72,7 +73,7 @@ public class KittyCannonCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         Collection<Player> playerList = args.getAll(NucleusParameters.Keys.PLAYER);
         if (playerList.isEmpty()) {
             if (src instanceof Player) {

@@ -24,6 +24,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -56,7 +57,7 @@ public class HelpOpCommand extends AbstractCommand<Player> implements Reloadable
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         String message = args.<String>getOne(NucleusParameters.Keys.MESSAGE).get();
 
         // Message is about to be sent. Send the event out. If canceled, then

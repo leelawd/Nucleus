@@ -18,6 +18,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.World;
 
@@ -34,7 +35,7 @@ public class JailTeleportCommand extends AbstractCommand<Player> {
         };
     }
 
-    @Override protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    @Override protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         NamedLocation location = args.<NamedLocation>getOne(JailParameters.JAIL_KEY).get();
         Transform<World> location1 = location.getTransform().orElseThrow(
                 () -> new ReturnMessageException(

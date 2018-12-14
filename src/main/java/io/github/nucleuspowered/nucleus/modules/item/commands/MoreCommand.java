@@ -13,6 +13,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -23,7 +24,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class MoreCommand extends AbstractCommand<Player> {
 
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) {
+    public CommandResult executeCommand(Player player, CommandContext args, Cause cause) {
 
         if (player.getItemInHand(HandTypes.MAIN_HAND).isPresent()) {
             ItemStack stack = player.getItemInHand(HandTypes.MAIN_HAND).get();

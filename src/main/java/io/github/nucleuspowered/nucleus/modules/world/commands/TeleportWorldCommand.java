@@ -23,6 +23,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.storage.WorldProperties;
 
@@ -53,7 +54,7 @@ public class TeleportWorldCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) throws Exception {
         Player player = getUserFromArgs(Player.class, src, NucleusParameters.Keys.PLAYER, args, "command.world.player");
         WorldProperties worldProperties = args.<WorldProperties>getOne(NucleusParameters.Keys.WORLD).get();
         if (!worldProperties.isEnabled()) {

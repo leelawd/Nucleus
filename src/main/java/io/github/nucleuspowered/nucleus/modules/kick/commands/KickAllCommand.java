@@ -20,6 +20,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -52,7 +53,7 @@ public class KickAllCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         String r = args.<String>getOne(NucleusParameters.Keys.REASON)
                 .orElseGet(() -> Nucleus.getNucleus().getMessageProvider().getMessageWithFormat("command.kick.defaultreason"));
         boolean f = args.<Boolean>getOne("w").orElse(false);

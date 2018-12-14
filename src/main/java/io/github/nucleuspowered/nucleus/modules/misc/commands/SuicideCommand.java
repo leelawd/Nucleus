@@ -14,6 +14,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(suggestedLevel = SuggestedLevel.USER)
@@ -23,7 +24,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class SuicideCommand extends AbstractCommand<Player> {
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         DataTransactionResult dtr = src.offer(Keys.HEALTH, 0d);
         if (!dtr.isSuccessful()) {
             sendMessageTo(src, "command.suicide.error");

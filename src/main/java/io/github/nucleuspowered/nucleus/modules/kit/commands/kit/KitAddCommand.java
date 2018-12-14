@@ -18,6 +18,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
@@ -47,7 +48,7 @@ public class KitAddCommand extends KitFallbackBase<Player> {
     }
 
     @Override
-    public CommandResult executeCommand(final Player player, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final Player player, CommandContext args, Cause cause) throws Exception {
         String kitName = args.<String>getOne(this.name).get();
 
         if (KIT_HANDLER.getKitNames().stream().noneMatch(kitName::equalsIgnoreCase)) {

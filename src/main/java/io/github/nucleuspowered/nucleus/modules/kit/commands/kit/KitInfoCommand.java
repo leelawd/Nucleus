@@ -18,6 +18,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -38,7 +39,7 @@ public class KitInfoCommand extends KitFallbackBase<CommandSource> {
     }
 
     @Override
-    protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         Kit kit = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
         MessageProvider mp = Nucleus.getNucleus().getMessageProvider();
         Util.getPaginationBuilder(src).title(mp.getTextMessageWithFormat("command.kit.info.title", kit.getName()))

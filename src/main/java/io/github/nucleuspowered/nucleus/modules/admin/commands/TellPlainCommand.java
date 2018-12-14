@@ -18,6 +18,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @RunAsync
@@ -36,11 +37,11 @@ public class TellPlainCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         try {
             new NucleusTextTemplateMessageSender(NucleusTextTemplateFactory.createFromString(
-                        args.<String>getOne(NucleusParameters.Keys.MESSAGE).get()), src)
-                    .send(args.getAll(NucleusParameters.Keys.PLAYER_OR_CONSOLE));
+                        args.requireOne(NucleusParameters.Keys.MESSAGE)), src)
+                    .send(args.getAll(NucleusParameters.Keys.PLAYER_OR_CONSOLE), cause);
         } catch (Throwable throwable) {
             if (Nucleus.getNucleus().isDebugMode()) {
                 throwable.printStackTrace();

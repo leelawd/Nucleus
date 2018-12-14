@@ -14,6 +14,7 @@ import io.github.nucleuspowered.nucleus.modules.spawn.datamodules.SpawnGeneralDa
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @RegisterCommand({"setfirstspawn"})
@@ -24,7 +25,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class SetFirstSpawnCommand extends AbstractCommand<Player> {
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
         Nucleus.getNucleus().getGeneralService().get(SpawnGeneralDataModule.class).setFirstSpawn(src.getLocation(), src.getRotation());
         src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.setfirstspawn.success"));
         src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.setfirstspawn.success2"));

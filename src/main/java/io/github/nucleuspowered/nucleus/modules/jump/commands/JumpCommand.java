@@ -19,6 +19,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.property.block.PassableProperty;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.util.blockray.BlockRay;
@@ -41,7 +42,7 @@ public class JumpCommand extends AbstractCommand<Player> implements Reloadable {
     // Original code taken from EssentialCmds. With thanks to 12AwsomeMan34 for
     // the initial contribution.
     @Override
-    public CommandResult executeCommand(Player player, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player player, CommandContext args, Cause cause) throws Exception {
         BlockRay<World> playerBlockRay = BlockRay.from(player).distanceLimit(this.maxJump).build();
 
         BlockRayHit<World> finalHitRay = null;

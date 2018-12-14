@@ -17,6 +17,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 /**
@@ -38,7 +39,7 @@ public class KitAutoRedeemCommand extends KitFallbackBase<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource player, CommandContext args) {
+    public CommandResult executeCommand(final CommandSource player, CommandContext args, Cause cause) {
         Kit kitInfo = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
         boolean b = args.<Boolean>getOne(NucleusParameters.Keys.BOOL).get();
 

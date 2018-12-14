@@ -69,7 +69,7 @@ public class SetHomeCommand extends AbstractCommand<Player> implements Reloadabl
     }
 
     @Override
-    public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         // Get the home key.
         String home = args.<String>getOne(homeKey).orElse(NucleusHomeService.DEFAULT_HOME_NAME).toLowerCase();
 
@@ -86,7 +86,6 @@ public class SetHomeCommand extends AbstractCommand<Player> implements Reloadabl
             return CommandResult.empty();
         }
 
-        Cause cause = CauseStackHelper.createCause(src);
         try {
             if (overwrite) {
                 int max = this.homeHandler.getMaximumHomes(src) ;

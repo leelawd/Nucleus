@@ -12,6 +12,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Scan
@@ -24,7 +25,7 @@ public class GamemodeCommands {
     public static class Survival extends GamemodeBase<Player> {
 
         @Override
-        protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+        protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
             return baseCommand(src, src, GameModes.SURVIVAL);
         }
     }
@@ -36,7 +37,7 @@ public class GamemodeCommands {
     public static class Creative extends GamemodeBase<Player> {
 
         @Override
-        protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+        protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
             return baseCommand(src, src, GameModes.CREATIVE);
         }
     }
@@ -48,7 +49,7 @@ public class GamemodeCommands {
     public static class Adventure extends GamemodeBase<Player> {
 
         @Override
-        protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+        protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
             return baseCommand(src, src, GameModes.ADVENTURE);
         }
     }
@@ -59,7 +60,7 @@ public class GamemodeCommands {
     public static class Spectator extends GamemodeBase<Player> {
 
         @Override
-        protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+        protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
             return baseCommand(src, src, GameModes.SPECTATOR);
         }
     }

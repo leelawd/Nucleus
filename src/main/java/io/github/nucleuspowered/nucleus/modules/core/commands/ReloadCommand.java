@@ -13,6 +13,7 @@ import io.github.nucleuspowered.nucleus.internal.command.ReturnMessageException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @Permissions(prefix = "nucleus")
@@ -22,7 +23,7 @@ import org.spongepowered.api.util.annotation.NonnullByDefault;
 public class ReloadCommand extends AbstractCommand<CommandSource> {
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         if (Nucleus.getNucleus().reload()) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.reload.one"));
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.reload.two"));

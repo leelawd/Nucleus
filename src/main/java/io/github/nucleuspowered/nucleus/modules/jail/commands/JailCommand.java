@@ -28,6 +28,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MutableMessageChannel;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -74,7 +75,7 @@ public class JailCommand extends AbstractCommand<CommandSource> implements Reloa
     }
 
     @Override
-    public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
         // Get the subject.
         User pl = args.<User>getOne(NucleusParameters.Keys.USER).get();
         if (!pl.isOnline() && !this.permissions.testSuffix(src, "offline")) {

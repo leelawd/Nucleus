@@ -29,6 +29,7 @@ import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.DimensionType;
@@ -105,7 +106,7 @@ public class CreateWorldCommand extends AbstractCommand<CommandSource> implement
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) throws Exception {
         String nameInput = args.<String>getOne(name).get();
         Optional<DimensionType> dimensionInput = args.getOne(dimension);
         Optional<GeneratorType> generatorInput = args.getOne(generator);

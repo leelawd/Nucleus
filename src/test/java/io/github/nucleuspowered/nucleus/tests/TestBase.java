@@ -30,10 +30,18 @@ import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler
 import io.github.nucleuspowered.nucleus.internal.text.TextParsingUtils;
 import io.github.nucleuspowered.nucleus.modules.core.config.WarmupConfig;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.FormattingCodeTextSerializer;
@@ -50,7 +58,11 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Sponge.class)
 public abstract class TestBase {
+
+    private static boolean complete = false;
 
     private static void setFinalStatic(Field field) throws Exception {
         field.setAccessible(true);
@@ -80,6 +92,11 @@ public abstract class TestBase {
 
     @BeforeClass
     public static void testSetup() throws Exception {
+        if (complete) {
+            return;
+        }
+
+        complete = true;
         try {
             Method m = Nucleus.class.getDeclaredMethod("setNucleus", Nucleus.class);
             m.setAccessible(true);
@@ -91,6 +108,14 @@ public abstract class TestBase {
         setFinalStaticPlain(TextSerializers.class.getField("PLAIN"));
         setFinalStaticFormatters(TextSerializers.class.getField("FORMATTING_CODE"));
         setFinalStaticFormatters(TextSerializers.class.getField("LEGACY_FORMATTING_CODE"));
+    }
+
+    public static void setupSpongeMock() {
+        Cause mockCause = Cause.of(EventContext.empty(), "test");
+        CauseStackManager csm = Mockito.mock(CauseStackManager.class);
+        Mockito.when(csm.getCurrentCause()).thenReturn(mockCause);
+        PowerMockito.mockStatic(Sponge.class);
+        PowerMockito.when(Sponge.getCauseStackManager()).thenReturn(csm);
     }
 
     private static class NucleusTest extends Nucleus {

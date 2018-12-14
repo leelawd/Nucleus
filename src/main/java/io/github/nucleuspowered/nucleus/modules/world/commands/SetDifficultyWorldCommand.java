@@ -19,6 +19,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.difficulty.Difficulty;
@@ -41,7 +42,7 @@ public class SetDifficultyWorldCommand extends AbstractCommand<CommandSource> {
     }
 
     @Override
-    public CommandResult executeCommand(final CommandSource src, CommandContext args) throws Exception {
+    public CommandResult executeCommand(final CommandSource src, CommandContext args, Cause cause) throws Exception {
         Difficulty difficultyInput = args.<Difficulty>getOne(this.difficulty).get();
         WorldProperties worldProperties = getWorldFromUserOrArgs(src, NucleusParameters.Keys.WORLD, args);
 

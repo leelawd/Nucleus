@@ -29,6 +29,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -67,7 +68,7 @@ public class BuyCommand extends AbstractCommand<Player> implements Reloadable {
     }
 
     @Override
-    public CommandResult executeCommand(final Player src, CommandContext args) {
+    public CommandResult executeCommand(final Player src, CommandContext args, Cause cause) {
         CatalogType ct = args.<CatalogType>getOne(this.itemKey).get();
         int amount = args.<Integer>getOne(this.amountKey).get();
 

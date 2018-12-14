@@ -17,6 +17,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.item.LoreData;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -38,7 +39,7 @@ public class LoreDeleteCommand extends AbstractCommand<Player> {
     }
 
     @Override
-    protected CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+    protected CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
         int line = args.<Integer>getOne(this.loreLine).get() - 1;
 
         ItemStack stack = src.getItemInHand(HandTypes.MAIN_HAND).orElseThrow(() -> ReturnMessageException.fromKey("command.lore.clear.noitem"));

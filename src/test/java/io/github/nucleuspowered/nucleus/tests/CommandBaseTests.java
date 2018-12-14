@@ -13,15 +13,22 @@ import io.github.nucleuspowered.nucleus.internal.command.NucleusCommandException
 import io.github.nucleuspowered.nucleus.tests.util.TestModule;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.Tristate;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Sponge.class)
 @SuppressWarnings("ALL")
 public class CommandBaseTests extends TestBase {
 
@@ -32,6 +39,7 @@ public class CommandBaseTests extends TestBase {
      */
     @Test
     public void testThatPlayersCanExecutePlayerCommand() throws CommandException {
+        setupSpongeMock();
         PlayerCommand cmd = new PlayerCommand();
         getInjector().injectMembers(cmd);
         cmd.postInit();
@@ -49,6 +57,7 @@ public class CommandBaseTests extends TestBase {
      */
     @Test(expected = NucleusCommandException.class)
     public void testThatCommandSourcesCannotExecutePlayerCommands() throws CommandException {
+        setupSpongeMock();
         PlayerCommand cmd = new PlayerCommand();
         getInjector().injectMembers(cmd);
         cmd.postInit();
@@ -63,6 +72,7 @@ public class CommandBaseTests extends TestBase {
      */
     @Test
     public void testThatCommandSourcesCanExecuteStandardCommand() throws CommandException {
+        setupSpongeMock();
         BasicCommand cmd = new BasicCommand();
         getInjector().injectMembers(cmd);
         cmd.postInit();
@@ -78,6 +88,7 @@ public class CommandBaseTests extends TestBase {
      */
     @Test
     public void testThatPlayerSourcesCanExecuteStandardCommand() throws CommandException {
+        setupSpongeMock();
         BasicCommand cmd = new BasicCommand();
         getInjector().injectMembers(cmd);
         cmd.postInit();
@@ -116,7 +127,7 @@ public class CommandBaseTests extends TestBase {
         }
 
         @Override
-        public CommandResult executeCommand(Player src, CommandContext args) throws Exception {
+        public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
             return CommandResult.success();
         }
     }
@@ -131,7 +142,7 @@ public class CommandBaseTests extends TestBase {
         }
 
         @Override
-        public CommandResult executeCommand(CommandSource src, CommandContext args) throws Exception {
+        public CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) throws Exception {
             return CommandResult.success();
         }
     }

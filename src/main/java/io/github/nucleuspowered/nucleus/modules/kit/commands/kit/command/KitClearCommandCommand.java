@@ -17,6 +17,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 
 @NoModifiers
@@ -32,7 +33,7 @@ public class KitClearCommandCommand extends KitFallbackBase<CommandSource> {
         };
     }
 
-    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args) {
+    @Override protected CommandResult executeCommand(CommandSource src, CommandContext args, Cause cause) {
         Kit kitInfo = args.<Kit>getOne(KIT_PARAMETER_KEY).get();
         kitInfo.setCommands(Lists.newArrayList());
         KIT_HANDLER.saveKit(kitInfo);

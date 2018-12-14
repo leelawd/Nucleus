@@ -5,7 +5,6 @@
 package io.github.nucleuspowered.nucleus.modules.home.services;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
@@ -25,7 +24,6 @@ import io.github.nucleuspowered.nucleus.modules.home.events.ModifyHomeEvent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -54,7 +52,7 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
     }
 
     @Override public void createHome(Cause cause, User user, String name, Location<World> location, Vector3d rotation) throws NucleusException {
-        Preconditions.checkState(cause.root() instanceof PluginContainer, "The root must be a PluginContainer");
+        // Preconditions.checkState(cause.root() instanceof PluginContainer, "The root must be a PluginContainer");
         createHomeInternal(cause, user, name, location, rotation);
     }
 
@@ -84,7 +82,7 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
     }
 
     @Override public void modifyHome(Cause cause, Home home, Location<World> location, Vector3d rotation) throws NucleusException {
-        Preconditions.checkState(cause.root() instanceof PluginContainer, "The root must be a PluginContainer");
+        // Preconditions.checkState(cause.root() instanceof PluginContainer, "The root must be a PluginContainer");
         modifyHomeInternal(cause, home, location, rotation);
     }
 
@@ -101,7 +99,7 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
     }
 
     @Override public void removeHome(Cause cause, Home home) throws NucleusException {
-        Preconditions.checkState(cause.root() instanceof PluginContainer, "The root must be a PluginContainer");
+        // Preconditions.checkState(cause.root() instanceof PluginContainer, "The root must be a PluginContainer");
         removeHomeInternal(cause, home);
     }
 

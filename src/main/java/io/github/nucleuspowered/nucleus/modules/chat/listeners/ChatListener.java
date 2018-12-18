@@ -31,6 +31,7 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.Tuple;
 
@@ -40,6 +41,8 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 /**
  * A listener that modifies all chat messages. Uses the
@@ -120,11 +123,30 @@ public class ChatListener implements Reloadable, ListenerBase.Conditional {
         Util.onPlayerSimulatedOrPlayer(event, this::onPlayerChatInternal);
     }
 
+    private boolean shouldNotFormat(MessageChannelEvent.Chat event) {
+        if (!event.getContext().get(EventContexts.SHOULD_FORMAT_CHANNEL).orElse(true)) {
+            return true;
+        }
+
+        return event.getChannel().map(this::shouldNotFormat).orElseGet(() -> shouldNotFormat(event.getOriginalChannel()));
+    }
+
+    private boolean shouldNotFormat(MessageChannel channel) {
+        return channel instanceof NucleusNoFormatChannel && !((NucleusNoFormatChannel) channel).formatMessages();
+    }
+
+    @Nullable
+    private NucleusNoFormatChannel getChannel(MessageChannelEvent.Chat event) {
+        if (event.getChannel().filter(x -> x instanceof NucleusNoFormatChannel).isPresent()) {
+            return (NucleusNoFormatChannel) event.getChannel().get();
+        }
+        return event.getOriginalChannel() instanceof NucleusNoFormatChannel ? (NucleusNoFormatChannel) event.getOriginalChannel() : null;
+    }
+
     private void onPlayerChatInternal(MessageChannelEvent.Chat event, Player player) {
-        if (!event.getContext().get(EventContexts.SHOULD_FORMAT_CHANNEL).orElse(true) ||
-                event.getChannel().isPresent() && event.getChannel().get() instanceof NucleusNoFormatChannel
-                    && !((NucleusNoFormatChannel) event.getChannel().get()).formatMessages()) {
-            if (((NucleusNoFormatChannel) event.getChannel().get()).removePrefix()) {
+        if (shouldNotFormat(event)) {
+            @Nullable NucleusNoFormatChannel channel = getChannel(event);
+            if (channel != null && channel.removePrefix()) {
                 event.getFormatter().setHeader(Text.EMPTY);
             }
 
@@ -187,4 +209,20 @@ public class ChatListener implements Reloadable, ListenerBase.Conditional {
         this.chatConfig = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(ChatConfigAdapter.class).getNodeOrDefault();
     }
 
+    private enum NO_FORMAT_CHANNEL {
+        NONE(false),
+        CURRENT(true),
+        ORIGINAL(true),
+        NO_CHANNEL(true);
+
+        private final boolean b;
+
+        NO_FORMAT_CHANNEL(boolean b) {
+            this.b = b;
+        }
+
+        public boolean isNoFormat() {
+            return b;
+        }
+    }
 }

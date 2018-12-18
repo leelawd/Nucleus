@@ -208,21 +208,4 @@ public class ChatListener implements Reloadable, ListenerBase.Conditional {
     @Override public void onReload() {
         this.chatConfig = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(ChatConfigAdapter.class).getNodeOrDefault();
     }
-
-    private enum NO_FORMAT_CHANNEL {
-        NONE(false),
-        CURRENT(true),
-        ORIGINAL(true),
-        NO_CHANNEL(true);
-
-        private final boolean b;
-
-        NO_FORMAT_CHANNEL(boolean b) {
-            this.b = b;
-        }
-
-        public boolean isNoFormat() {
-            return b;
-        }
-    }
 }

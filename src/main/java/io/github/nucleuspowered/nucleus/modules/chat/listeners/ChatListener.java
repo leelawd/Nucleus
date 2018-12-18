@@ -31,8 +31,11 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.TextTemplate;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.text.transform.SimpleTextFormatter;
+import org.spongepowered.api.text.transform.SimpleTextTemplateApplier;
 import org.spongepowered.api.util.Tuple;
 
 import java.util.Arrays;
@@ -40,7 +43,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -51,7 +53,6 @@ import javax.annotation.Nullable;
  */
 public class ChatListener implements Reloadable, ListenerBase.Conditional {
 
-    private static final Pattern prefixPattern = Pattern.compile("^\\s*<[a-zA-Z0-9_]+>\\s*$");
     private static final String prefix = PermissionRegistry.PERMISSIONS_PREFIX + "chat.";
 
     // Order is important here!
@@ -157,14 +158,23 @@ public class ChatListener implements Reloadable, ListenerBase.Conditional {
         MessageEvent.MessageFormatter eventFormatter = event.getFormatter();
         Text rawMessage = eventFormatter.getBody().isEmpty() ? event.getRawMessage() : eventFormatter.getBody().toText();
 
-        Text prefix = Text.EMPTY;
-
-        // Avoid adding <name>.
-        if (!this.chatConfig.isOverwriteEarlyPrefixes() && !prefixPattern.matcher(eventFormatter.getHeader().toText().toPlain()).matches()) {
-            prefix = eventFormatter.getHeader().toText();
+        SimpleTextFormatter headerFormatter = eventFormatter.getHeader();
+        SimpleTextFormatter footerFormatter = eventFormatter.getFooter();
+        if (this.chatConfig.isOverwriteEarlyPrefixes()) {
+            eventFormatter.setHeader(Text.EMPTY);
+            headerFormatter.clear();
+        } else if (this.chatConfig.isTryRemoveMinecraftPrefix()) { // Avoid adding <name>.
+            // We should remove the applier.
+            for (SimpleTextTemplateApplier stta : eventFormatter.getHeader()) {
+                if (stta instanceof MessageEvent.DefaultHeaderApplier) {
+                    eventFormatter.getHeader().remove(stta); // the iterator is read only, so we have to do this...
+                }
+            }
         }
 
-        Text footer = this.chatConfig.isOverwriteEarlySuffixes() ? Text.EMPTY : event.getFormatter().getFooter().toText();
+        if (this.chatConfig.isOverwriteEarlySuffixes()) {
+            footerFormatter.clear();
+        }
 
         final ChatTemplateConfig ctc;
         if (this.chatConfig.isUseGroupTemplates()) {
@@ -173,10 +183,19 @@ public class ChatListener implements Reloadable, ListenerBase.Conditional {
             ctc = this.chatConfig.getDefaultTemplate();
         }
 
-        event.setMessage(
-            Text.join(prefix, ctc.getPrefix().getForCommandSource(player)),
-                this.chatConfig.isModifyMainMessage() ? useMessage(player, rawMessage, ctc) : rawMessage,
-            Text.join(footer, ctc.getSuffix().getForCommandSource(player)));
+        if (!ctc.getPrefix().isEmpty()) {
+            SimpleTextTemplateApplier headerApplier = new SimpleTextTemplateApplier();
+            headerApplier.setTemplate(TextTemplate.of(ctc.getPrefix().getForCommandSource(player)));
+            event.getFormatter().getHeader().add(headerApplier);
+        }
+
+        if (!ctc.getSuffix().isEmpty()) {
+            SimpleTextTemplateApplier footerApplier = new SimpleTextTemplateApplier();
+            footerApplier.setTemplate(TextTemplate.of(ctc.getSuffix().getForCommandSource(player)));
+            event.getFormatter().getFooter().add(footerApplier);
+        }
+
+        event.getFormatter().setBody(this.chatConfig.isModifyMainMessage() ? useMessage(player, rawMessage, ctc) : rawMessage);
     }
 
     @Override public boolean shouldEnable() {

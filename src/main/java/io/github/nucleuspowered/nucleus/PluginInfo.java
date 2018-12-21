@@ -21,4 +21,5 @@ public final class PluginInfo {
 
     public static final String DESCRIPTION = "@description@";
 
+    public static final String SPONGE_API_VERSION = "@spongeversion@";
 }

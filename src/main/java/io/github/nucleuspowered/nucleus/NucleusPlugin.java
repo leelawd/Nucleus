@@ -7,6 +7,7 @@ package io.github.nucleuspowered.nucleus;
 import static io.github.nucleuspowered.nucleus.PluginInfo.DESCRIPTION;
 import static io.github.nucleuspowered.nucleus.PluginInfo.ID;
 import static io.github.nucleuspowered.nucleus.PluginInfo.NAME;
+import static io.github.nucleuspowered.nucleus.PluginInfo.SPONGE_API_VERSION;
 import static io.github.nucleuspowered.nucleus.PluginInfo.VERSION;
 
 import com.google.common.collect.Lists;
@@ -109,12 +110,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-@Plugin(id = ID, name = NAME, version = VERSION, description = DESCRIPTION, dependencies = @Dependency(id = "spongeapi", version = "7.1.0"))
+@Plugin(id = ID, name = NAME, version = VERSION, description = DESCRIPTION, dependencies = @Dependency(id = "spongeapi", version = PluginInfo.SPONGE_API_VERSION))
 public class NucleusPlugin extends Nucleus {
 
     private static final String divider = "+------------------------------------------------------------+";
@@ -161,32 +164,64 @@ public class NucleusPlugin extends Nucleus {
     private Path currentDataDir;
     private boolean isServer = false;
     private WarmupConfig warmupConfig;
-    private final String versionFail;
+    @Nullable private String versionFail;
 
     private boolean isDebugMode = false;
     private boolean sessionDebugMode = false;
     private int isTraceUserCreations = 0;
     private boolean savesandloads = false;
 
-    @Nullable
-    private static String versionCheck() {
-        // So we can ensure we have the Cause Stack Manager.
-        try {
-            // Check the org.spongepowered.api.item.enchantment.EnchantmentType exists.
-            Class.forName("org.spongepowered.api.item.enchantment.EnchantmentType");
-        } catch (Throwable e) {
-            return "EnchantmentType does not exist. Nucleus requires the EnchantmentType from API 7 to function. Update Nucleus to the latest "
-                    + "version.";
-        }
+    private static boolean versionCheck(MessageProvider provider) throws IllegalStateException {
+        Pattern matching = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)");
+        Optional<String> v = Sponge.getPlatform().getContainer(Platform.Component.API).getVersion();
 
-        return null;
+        if (v.isPresent()) {
+            Matcher version = matching.matcher(SPONGE_API_VERSION);
+            if (!version.find()) {
+                return false; // can't compare.
+            }
+
+            int maj = Integer.parseInt(version.group("major"));
+            int min = Integer.parseInt(version.group("minor"));
+            @SuppressWarnings("ConstantConditions") boolean notRequiringSnapshot = !SPONGE_API_VERSION.contains("SNAPSHOT");
+
+            Matcher m = matching.matcher(v.get());
+            if (m.find()) {
+                int major = Integer.parseInt(m.group("major"));
+                if (major != maj) {
+                    // not current API
+                    throw new IllegalStateException(provider.getMessageWithFormat("startup.nostart.spongeversion.major",
+                            PluginInfo.NAME, v.get(), SPONGE_API_VERSION,
+                            Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName()));
+                }
+
+                int minor = Integer.parseInt(m.group("minor"));
+                boolean serverIsSnapshot = v.get().contains("SNAPSHOT");
+
+                //noinspection ConstantConditions
+                if (serverIsSnapshot && notRequiringSnapshot) {
+                    // If we are a snapshot, and the target version is NOT a snapshot, decrement our version number.
+                    minor = minor - 1;
+                }
+
+                if (minor < min) {
+                    // not right minor version
+                    throw new IllegalStateException(provider.getMessageWithFormat("startup.nostart.spongeversion.minor",
+                            Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(), NAME, SPONGE_API_VERSION));
+                }
+            }
+
+            return true;
+        } else {
+            // no idea.
+            return false;
+        }
     }
 
     // We inject this into the constructor so we can build the config path ourselves.
     @Inject
     public NucleusPlugin(@ConfigDir(sharedRoot = true) Path configDir, Logger logger, PluginContainer container) {
         Nucleus.setNucleus(this);
-        this.versionFail = versionCheck();
         this.logger = new DebugLogger(this, logger);
         this.configDir = configDir.resolve(PluginInfo.ID);
         Supplier<Path> sp;
@@ -229,14 +264,21 @@ public class NucleusPlugin extends Nucleus {
             // don't worry about it
         }
 
-        if (this.versionFail != null) {
-            s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.compat", PluginInfo.NAME,
-                    Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(),
-                    Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("unknown")));
-            s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.compat2", this.versionFail));
-            s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.compat3", this.versionFail));
-            disable();
-            return;
+        if (System.getProperty("nucleusnocheck") == null) {
+            try {
+                if (!versionCheck(this.messageProvider)) {
+                    s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.nodetect", NAME, SPONGE_API_VERSION));
+                }
+            } catch (IllegalStateException e) {
+                s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.compat", PluginInfo.NAME,
+                        Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(),
+                        Sponge.getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("unknown")));
+                s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.compat2", e.getMessage()));
+                s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.nostart.compat3", NAME));
+                this.versionFail = e.getMessage();
+                disable();
+                return;
+            }
         }
 
         s.sendMessage(this.messageProvider.getTextMessageWithFormat("startup.welcome", PluginInfo.NAME,
@@ -979,8 +1021,7 @@ public class NucleusPlugin extends Nucleus {
         messages.add(Text.of(TextColors.RED, "-  INCORRECT SPONGE VERSION  -"));
         messages.add(Text.of(TextColors.RED, "------------------------------"));
         messages.add(Text.EMPTY);
-        messages.add(Text.of(TextColors.RED, "You are running an old version of Sponge on your server - new versions of Nucleus (like this one!) "
-                + "will not run."));
+        messages.add(Text.of(TextColors.RED, "You are a mismatched version of Sponge on your server - this version of Nucleus will not run upon it."));
         messages.add(Text.of(TextColors.RED, "Nucleus has not started. Update Sponge to the latest version and try again."));
         if (this.isServer) {
             messages.add(Text.of(TextColors.RED,

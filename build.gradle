@@ -28,10 +28,11 @@ allprojects {
 }
 
 def apiVersion = '7.1.0'
+def declaredApiVersion = '7.1.0'
 
 project.ext.versionno = '1.8.0'
 project.ext.minecraftversion = '1.12.2'
-project.ext.spongeapiversion = (apiVersion =~ /^\d+\.\d+/)[0]
+project.ext.spongeapiversion = (declaredApiVersion =~ /^\d+\.\d+/)[0]
 project.ext.suffix = '-SNAPSHOT'
 project.ext.hash = ''
 
@@ -176,6 +177,8 @@ blossom {
     replaceToken '@description@', project.description
     replaceToken '@url@', project.url
     replaceToken '@gitHash@', gitHash.hash
+
+    replaceToken '@spongeversion@', declaredApiVersion
 }
 
 jar {

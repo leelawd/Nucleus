@@ -27,7 +27,7 @@ public class ChatConfig {
     @Setting(value = "overwrite-early-prefixes", comment = "config.chat.includeprefix")
     private boolean overwriteEarlyPrefixes = false;
 
-    @Setting(value = "try-harder-to-remove-minecraft-prefix", comment = "config.chat.hardertoremove")
+    @Setting(value = "try-to-remove-minecraft-prefix", comment = "config.chat.hardertoremove")
     private boolean tryRemoveMinecraftPrefix = true;
 
     @Setting(value = "overwrite-early-suffixes", comment = "config.chat.includesuffix")

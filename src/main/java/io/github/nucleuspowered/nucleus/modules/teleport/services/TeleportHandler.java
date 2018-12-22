@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -56,7 +57,7 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
         return new TeleportBuilder();
     }
 
-    public static boolean canBypassTpToggle(Subject from) {
+    private static boolean canBypassTpToggle(Subject from) {
         return Nucleus.getNucleus().getPermissionResolver().hasPermission(from, tptoggleBypassPermission);
     }
 
@@ -207,15 +208,10 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
         private final CommandSource source;
         private final boolean silentSource;
         private final boolean silentTarget;
-        private final boolean borderCheck;
-
-        private TeleportTask(CommandSource source, Player playerToTeleport, Player playerToTeleportTo, boolean safe, boolean silentSource,
-                boolean silentTarget, boolean borderCheck) {
-            this(source, playerToTeleport, playerToTeleportTo, null, 0, safe, silentSource, silentTarget, borderCheck);
-        }
+        @Nullable private final Consumer<Player> successCallback;
 
         private TeleportTask(CommandSource source, Player playerToTeleport, Player playerToTeleportTo, User charged, double cost, boolean safe,
-                             boolean silentSource, boolean silentTarget, boolean borderCheck) {
+                boolean silentSource, boolean silentTarget, @Nullable Consumer<Player> successCallback) {
             this.source = source;
             this.playerToTeleport = playerToTeleport;
             this.playerToTeleportTo = playerToTeleportTo;
@@ -224,15 +220,20 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
             this.safe = safe;
             this.silentSource = silentSource;
             this.silentTarget = silentTarget;
-            this.borderCheck = borderCheck;
+            this.successCallback = successCallback;
         }
 
         private void run() {
             if (this.playerToTeleportTo.isOnline()) {
                 // If safe, get the teleport mode
                 NucleusTeleportHandler tpHandler = Nucleus.getNucleus().getTeleportHandler();
-                NucleusTeleportHandler.StandardTeleportMode mode = this.safe ? tpHandler.getTeleportModeForPlayer(this.playerToTeleport) :
-                    NucleusTeleportHandler.StandardTeleportMode.NO_CHECK;
+
+                NucleusTeleportHandler.StandardTeleportMode mode;
+                if (this.safe) {
+                    mode = tpHandler.getTeleportModeForPlayer(this.playerToTeleport);
+                } else {
+                    mode = NucleusTeleportHandler.StandardTeleportMode.NO_CHECK;
+                }
 
                 NucleusTeleportHandler.TeleportResult result =
                         tpHandler.teleportPlayer(this.playerToTeleport, this.playerToTeleportTo.getTransform(), mode,
@@ -257,8 +258,11 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
                         this.playerToTeleportTo.getName()));
                 if (!this.silentTarget) {
                     this.playerToTeleportTo.sendMessage(NucleusPlugin.getNucleus().getMessageProvider().getTextMessageWithFormat("teleport.from.success",
-
                             this.playerToTeleport.getName()));
+                }
+
+                if (this.successCallback != null && this.source instanceof Player) {
+                    this.successCallback.accept((Player) this.source);
                 }
             } else {
                 if (!this.silentSource) {
@@ -295,7 +299,7 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
         private boolean safe;
         private boolean silentSource = false;
         private boolean silentTarget = false;
-        private boolean borderCheck = true;
+        @Nullable private Consumer<Player> successCallback;
 
         private TeleportBuilder() {
             this.safe = getService(TeleportConfigAdapter.class).map(x -> x.getNodeOrDefault().isUseSafeTeleport()).orElse(true);
@@ -303,11 +307,6 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
 
         public TeleportBuilder setSafe(boolean safe) {
             this.safe = safe;
-            return this;
-        }
-
-        public TeleportBuilder setBorderCheck(boolean borderCheck) {
-            this.borderCheck = borderCheck;
             return this;
         }
 
@@ -357,6 +356,11 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
 
         public TeleportBuilder setSilentTarget(boolean silentTarget) {
             this.silentTarget = silentTarget;
+            return this;
+        }
+
+        public TeleportBuilder setSuccessCallback(@Nullable Consumer<Player> successCallback) {
+            this.successCallback = successCallback;
             return this;
         }
 
@@ -417,15 +421,19 @@ public class TeleportHandler implements MessageProviderTrait, PermissionTrait, S
                         this.safe,
                         this.silentSource,
                         this.silentTarget,
-                        this.borderCheck);
+                        this.successCallback
+                );
             } else {
                 tt = new TeleportTask(source,
                         fromPlayer.getPlayer().get(),
                         toPlayer.getPlayer().get(),
+                        null,
+                        0,
                         this.safe,
                         this.silentSource,
                         this.silentTarget,
-                        this.borderCheck);
+                        this.successCallback
+                );
             }
 
             if (this.warmupTime > 0) {

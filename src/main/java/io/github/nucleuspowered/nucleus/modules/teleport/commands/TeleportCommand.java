@@ -74,7 +74,6 @@ public class TeleportCommand extends AbstractCommand<CommandSource> implements R
     public CommandElement[] getArguments() {
        return new CommandElement[]{
                 GenericArguments.flags().flag("f")
-                    .permissionFlag(this.permissions.getPermissionWithSuffix("exempt.bordercheck"),"b", "-border")
                     .setAnchorFlags(true)
                     .valueFlag(requirePermissionArg(GenericArguments.bool(Text.of(this.quietKey)), this.permissions.getPermissionWithSuffix("quiet")), "q")
                     .buildWith(GenericArguments.none()),
@@ -148,7 +147,6 @@ public class TeleportCommand extends AbstractCommand<CommandSource> implements R
             if (this.handler.getBuilder().setSource(src).setFrom(from).setTo(to.getPlayer().get())
                     .setSafe(!args.hasAny("f"))
                     .setSilentTarget(beQuiet)
-                    .setBorderCheck(!args.hasAny("b"))
                     .startTeleport()) {
                 return CommandResult.success();
             }

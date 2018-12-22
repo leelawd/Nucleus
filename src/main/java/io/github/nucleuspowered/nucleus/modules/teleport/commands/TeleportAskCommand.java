@@ -10,6 +10,7 @@ import io.github.nucleuspowered.nucleus.internal.annotations.command.NoWarmup;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.NotifyIfAFK;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
+import io.github.nucleuspowered.nucleus.internal.annotations.command.SetCooldownManually;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.ContinueMode;
 import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
@@ -44,10 +45,10 @@ import java.util.Map;
 @NonnullByDefault
 @EssentialsEquivalent({"tpa", "call", "tpask"})
 @NotifyIfAFK(NucleusParameters.Keys.PLAYER)
+@SetCooldownManually
 public class TeleportAskCommand extends AbstractCommand<Player> {
 
     private final TeleportHandler tpHandler = getServiceUnchecked(TeleportHandler.class);
-
 
     @Override
     public Map<String, PermissionInformation> permissionSuffixesToRegister() {
@@ -64,12 +65,12 @@ public class TeleportAskCommand extends AbstractCommand<Player> {
     }
 
     @Override protected ContinueMode preProcessChecks(Player source, CommandContext args) {
-        return TeleportHandler.canTeleportTo(source, args.<Player>getOne(NucleusParameters.Keys.PLAYER).get()) ? ContinueMode.CONTINUE : ContinueMode.STOP;
+        return TeleportHandler.canTeleportTo(source, args.requireOne(NucleusParameters.Keys.PLAYER)) ? ContinueMode.CONTINUE : ContinueMode.STOP;
     }
 
     @Override
     public CommandResult executeCommand(Player src, CommandContext args, Cause cause) throws Exception {
-        Player target = args.<Player>getOne(NucleusParameters.Keys.PLAYER).get();
+        Player target = args.requireOne(NucleusParameters.Keys.PLAYER);
         if (src.equals(target)) {
             src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.teleport.self"));
             return CommandResult.empty();
@@ -93,6 +94,7 @@ public class TeleportAskCommand extends AbstractCommand<Player> {
             tb.setCharge(src).setCost(cost);
         }
 
+        tb.setSuccessCallback(this::setCooldown);
         TeleportHandler.TeleportPrep tp = new TeleportHandler.TeleportPrep(Instant.now().plus(30, ChronoUnit.SECONDS), src, cost, tb);
         this.tpHandler.addAskQuestion(target.getUniqueId(), tp);
         target.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.tpa.question", src.getName()));
@@ -101,4 +103,5 @@ public class TeleportAskCommand extends AbstractCommand<Player> {
         src.sendMessage(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.tpask.sent", target.getName()));
         return CommandResult.success();
     }
+
 }

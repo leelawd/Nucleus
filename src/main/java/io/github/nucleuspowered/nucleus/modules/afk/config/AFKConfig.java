@@ -10,14 +10,14 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 @ConfigSerializable
 public class AFKConfig {
 
-    @Setting(value = "afktime", comment = "config.afk.time")
+    @Setting(value = "afk-time", comment = "config.afk.time")
     private long afkTime = 300;
 
-    @Setting(value = "afktimetokick", comment = "config.afk.timetokick")
+    @Setting(value = "afk-time-to-kick", comment = "config.afk.timetokick")
     private long afkTimeToKick = 0;
 
-    @Setting(value = "afk-when-vanished", comment = "config.afk.whenvanished")
-    private boolean afkOnVanish = false;
+    @Setting(value = "broadcast-afk-when-vanished", comment = "config.afk.whenvanished")
+    private boolean broadcastAfkOnVanish = false;
 
     @Setting(value = "alert-on-command-send", comment = "config.afk.oncommandsend")
     private boolean alertSenderOnAfk = true;
@@ -46,8 +46,8 @@ public class AFKConfig {
         return this.afkTimeToKick;
     }
 
-    public boolean isAfkOnVanish() {
-        return this.afkOnVanish;
+    public boolean isBroadcastAfkOnVanish() {
+        return this.broadcastAfkOnVanish;
     }
 
     public boolean isAlertSenderOnAfk() {

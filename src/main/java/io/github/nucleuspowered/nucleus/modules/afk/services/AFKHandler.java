@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.NucleusPlugin;
 import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.api.service.NucleusAFKService;
 import io.github.nucleuspowered.nucleus.api.util.NoExceptionAutoClosable;
@@ -21,6 +20,7 @@ import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.interfaces.ServiceBase;
 import io.github.nucleuspowered.nucleus.internal.permissions.ServiceChangeListener;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTextTemplateImpl;
+import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
 import io.github.nucleuspowered.nucleus.modules.afk.commands.AFKCommand;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfig;
 import io.github.nucleuspowered.nucleus.modules.afk.config.AFKConfigAdapter;
@@ -51,10 +51,11 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
 @APIService(NucleusAFKService.class)
-public class AFKHandler implements NucleusAFKService, Reloadable, ServiceBase {
+public class AFKHandler implements NucleusAFKService, Reloadable, ServiceBase, MessageProviderTrait {
 
     private final Map<UUID, AFKData> data = Maps.newConcurrentMap();
     private final AFKConfigAdapter afkConfigAdapter;
@@ -191,7 +192,7 @@ public class AFKHandler implements NucleusAFKService, Reloadable, ServiceBase {
             Tuples.NullableTuple<Text, MessageChannel> ttmc = getAFKMessage(player, true);
             AFKEvents.To event = new AFKEvents.To(player, ttmc.getFirstUnwrapped(), ttmc.getSecondUnwrapped(), cause);
             Sponge.getEventManager().post(event);
-            actionEvent(event, "command.afk.to.vanish");
+            actionEvent(event, "command.afk.to.vanish", "command.afk.to.console");
 
             a.isKnownAfk = true;
             return true;
@@ -220,7 +221,7 @@ public class AFKHandler implements NucleusAFKService, Reloadable, ServiceBase {
                 Tuples.NullableTuple<Text, MessageChannel> ttmc = getAFKMessage(x, false);
                 AFKEvents.From event = new AFKEvents.From(x, ttmc.getFirstUnwrapped(), ttmc.getSecondUnwrapped(), cause);
                 Sponge.getEventManager().post(event);
-                actionEvent(event, "command.afk.from.vanish");
+                actionEvent(event, "command.afk.from.vanish", "command.afk.from.console");
             });
 
         }
@@ -228,19 +229,20 @@ public class AFKHandler implements NucleusAFKService, Reloadable, ServiceBase {
         return data;
     }
 
-    private void actionEvent(AFKEvents event, String key) {
+    private void actionEvent(AFKEvents event, String key, @Nullable String consoleKey) {
         Optional<Text> message = event.getMessage();
-        if (message.isPresent()) {
-            if (!message.get().isEmpty()) {
-                event.getChannel().send(event.getTargetEntity(), event.getMessage().get(), ChatTypes.SYSTEM);
-            }
+        if (message.isPresent() && !message.get().isEmpty()) {
+            event.getChannel().send(event.getTargetEntity(), message.get(), ChatTypes.SYSTEM);
         } else {
-            event.getTargetEntity().sendMessage(NucleusPlugin.getNucleus().getMessageProvider().getTextMessageWithFormat(key));
+            sendMessageTo(event.getTargetEntity(), key);
+            if (consoleKey != null) {
+                sendMessageTo(Sponge.getServer().getConsole(), consoleKey, event.getTargetEntity().getName());
+            }
         }
     }
 
     private Tuples.NullableTuple<Text, MessageChannel> getAFKMessage(Player player, boolean isAfk) {
-        if (this.config.isAfkOnVanish() || !player.get(Keys.VANISH).orElse(false)) {
+        if (this.config.isBroadcastAfkOnVanish() || !player.get(Keys.VANISH).orElse(false)) {
             NucleusTextTemplateImpl template = isAfk ? this.config.getMessages().getAfkMessage() : this.config.getMessages().getReturnAfkMessage();
             return Tuples.ofNullable(template.getForCommandSource(player), MessageChannel.TO_ALL);
         } else {

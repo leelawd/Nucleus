@@ -222,7 +222,7 @@ public class NucleusPlugin extends Nucleus {
     @Inject
     public NucleusPlugin(@ConfigDir(sharedRoot = true) Path configDir, Logger logger, PluginContainer container) {
         Nucleus.setNucleus(this);
-        this.logger = new DebugLogger(this, logger);
+        this.logger = new DebugLogger(logger);
         this.configDir = configDir.resolve(PluginInfo.ID);
         Supplier<Path> sp;
         try {

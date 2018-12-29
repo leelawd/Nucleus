@@ -284,7 +284,7 @@ task writeRelNotesInOutput(dependsOn: relnotes)  {
 
 // SIGNING & ORE DEPLOY
 
-if (!project.hasProperty("nosign")) {
+if (project.hasProperty("sign")) {
     signing {
         required {
             project.properties.hasProperty("signing.keyId")

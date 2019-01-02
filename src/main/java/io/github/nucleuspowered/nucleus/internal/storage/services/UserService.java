@@ -1,6 +1,6 @@
 package io.github.nucleuspowered.nucleus.internal.storage.services;
 
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.UserDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.UserDataObject;
 import io.github.nucleuspowered.nucleus.internal.storage.queryobjects.UserQueryObject;
 
 import java.util.Collection;

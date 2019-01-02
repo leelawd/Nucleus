@@ -9,9 +9,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-public abstract class AbstractQueryObject implements IQueryObject<UUID> {
+public abstract class AbstractQueryObject<K> implements IQueryObject<K> {
 
     private final Map<QueryKey<?>, List<?>> queryKeyObjectMap = new HashMap<>();
 

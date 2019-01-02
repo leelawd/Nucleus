@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public abstract class AbstractUUIDKeyedQueryObject<T extends AbstractUUIDKeyedQueryObject<T>>
-        extends AbstractQueryObject
+        extends AbstractQueryObject<UUID>
         implements IQueryObject.Keyed<UUID> {
 
     private final Set<UUID> keys = new HashSet<>();

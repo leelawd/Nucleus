@@ -5,9 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.kit.datamodules;
 
 import com.google.common.collect.Maps;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 
 import java.time.Instant;
 import java.util.Map;

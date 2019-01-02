@@ -9,10 +9,10 @@ import com.google.common.collect.Maps;
 import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.api.nucleusdata.Home;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.LocationNode;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.LocationData;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 

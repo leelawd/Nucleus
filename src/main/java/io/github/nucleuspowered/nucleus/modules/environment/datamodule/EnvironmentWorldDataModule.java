@@ -4,9 +4,9 @@
  */
 package io.github.nucleuspowered.nucleus.modules.environment.datamodule;
 
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularWorldService;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 
 public class EnvironmentWorldDataModule extends DataModule<ModularWorldService> {
 

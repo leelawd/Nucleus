@@ -5,9 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.spawn.datamodules;
 
 import com.flowpowered.math.vector.Vector3d;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularWorldService;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 
 import java.util.Optional;
 

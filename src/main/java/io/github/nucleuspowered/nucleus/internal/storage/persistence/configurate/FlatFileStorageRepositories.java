@@ -6,9 +6,9 @@ package io.github.nucleuspowered.nucleus.internal.storage.persistence.configurat
 
 import com.google.common.reflect.TypeToken;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.GeneralDataObject;
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.UserDataObject;
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.WorldDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.GeneralDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.UserDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.WorldDataObject;
 import io.github.nucleuspowered.nucleus.internal.storage.exceptions.DataQueryException;
 import io.github.nucleuspowered.nucleus.internal.storage.queryobjects.GeneralQueryObject;
 import io.github.nucleuspowered.nucleus.internal.storage.queryobjects.UserQueryObject;

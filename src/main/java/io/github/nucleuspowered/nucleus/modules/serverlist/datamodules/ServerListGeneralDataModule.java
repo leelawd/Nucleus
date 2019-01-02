@@ -4,9 +4,9 @@
  */
 package io.github.nucleuspowered.nucleus.modules.serverlist.datamodules;
 
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularGeneralService;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 

@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import io.github.nucleuspowered.nucleus.Nucleus;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
@@ -29,15 +30,19 @@ import javax.annotation.concurrent.GuardedBy;
  */
 public abstract class DataModule<S extends ModularDataService<S>> {
 
-    private static final Map<Class<? extends DataModule<?>>, List<FieldData>> fieldData = Maps.newHashMap();
+    private static final Map<Class<? extends DataModule<?>>, List<FieldData>> FIELD_DATA = Maps.newHashMap();
     private static final Object lock = new Object();
+
+    public List<FieldData> getFieldDataFor(Class<? extends DataModule<?>> clazz) {
+        return FIELD_DATA.get(clazz);
+    }
 
     private final List<FieldData> data;
     private final Object lockingObject = new Object();
 
     @SuppressWarnings("unchecked") protected DataModule() {
         synchronized (lock) {
-            this.data = fieldData.computeIfAbsent((Class<? extends DataModule<?>>) this.getClass(), this::init);
+            this.data = FIELD_DATA.computeIfAbsent((Class<? extends DataModule<?>>) this.getClass(), this::init);
         }
     }
 
@@ -143,7 +148,7 @@ public abstract class DataModule<S extends ModularDataService<S>> {
         }
     }
 
-    private static class FieldData {
+    public static class FieldData {
 
         private final String path;
         private final TypeToken<?> clazz;
@@ -153,6 +158,18 @@ public abstract class DataModule<S extends ModularDataService<S>> {
             this.path = path;
             this.clazz = clazz;
             this.field = field;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public TypeToken<?> getClazz() {
+            return clazz;
+        }
+
+        public Field getField() {
+            return field;
         }
     }
 }

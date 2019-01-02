@@ -4,9 +4,9 @@
  */
 package io.github.nucleuspowered.nucleus.modules.fly.datamodules;
 
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 import org.spongepowered.api.data.key.Keys;
 
 public class FlyUserDataModule extends DataModule.ReferenceService<ModularUserService> {

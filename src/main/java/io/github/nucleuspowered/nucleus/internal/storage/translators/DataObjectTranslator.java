@@ -1,6 +1,10 @@
-package io.github.nucleuspowered.nucleus.internal.storage.dataobjects;
+package io.github.nucleuspowered.nucleus.internal.storage.translators;
 
 import com.google.common.reflect.TypeToken;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.AbstractDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.GeneralDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.UserDataObject;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.WorldDataObject;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
@@ -19,11 +23,26 @@ public class DataObjectTranslator implements TypeSerializer<AbstractDataObject> 
     @Nullable
     @Override
     public AbstractDataObject deserialize(@NonNull TypeToken<?> type, @NonNull ConfigurationNode value) throws ObjectMappingException {
-        return null;
+        AbstractDataObject ado = null;
+        if (type.isSupertypeOf(UserDataObject.class)) {
+            ado = new UserDataObject();
+        } else if (type.isSupertypeOf(WorldDataObject.class)) {
+            ado = new WorldDataObject();
+        } else if (type.isSupertypeOf(GeneralDataObject.class)) {
+            ado = new GeneralDataObject();
+        }
+
+        if (ado != null) {
+            ado.setBackingNode(value);
+        }
+
+        return ado;
     }
 
     @Override
     public void serialize(@NonNull TypeToken<?> type, @Nullable AbstractDataObject obj, @NonNull ConfigurationNode value) throws ObjectMappingException {
-
+        if (obj != null) {
+            value.setValue(obj.getBackingNode());
+        }
     }
 }

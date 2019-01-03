@@ -4,7 +4,7 @@
  */
 package io.github.nucleuspowered.nucleus.internal.storage.queryobjects;
 
-public class WorldQueryObject extends AbstractUUIDKeyedQueryObject {
+public class WorldQueryObject extends AbstractUUIDKeyedQueryObject<WorldQueryObject> {
 
     @Override
     public final String objectType() {

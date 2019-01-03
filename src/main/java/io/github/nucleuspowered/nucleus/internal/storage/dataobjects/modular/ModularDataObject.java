@@ -8,10 +8,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.TransientModule;
 import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.AbstractDataObject;
 import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataModule;
+import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.TransientDataModule;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
@@ -30,7 +30,7 @@ public abstract class ModularDataObject<S extends ModularDataObject<S>> extends 
     private static final Map<Class<? extends DataModule<?>>, List<FieldData>> moduleFieldData = new HashMap<>();
 
     private final Map<Class<? extends DataModule<S>>, DataModule<S>> cached = new HashMap<>();
-    private final Map<Class<? extends TransientModule<S>>, TransientModule<S>> transientCache = new HashMap<>();
+    private final Map<Class<? extends TransientDataModule<S>>, TransientDataModule<S>> transientCache = new HashMap<>();
 
     private final Object lockingObject = new Object();
 
@@ -59,7 +59,7 @@ public abstract class ModularDataObject<S extends ModularDataObject<S>> extends 
         }
     }
 
-    private static synchronized void initModuleMetadata(Class<? extends DataModule<S>> moduleClass) {
+    private static synchronized void initModuleMetadata(Class<? extends DataModule<?>> moduleClass) {
         // Get the fields.
         List<Field> fields = Arrays.stream(moduleClass.getDeclaredFields())
                 .filter(x -> x.isAnnotationPresent(DataKey.class))
@@ -78,7 +78,7 @@ public abstract class ModularDataObject<S extends ModularDataObject<S>> extends 
     }
 
     @SuppressWarnings("unchecked")
-    public final <T extends TransientModule<S>> T getTransient(Class<T> module) {
+    public final <T extends TransientDataModule<S>> T getTransient(Class<T> module) {
         if (this.transientCache.containsKey(module)) {
             return (T) this.transientCache.get(module);
         }
@@ -103,9 +103,9 @@ public abstract class ModularDataObject<S extends ModularDataObject<S>> extends 
         }
     }
 
-    abstract <T extends TransientModule<S>> Optional<T> tryGetTransient(Class<T> module);
+    abstract <T extends TransientDataModule<S>> Optional<T> tryGetTransient(Class<T> module);
 
-    @SuppressWarnings({"unchecked", "JavaReflectionMemberAccess"})
+    @SuppressWarnings({"unchecked"})
     public final <T extends DataModule<S>> T get(Class<T> module) {
         synchronized (this.lockingObject) {
             if (this.cached.containsKey(module)) {
@@ -125,7 +125,7 @@ public abstract class ModularDataObject<S extends ModularDataObject<S>> extends 
                     Nucleus.getNucleus().getLogger()
                             .warn("Attempting to construct " + module.getSimpleName() + " by reflection. Please add this to the factory.");
 
-                    if (DataModule.ReferenceService.class.isAssignableFrom(module)) {
+                    if (DataModule.Identifiable.class.isAssignableFrom(module)) {
                         Constructor s = module.getDeclaredConstructor(this.getClass());
                         s.setAccessible(true);
                         dm = (T) s.newInstance(this);
@@ -152,7 +152,7 @@ public abstract class ModularDataObject<S extends ModularDataObject<S>> extends 
         }
     }
 
-    private <T extends TransientModule<S>> void setTransient(T dataModule) {
+    private <T extends TransientDataModule<S>> void setTransient(T dataModule) {
         this.transientCache.put((Class<T>) dataModule.getClass(), dataModule);
     }
 

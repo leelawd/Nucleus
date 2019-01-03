@@ -11,6 +11,7 @@ import io.github.nucleuspowered.nucleus.configurate.ConfigurateHelper;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.ItemDataNode;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.KitConfigDataNode;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.UserCacheVersionNode;
+import io.github.nucleuspowered.nucleus.configurate.loaders.NucleusGsonConfigurationLoader;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.gson.GsonConfigurationLoader;
@@ -91,7 +92,7 @@ public class DataProviders {
             Supplier<Path> p = () -> this.plugin.getDataPath().resolve("kits.json");
             return new FileChangingConfigurateDataProvider<>(
                     this.ttmk,
-                    path -> new LazyConfigurationLoader<>(() -> getGsonBuilder().setPath(path).build()),
+                    path -> new LazyConfigurationLoader<>(() -> new NucleusGsonConfigurationLoader(getGsonBuilder().setPath(path))),
                     p);
         } catch (Exception e) {
             return null;

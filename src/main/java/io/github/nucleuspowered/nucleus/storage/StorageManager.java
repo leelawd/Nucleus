@@ -42,7 +42,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
         return this.worldService;
     }
 
-    @Nullable
+    @Override @Nullable
     public IStorageRepository<UserQueryObject, UserDataObject> getUserRepository() {
         if (this.userRepository == null) {
             // fallback to flat file
@@ -51,7 +51,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
         return this.userRepository;
     }
 
-    @Nullable
+    @Override @Nullable
     public IStorageRepository<WorldQueryObject, WorldDataObject> getWorldRepository() {
         if (this.worldRepository== null) {
             // fallback to flat file
@@ -60,7 +60,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
         return this.worldRepository;
     }
 
-    @Nullable
+    @Override @Nullable
     public IStorageRepository<GeneralQueryObject, GeneralDataObject> getGeneralRepository() {
         if (this.generalRepository == null) {
             // fallback to flat file

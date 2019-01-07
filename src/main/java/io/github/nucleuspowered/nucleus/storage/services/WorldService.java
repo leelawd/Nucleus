@@ -4,48 +4,15 @@
  */
 package io.github.nucleuspowered.nucleus.storage.services;
 
+import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.WorldDataObject;
+import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.WorldQueryObject;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.UUID;
+public class WorldService extends AbstractKeyedService<WorldQueryObject, WorldDataObject> {
 
-public class WorldService implements IStorageService<UUID, WorldQueryObject, WorldDataObject> {
-
-    @Override public Optional<WorldDataObject> get(UUID key) {
-        return Optional.empty();
+    @Override IStorageRepository<WorldQueryObject, WorldDataObject> getRepository() {
+        return Nucleus.getNucleus().getStorageManager().getWorldRepository();
     }
 
-    @Override public Optional<WorldDataObject> get(WorldQueryObject query) {
-        return Optional.empty();
-    }
-
-    @Override public Collection<WorldDataObject> getAll(WorldQueryObject query) {
-        return null;
-    }
-
-    @Override public boolean exists(UUID key) {
-        return false;
-    }
-
-    @Override public boolean exists(WorldQueryObject query) {
-        return false;
-    }
-
-    @Override public int count(WorldQueryObject query) {
-        return 0;
-    }
-
-    @Override public void save(UUID key) {
-
-    }
-
-    @Override public void saveAllInCache() {
-
-    }
-
-    @Override public void delete(UUID key) {
-
-    }
 }

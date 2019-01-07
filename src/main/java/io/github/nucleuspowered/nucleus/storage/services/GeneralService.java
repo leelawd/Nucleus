@@ -9,46 +9,40 @@ import io.github.nucleuspowered.nucleus.storage.queryobjects.GeneralQueryObject;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class GeneralService implements IStorageService<Void, GeneralQueryObject, GeneralDataObject> {
 
-    public Optional<GeneralDataObject> get() {
-        return get((Void) null);
-    }
 
-    @Override public Optional<GeneralDataObject> get(Void key) {
-        return Optional.empty();
-    }
-
-    @Override public Optional<GeneralDataObject> get(GeneralQueryObject query) {
-        return Optional.empty();
-    }
-
-    @Override public Collection<GeneralDataObject> getAll(GeneralQueryObject query) {
+    @Override public CompletableFuture<Optional<GeneralDataObject>> get(Void key) {
         return null;
     }
 
-    @Override public boolean exists(Void key) {
-        return false;
+    @Override public CompletableFuture<Optional<GeneralDataObject>> get(GeneralQueryObject query) {
+        return null;
     }
 
-    @Override public boolean exists(GeneralQueryObject query) {
-        return false;
+    @Override public CompletableFuture<Collection<GeneralDataObject>> getAll(GeneralQueryObject query) {
+        return null;
     }
 
-    @Override public int count(GeneralQueryObject query) {
-        return 1;
+    @Override public CompletableFuture<Boolean> exists(Void key) {
+        return null;
     }
 
-    @Override public void save(Void key) {
-
+    @Override public CompletableFuture<Boolean> exists(GeneralQueryObject query) {
+        return null;
     }
 
-    @Override public void saveAllInCache() {
-
+    @Override public CompletableFuture<Integer> count(GeneralQueryObject query) {
+        return null;
     }
 
-    @Override public void delete(Void key) {
+    @Override public CompletableFuture<Void> save(Void key, GeneralDataObject value) {
+        return null;
+    }
 
+    @Override public CompletableFuture<Void> delete(Void key) {
+        return null;
     }
 }

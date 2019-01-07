@@ -9,25 +9,24 @@ import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public interface IStorageService<K, Q extends IQueryObject<K>, D extends AbstractDataObject> {
 
-    Optional<D> get(K key);
+    CompletableFuture<Optional<D>> get(K key);
 
-    Optional<D> get(Q query);
+    CompletableFuture<Optional<D>> get(Q query);
 
-    Collection<D> getAll(Q query);
+    CompletableFuture<Collection<D>> getAll(Q query);
 
-    boolean exists(K key);
+    CompletableFuture<Boolean> exists(K key);
 
-    boolean exists(Q query);
+    CompletableFuture<Boolean> exists(Q query);
 
-    int count(Q query);
+    CompletableFuture<Integer> count(Q query);
 
-    void save(K key);
+    CompletableFuture<Void> save(K key, D value);
 
-    void saveAllInCache();
-
-    void delete(K key);
+    CompletableFuture<Void> delete(K key);
 
 }

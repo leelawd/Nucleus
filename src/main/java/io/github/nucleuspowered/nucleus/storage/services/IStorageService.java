@@ -11,6 +11,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * The entry point into the storage system. All storage checks are not dependent on the main thread,
+ * that is, they should never use game objects.
+ */
 public interface IStorageService<K, Q extends IQueryObject<K>, D extends AbstractDataObject> {
 
     CompletableFuture<Optional<D>> get(K key);

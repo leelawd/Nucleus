@@ -6,9 +6,9 @@ package io.github.nucleuspowered.nucleus.modules.ignore.datamodules;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 
 import java.util.List;
 import java.util.UUID;

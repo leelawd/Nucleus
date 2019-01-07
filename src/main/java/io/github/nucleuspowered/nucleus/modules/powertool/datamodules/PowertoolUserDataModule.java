@@ -7,9 +7,9 @@ package io.github.nucleuspowered.nucleus.modules.powertool.datamodules;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 import org.spongepowered.api.item.ItemType;
 
 import java.util.List;

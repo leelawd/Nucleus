@@ -6,9 +6,9 @@ package io.github.nucleuspowered.nucleus.modules.nickname.datamodules;
 
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
+import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
 import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
-import io.github.nucleuspowered.nucleus.internal.storage.dataobjects.modular.modules.DataKey;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.modules.nickname.services.NicknameService;
 import ninja.leaping.configurate.ConfigurationNode;

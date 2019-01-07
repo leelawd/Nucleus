@@ -63,6 +63,8 @@ import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.core.config.WarmupConfig;
 import io.github.nucleuspowered.nucleus.modules.core.datamodules.UniqueUserCountTransientModule;
 import io.github.nucleuspowered.nucleus.modules.core.services.UUIDChangeService;
+import io.github.nucleuspowered.nucleus.storage.IStorageManager;
+import io.github.nucleuspowered.nucleus.storage.StorageManager;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.slf4j.Logger;
@@ -123,6 +125,7 @@ public class NucleusPlugin extends Nucleus {
     private static final String divider = "+------------------------------------------------------------+";
     private static final int length = divider.length() - 2;
 
+    private final IStorageManager storageManager;
     private final PluginContainer pluginContainer;
     private Instant gameStartedTime = null;
     private boolean hasStarted = false;
@@ -235,6 +238,7 @@ public class NucleusPlugin extends Nucleus {
 
         this.dataDir = sp;
         this.pluginContainer = container;
+        this.storageManager = new StorageManager();
     }
 
     @Listener
@@ -405,6 +409,13 @@ public class NucleusPlugin extends Nucleus {
         }
     }
 
+    /**
+     * Initialises the storage manager
+     */
+    private void initStorageManager() {
+
+    }
+
     @Listener(order = Order.FIRST)
     public void onInit(GameInitializationEvent event) {
         if (this.isErrored != null) {
@@ -495,6 +506,8 @@ public class NucleusPlugin extends Nucleus {
     private void allChange() throws IOException {
         resetDataPath(true);
         this.generalService.changeFile();
+        initStorageManager();
+
         this.kitService.changeFile();
         this.nameBanService.changeFile();
         this.userCacheService.changeFile();
@@ -984,6 +997,10 @@ public class NucleusPlugin extends Nucleus {
 
     @Override public boolean isPrintingSavesAndLoads() {
         return this.savesandloads;
+    }
+
+    @Override public IStorageManager getStorageManager() {
+        return this.storageManager;
     }
 
     private void disable() {

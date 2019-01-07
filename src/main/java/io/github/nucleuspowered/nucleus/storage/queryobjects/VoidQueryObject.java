@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class VoidQueryObject implements IQueryObject<Void> {
+public abstract class VoidQueryObject implements IQueryObject {
 
     @Override
     public Map<QueryKey<?>, List<?>> queries() {

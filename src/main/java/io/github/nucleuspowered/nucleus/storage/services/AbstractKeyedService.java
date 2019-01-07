@@ -3,7 +3,6 @@ package io.github.nucleuspowered.nucleus.storage.services;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
-import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
 
 import java.util.Collection;
@@ -12,11 +11,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractKeyedService<Q extends IQueryObject<UUID>, D extends AbstractDataObject> implements IStorageService<UUID, Q, D> {
+public abstract class AbstractKeyedService<Q extends IQueryObject, D extends AbstractDataObject> implements IStorageService<UUID, Q, D> {
 
     final Cache<UUID, D> cache = Caffeine.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
-
-    abstract IStorageRepository<Q, D> getRepository();
 
     @Override public CompletableFuture<Optional<D>> get(UUID key) {
         return CompletableFuture.completedFuture(Optional.empty());

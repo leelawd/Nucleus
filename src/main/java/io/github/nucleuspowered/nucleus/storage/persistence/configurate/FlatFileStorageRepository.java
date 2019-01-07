@@ -5,9 +5,8 @@
 package io.github.nucleuspowered.nucleus.storage.persistence.configurate;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.TypeToken;
-import io.github.nucleuspowered.nucleus.configurate.ConfigurateHelper;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataDeleteException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataLoadException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataQueryException;
@@ -15,27 +14,34 @@ import io.github.nucleuspowered.nucleus.storage.exceptions.DataSaveException;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
 import io.github.nucleuspowered.nucleus.util.ThrownFunction;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.ConfigurationOptions;
-import ninja.leaping.configurate.gson.GsonConfigurationLoader;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class FlatFileStorageRepository<Q extends IQueryObject, R extends AbstractDataObject> implements IStorageRepository<Q, R> {
+public class FlatFileStorageRepository<Q extends IQueryObject> implements IStorageRepository<Q> {
 
     private final ThrownFunction<Q, Path, DataQueryException> FILENAME_RESOLVER;
-    private final TypeToken<R> DATA_OBJECT_TYPE_TOKEN;
 
-    FlatFileStorageRepository(ThrownFunction<Q, Path, DataQueryException> filename_resolver, TypeToken<R> data_object_type_token) {
+    FlatFileStorageRepository(ThrownFunction<Q, Path, DataQueryException> filename_resolver) {
         FILENAME_RESOLVER = filename_resolver;
-        DATA_OBJECT_TYPE_TOKEN = data_object_type_token;
     }
 
     @Override
@@ -49,7 +55,7 @@ public class FlatFileStorageRepository<Q extends IQueryObject, R extends Abstrac
     }
 
     @Override
-    public Optional<R> get(Q query) throws DataLoadException {
+    public Optional<JsonObject> get(Q query) throws DataLoadException {
         Path path;
         try {
             path = existsInternal(query);
@@ -57,10 +63,16 @@ public class FlatFileStorageRepository<Q extends IQueryObject, R extends Abstrac
             throw new DataLoadException("Query not valid", e);
         }
 
+        return get(path);
+    }
+
+    Optional<JsonObject> get(@Nullable Path path) throws DataLoadException {
         if (path != null) {
             try {
-                ConfigurationNode node = DataConfigurationLoaderWrapper.INSTANCE.loadFrom(path);
-                return Optional.ofNullable(node.getValue(DATA_OBJECT_TYPE_TOKEN));
+                // Write the new file
+                try (BufferedReader reader = Files.newBufferedReader(path)) {
+                    return Optional.of(new JsonPrimitive(reader.lines().collect(Collectors.joining())).getAsJsonObject());
+                }
             } catch (Exception e) {
                 throw new DataLoadException("Could not load file at " + path.toAbsolutePath().toString(), e);
             }
@@ -70,21 +82,22 @@ public class FlatFileStorageRepository<Q extends IQueryObject, R extends Abstrac
     }
 
     @Override
-    public Collection<R> getAll(Q query) throws DataLoadException {
-        return get(query).map(ImmutableSet::of).orElseGet(ImmutableSet::of);
-    }
-
-    @Override
     public int count(Q query) {
         return exists(query) ? 1 : 0;
     }
 
     @Override
-    public void save(Q query, R object) throws DataSaveException {
+    public void save(Q query, JsonObject object) throws DataSaveException {
         try {
-            ConfigurationNode node = DataConfigurationLoaderWrapper.INSTANCE.createEmptyNode();
-            node.setValue(DATA_OBJECT_TYPE_TOKEN, object);
-            DataConfigurationLoaderWrapper.INSTANCE.saveTo(FILENAME_RESOLVER.apply(query), node);
+            Path file = FILENAME_RESOLVER.apply(query);
+
+            // Backup the file
+            Files.copy(file, file.resolveSibling(file.getFileName() + ".bak"), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+
+            // Write the new file
+            try (BufferedWriter writer = Files.newBufferedWriter(file, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+                writer.write(object.toString());
+            }
         } catch (Exception ex) {
             throw new DataSaveException("Could not save " + query.toString(), ex);
         }
@@ -92,7 +105,7 @@ public class FlatFileStorageRepository<Q extends IQueryObject, R extends Abstrac
 
     @Override
     public void delete(Q query) throws DataDeleteException {
-        Path filename = null;
+        Path filename;
         try {
             filename = FILENAME_RESOLVER.apply(query);
         } catch (DataQueryException e) {
@@ -121,46 +134,98 @@ public class FlatFileStorageRepository<Q extends IQueryObject, R extends Abstrac
         return null;
     }
 
-    protected static final class DataConfigurationLoaderWrapper {
+    public static class UUIDKeyed<Q extends IQueryObject.Keyed<UUID>> extends FlatFileStorageRepository<Q>
+            implements IStorageRepository.UUIDKeyed<Q> {
 
-        protected static DataConfigurationLoaderWrapper INSTANCE = new DataConfigurationLoaderWrapper();
-        private static final Object lockingObject = new Object();
+        private final Supplier<Path> BASE_PATH;
+        private final Function<UUID, Path> UUID_FILENAME_RESOLVER;
 
-        private DataConfigurationLoaderWrapper() { }
+        UUIDKeyed(ThrownFunction<Q, Path, DataQueryException> filename_resolver,
+                Function<UUID, Path> uuid_filename_resolver,
+                Supplier<Path> basePath) {
+            super(filename_resolver);
+            this.UUID_FILENAME_RESOLVER = uuid_filename_resolver;
+            this.BASE_PATH = basePath;
+        }
 
-        private final ThreadLocal<Path> path = ThreadLocal.withInitial(() -> null);
+        @Override
+        public boolean exists(UUID uuid) {
+            return existsInternal(uuid) != null;
+        }
 
-        private final GsonConfigurationLoader gcl = GsonConfigurationLoader.builder()
-                .setDefaultOptions(ConfigurateHelper.setOptions(ConfigurationOptions.defaults()))
-                .setSource(() -> Files.newBufferedReader(this.path.get()))
-                .setSink(() -> Files.newBufferedWriter(this.path.get(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING))
-                .build();
+        @Override
+        public Optional<JsonObject> get(UUID uuid) throws DataLoadException, DataQueryException {
+            return get(existsInternal(uuid));
+        }
 
-        final ConfigurationNode loadFrom(Path path) throws IOException {
+        @Override
+        public Collection<UUID> getAllKeys() throws DataLoadException {
+            return ImmutableSet.copyOf(getAllKeysInternal());
+        }
+
+        @Override
+        public Collection<UUID> getAllKeys(Q query) throws DataLoadException, DataQueryException {
+            if (query.restrictedToKeys()) {
+                getAllKeysInternal().retainAll(query.keys());
+            }
+
+            throw new DataQueryException("There must only a key", query);
+        }
+
+        private Set<UUID> getAllKeysInternal() throws DataLoadException {
+            UUIDFileWalker u = new UUIDFileWalker();
             try {
-                this.path.set(path);
-                synchronized (lockingObject) {
-                    return this.gcl.load();
-                }
-            } finally {
-                this.path.remove();
+                Files.walkFileTree(BASE_PATH.get(), u);
+                return u.uuidSet;
+            } catch (IOException e) {
+                throw new DataLoadException("Could not walk the file tree", e);
             }
         }
 
-        final void saveTo(Path path, ConfigurationNode node) throws IOException {
-            try {
-                this.path.set(path);
-                synchronized (lockingObject) {
-                    this.gcl.save(node);
+        @Nullable
+        private Path existsInternal(UUID uuid) {
+            Path path = UUID_FILENAME_RESOLVER.apply(uuid);
+            if (Files.exists(UUID_FILENAME_RESOLVER.apply(uuid))) {
+                return path;
+            }
+
+            return null;
+        }
+
+        private class UUIDFileWalker extends SimpleFileVisitor<Path> {
+
+            private final Set<UUID> uuidSet = new HashSet<>();
+
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                if (dir.getFileName().toString().length() == 2) {
+                    return super.preVisitDirectory(dir, attrs);
                 }
-            } finally {
-                this.path.remove();
+
+                return FileVisitResult.SKIP_SUBTREE;
+            }
+
+            // Print information about
+            // each type of file.
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
+                if (attr.isRegularFile()) {
+                    if (file.endsWith(".json")) {
+                        String f = file.getFileName().toString();
+                        if (f.length() == 41 && f.startsWith(file.getParent().toString().toLowerCase())) {
+                            try {
+                                this.uuidSet.add(UUID.fromString(f.substring(0, 36)));
+                            } catch (Exception e) {
+                                // ignored
+                            }
+                        }
+                    }
+                }
+
+                return FileVisitResult.CONTINUE;
             }
         }
 
-        final ConfigurationNode createEmptyNode() {
-            return this.gcl.createEmptyNode();
-        }
     }
 
 }

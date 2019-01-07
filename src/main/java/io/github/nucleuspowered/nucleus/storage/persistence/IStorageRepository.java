@@ -4,7 +4,7 @@
  */
 package io.github.nucleuspowered.nucleus.storage.persistence;
 
-import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
+import com.google.gson.JsonObject;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataDeleteException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataLoadException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataQueryException;
@@ -14,14 +14,14 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Base class for interfacing with storage engines
  *
  * @param <Q> The query object
- * @param <R> The result object
  */
-public interface IStorageRepository<Q extends IQueryObject, R extends AbstractDataObject> {
+public interface IStorageRepository<Q extends IQueryObject> {
 
     /**
      * Whether this storage mechanism supports complex queries
@@ -46,16 +46,7 @@ public interface IStorageRepository<Q extends IQueryObject, R extends AbstractDa
      * @param query The query
      * @return The object, if it exists
      */
-    Optional<R> get(Q query) throws DataLoadException, DataQueryException;
-
-    /**
-     * Gets the objects that satisfy the {@code query}
-     *
-     * @param query The query
-     * @return The objects, if any exist, or an empty collection if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
-     *         just a key.
-     */
-    Collection<R> getAll(Q query) throws DataLoadException;
+    Optional<JsonObject> get(Q query) throws DataLoadException, DataQueryException;
 
     /**
      * Gets the number of objects that satisfies the query.
@@ -72,7 +63,7 @@ public interface IStorageRepository<Q extends IQueryObject, R extends AbstractDa
      * @param query The query that indicates the location to store the object in
      * @param object The object to save
      */
-    void save(Q query, R object) throws ObjectMappingException, DataSaveException;
+    void save(Q query, JsonObject object) throws ObjectMappingException, DataSaveException;
 
     /**
      * Deletes the object at the supplied {@code query}
@@ -95,4 +86,45 @@ public interface IStorageRepository<Q extends IQueryObject, R extends AbstractDa
      * consider data consistency accordingly.</p>
      */
     void shutdown();
+
+    /**
+     * Interface for repositories that should have unique {@link UUID}s
+     *
+     * @param <Q> The query object
+     */
+    interface UUIDKeyed<Q extends IQueryObject.Keyed<UUID>> {
+
+        /**
+         * Gets whether an object specified by the {@link UUID} exists.
+         *
+         * @param uuid The {@link UUID}.
+         * @return Whether the object exists.
+         */
+        boolean exists(UUID uuid);
+
+        /**
+         * Gets an object based on the {@code query}
+         *
+         * @param uuid The {@link UUID}
+         * @return The object, if it exists
+         */
+        Optional<JsonObject> get(UUID uuid) throws DataLoadException, DataQueryException;
+
+        /**
+         * Gets all the stored keys
+         *
+         * @return The objects, if any exist, or an empty collection if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
+         *         just a key.
+         */
+        Collection<UUID> getAllKeys() throws DataLoadException;
+
+        /**
+         * Gets the objects that satisfy the {@code query}
+         *
+         * @param query The query
+         * @return The objects, if any exist, or an empty collection if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
+         *         just a key.
+         */
+        Collection<UUID> getAllKeys(Q query) throws DataLoadException, DataQueryException;
+    }
 }

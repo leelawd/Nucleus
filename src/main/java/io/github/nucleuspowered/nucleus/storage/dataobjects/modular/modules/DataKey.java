@@ -16,12 +16,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataKey {
 
-    String migrateFrom() default "";
-
     /**
      * The name of the key for this piece of data
      *
      * @return The name of the key.
      */
-    String[] value();
+    String value();
 }

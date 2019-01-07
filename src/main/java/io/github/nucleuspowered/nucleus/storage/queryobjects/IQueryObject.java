@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface IQueryObject<K> {
+public interface IQueryObject {
 
     /**
      * Any queries that aren't the primary key.
@@ -42,7 +42,7 @@ public interface IQueryObject<K> {
      *
      * @param <K> The type of key
      */
-    interface Keyed<K> extends IQueryObject<K> {
+    interface Keyed<K> extends IQueryObject {
 
         /**
          * The type of primary key

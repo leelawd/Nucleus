@@ -2,7 +2,7 @@
  * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
  * at the root of this project for more details.
  */
-package io.github.nucleuspowered.nucleus.storage.translators;
+package io.github.nucleuspowered.nucleus.storage.dataaccess.configurate;
 
 import com.google.common.reflect.TypeToken;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;

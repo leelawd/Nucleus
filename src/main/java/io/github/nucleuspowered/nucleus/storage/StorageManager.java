@@ -1,9 +1,10 @@
+/*
+ * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
+ * at the root of this project for more details.
+ */
 package io.github.nucleuspowered.nucleus.storage;
 
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.GeneralDataObject;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.WorldDataObject;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.persistence.configurate.FlatFileStorageRepositoryFactory;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.GeneralQueryObject;
@@ -19,9 +20,9 @@ import javax.inject.Singleton;
 @Singleton
 public final class StorageManager implements IStorageManager, Reloadable {
 
-    @Nullable private IStorageRepository<UserQueryObject, UserDataObject> userRepository;
-    @Nullable private IStorageRepository<WorldQueryObject, WorldDataObject> worldRepository;
-    @Nullable private IStorageRepository<GeneralQueryObject, GeneralDataObject> generalRepository;
+    @Nullable private IStorageRepository<UserQueryObject> userRepository;
+    @Nullable private IStorageRepository<WorldQueryObject> worldRepository;
+    @Nullable private IStorageRepository<GeneralQueryObject> generalRepository;
 
     private final GeneralService generalService = new GeneralService();
     private final UserService userService = new UserService();
@@ -43,7 +44,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override @Nullable
-    public IStorageRepository<UserQueryObject, UserDataObject> getUserRepository() {
+    public IStorageRepository<UserQueryObject> getUserRepository() {
         if (this.userRepository == null) {
             // fallback to flat file
             this.userRepository = FlatFileStorageRepositoryFactory.INSTANCE.userRepository();
@@ -52,7 +53,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override @Nullable
-    public IStorageRepository<WorldQueryObject, WorldDataObject> getWorldRepository() {
+    public IStorageRepository<WorldQueryObject> getWorldRepository() {
         if (this.worldRepository== null) {
             // fallback to flat file
             this.worldRepository = FlatFileStorageRepositoryFactory.INSTANCE.worldRepository();
@@ -61,7 +62,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override @Nullable
-    public IStorageRepository<GeneralQueryObject, GeneralDataObject> getGeneralRepository() {
+    public IStorageRepository<GeneralQueryObject> getGeneralRepository() {
         if (this.generalRepository == null) {
             // fallback to flat file
             this.generalRepository = FlatFileStorageRepositoryFactory.INSTANCE.generalRepository();
@@ -70,7 +71,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override
-    public void onReload() throws Exception {
+    public void onReload() {
         // TODO: Data registry
         if (this.generalRepository != null) {
             this.generalRepository.shutdown();

@@ -1,8 +1,9 @@
+/*
+ * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
+ * at the root of this project for more details.
+ */
 package io.github.nucleuspowered.nucleus.storage;
 
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.GeneralDataObject;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.WorldDataObject;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.GeneralQueryObject;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.UserQueryObject;
@@ -21,9 +22,9 @@ public interface IStorageManager {
 
     WorldService getWorldService();
 
-    @Nullable IStorageRepository<UserQueryObject, UserDataObject> getUserRepository();
+    @Nullable IStorageRepository<UserQueryObject> getUserRepository();
 
-    @Nullable IStorageRepository<WorldQueryObject, WorldDataObject> getWorldRepository();
+    @Nullable IStorageRepository<WorldQueryObject> getWorldRepository();
 
-    @Nullable IStorageRepository<GeneralQueryObject, GeneralDataObject> getGeneralRepository();
+    @Nullable IStorageRepository<GeneralQueryObject> getGeneralRepository();
 }

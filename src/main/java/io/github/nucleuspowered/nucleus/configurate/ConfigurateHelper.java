@@ -19,8 +19,8 @@ import io.github.nucleuspowered.nucleus.configurate.typeserialisers.NucleusTextT
 import io.github.nucleuspowered.nucleus.configurate.typeserialisers.Vector3dTypeSerialiser;
 import io.github.nucleuspowered.nucleus.configurate.wrappers.NucleusItemStackSnapshot;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTextTemplateImpl;
+import io.github.nucleuspowered.nucleus.storage.dataaccess.configurate.DataObjectTranslator;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
-import io.github.nucleuspowered.nucleus.storage.translators.DataObjectTranslator;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 

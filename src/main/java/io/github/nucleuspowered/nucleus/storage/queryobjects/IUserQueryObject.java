@@ -4,11 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.storage.queryobjects;
 
-public class GeneralQueryObject extends VoidQueryObject {
+import java.util.UUID;
 
-    @Override
-    public String objectType() {
-        return "general";
-    }
+public interface IUserQueryObject extends IQueryObject<UUID, IUserQueryObject> {
 
 }

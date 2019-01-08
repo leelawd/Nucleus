@@ -5,12 +5,13 @@
 package io.github.nucleuspowered.nucleus.storage;
 
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.GeneralQueryObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.UserQueryObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.WorldQueryObject;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IWorldQueryObject;
 import io.github.nucleuspowered.nucleus.storage.services.GeneralService;
 import io.github.nucleuspowered.nucleus.storage.services.UserService;
 import io.github.nucleuspowered.nucleus.storage.services.WorldService;
+
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -22,9 +23,9 @@ public interface IStorageManager {
 
     WorldService getWorldService();
 
-    @Nullable IStorageRepository<UserQueryObject> getUserRepository();
+    @Nullable IStorageRepository.Keyed<UUID, IUserQueryObject> getUserRepository();
 
-    @Nullable IStorageRepository<WorldQueryObject> getWorldRepository();
+    @Nullable IStorageRepository.Keyed<UUID, IWorldQueryObject> getWorldRepository();
 
-    @Nullable IStorageRepository<GeneralQueryObject> getGeneralRepository();
+    @Nullable IStorageRepository.Single getGeneralRepository();
 }

@@ -8,10 +8,9 @@ import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataQueryException;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepositoryFactory;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.GeneralQueryObject;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.UserQueryObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.WorldQueryObject;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IWorldQueryObject;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -26,16 +25,16 @@ public final class FlatFileStorageRepositoryFactory implements IStorageRepositor
     private FlatFileStorageRepositoryFactory() {}
 
     @Override
-    public IStorageRepository<UserQueryObject> userRepository() {
+    public IStorageRepository.Keyed<UUID, IUserQueryObject> userRepository() {
         return repository(ud);
     }
 
     @Override
-    public IStorageRepository<WorldQueryObject> worldRepository() {
+    public IStorageRepository.Keyed<UUID, IWorldQueryObject> worldRepository() {
         return repository(wd);
     }
 
-    private <Q extends IQueryObject.Keyed<UUID>> IStorageRepository<Q> repository(final String p) {
+    private <R extends IQueryObject<UUID, R>> IStorageRepository.Keyed<UUID, R> repository(final String p) {
         return new FlatFileStorageRepository.UUIDKeyed<>(query -> {
             if (query.keys().size() == 1) {
                 Collection<UUID> uuids = query.keys();
@@ -50,8 +49,8 @@ public final class FlatFileStorageRepositoryFactory implements IStorageRepositor
     }
 
     @Override
-    public IStorageRepository<GeneralQueryObject> generalRepository() {
-        return new FlatFileStorageRepository<>(query -> Nucleus.getNucleus().getDataPath().resolve("general.json"));
+    public IStorageRepository.Single generalRepository() {
+        return new FlatFileStorageRepository.Single(() -> Nucleus.getNucleus().getDataPath().resolve("general.json"));
     }
 
     @Override public String getId() {

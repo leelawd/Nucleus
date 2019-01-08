@@ -10,7 +10,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class QueryKey<T> {
+/**
+ * A key used for setting up queries.
+ *
+ * @param <T> The type of object the key is associated with
+ * @param <Q> The {@link IQueryObject} this can be stored on
+ */
+public class QueryKey<T, Q extends IQueryObject<?, Q>> {
 
     private final String key;
 

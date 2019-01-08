@@ -10,62 +10,48 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface IQueryObject {
+public interface IQueryObject<K, T extends IQueryObject<?, T>> {
 
     /**
      * Any queries that aren't the primary key.
      *
-     * <p>Ensure {@link IStorageRepository#supportsNonKeyQueries()} is true if using this</p>
+     * <p>Ensure {@link IStorageRepository.Keyed#supportsNonKeyQueries()} is true if using this</p>
      *
      * @return
      */
-    Map<QueryKey<?>, List<?>> queries();
+    Map<QueryKey<?, T>, List<?>> queries();
 
     /**
      * Adds a constraint to the query
      *
      * @param key The key to add the constraint to
      * @param value The value of the constraint
-     * @param <T> The type of the constraint
+     * @param <R> The type of the constraint
      */
-    <T> void addConstraint(QueryKey<T> key, T value);
+    <R> void addConstraint(QueryKey<R, T> key, R value);
 
     /**
-     * The type of object that is to be stored.
+     * The type of primary key
      *
-     * @return The type of object
+     * @return The class of the key type
      */
-    String objectType();
+    Class<K> keyType();
 
     /**
-     * Indicates that the data repository is keyed.
+     * Keys to restrict to
      *
-     * @param <K> The type of key
+     * @return The keys to restrict to
      */
-    interface Keyed<K> extends IQueryObject {
+    Collection<K> keys();
 
-        /**
-         * The type of primary key
-         *
-         * @return The class of the key type
-         */
-        Class<K> keyType();
-
-        /**
-         * Keys to restrict to
-         *
-         * @return The keys to restrict to
-         */
-        Collection<K> keys();
-
-        /**
-         * Whether the query is dependent on keys.
-         *
-         * @return The keys.
-         */
-        default boolean restrictedToKeys() {
-            return !keys().isEmpty();
-        }
-
+    /**
+     * Whether the query is dependent on keys.
+     *
+     * @return The keys.
+     */
+    default boolean restrictedToKeys() {
+        return !keys().isEmpty();
     }
+
 }
+

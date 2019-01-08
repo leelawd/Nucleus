@@ -36,35 +36,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-public class FlatFileStorageRepository<Q extends IQueryObject> implements IStorageRepository<Q> {
-
-    private final ThrownFunction<Q, Path, DataQueryException> FILENAME_RESOLVER;
-
-    FlatFileStorageRepository(ThrownFunction<Q, Path, DataQueryException> filename_resolver) {
-        FILENAME_RESOLVER = filename_resolver;
-    }
-
-    @Override
-    public boolean exists(Q query) {
-        try {
-            return existsInternal(query) != null;
-        } catch (DataQueryException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public Optional<JsonObject> get(Q query) throws DataLoadException {
-        Path path;
-        try {
-            path = existsInternal(query);
-        } catch (Exception e) {
-            throw new DataLoadException("Query not valid", e);
-        }
-
-        return get(path);
-    }
+abstract class FlatFileStorageRepository implements IStorageRepository {
 
     Optional<JsonObject> get(@Nullable Path path) throws DataLoadException {
         if (path != null) {
@@ -81,16 +53,8 @@ public class FlatFileStorageRepository<Q extends IQueryObject> implements IStora
         return Optional.empty();
     }
 
-    @Override
-    public int count(Q query) {
-        return exists(query) ? 1 : 0;
-    }
-
-    @Override
-    public void save(Q query, JsonObject object) throws DataSaveException {
+    void save(Path file, JsonObject object) throws DataSaveException {
         try {
-            Path file = FILENAME_RESOLVER.apply(query);
-
             // Backup the file
             Files.copy(file, file.resolveSibling(file.getFileName() + ".bak"), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
 
@@ -99,23 +63,7 @@ public class FlatFileStorageRepository<Q extends IQueryObject> implements IStora
                 writer.write(object.toString());
             }
         } catch (Exception ex) {
-            throw new DataSaveException("Could not save " + query.toString(), ex);
-        }
-    }
-
-    @Override
-    public void delete(Q query) throws DataDeleteException {
-        Path filename;
-        try {
-            filename = FILENAME_RESOLVER.apply(query);
-        } catch (DataQueryException e) {
-            throw new DataDeleteException("Could not find file based on query " + query.toString(), e);
-        }
-
-        try {
-            Files.delete(filename);
-        } catch (IOException e) {
-            throw new DataDeleteException("Could not delete " + filename, e);
+            throw new DataSaveException("Could not save " + file.toString(), ex);
         }
     }
 
@@ -124,28 +72,65 @@ public class FlatFileStorageRepository<Q extends IQueryObject> implements IStora
         // nothing to do
     }
 
-    @Nullable
-    private Path existsInternal(Q query) throws DataQueryException {
-        Path path = FILENAME_RESOLVER.apply(query);
-        if (Files.exists(FILENAME_RESOLVER.apply(query))) {
-            return path;
+    static class Single extends FlatFileStorageRepository implements IStorageRepository.Single {
+
+        private final Supplier<Path> FILENAME_RESOLVER;
+
+        Single(Supplier<Path> filename_resolver) {
+            this.FILENAME_RESOLVER = filename_resolver;
         }
 
-        return null;
+        @Override
+        public Optional<JsonObject> get() throws DataLoadException, DataQueryException {
+            if (Files.exists(FILENAME_RESOLVER.get())) {
+                return get(FILENAME_RESOLVER.get());
+            }
+
+            return Optional.empty();
+        }
+
+        @Override
+        public void save(JsonObject object) throws DataSaveException {
+            save(FILENAME_RESOLVER.get(), object);
+        }
     }
 
-    public static class UUIDKeyed<Q extends IQueryObject.Keyed<UUID>> extends FlatFileStorageRepository<Q>
-            implements IStorageRepository.UUIDKeyed<Q> {
+    static class UUIDKeyed<Q extends IQueryObject<UUID, Q>>
+            extends FlatFileStorageRepository
+            implements Keyed<UUID, Q> {
 
+        private final ThrownFunction<Q, Path, DataQueryException> FILENAME_RESOLVER;
         private final Supplier<Path> BASE_PATH;
         private final Function<UUID, Path> UUID_FILENAME_RESOLVER;
 
         UUIDKeyed(ThrownFunction<Q, Path, DataQueryException> filename_resolver,
                 Function<UUID, Path> uuid_filename_resolver,
                 Supplier<Path> basePath) {
-            super(filename_resolver);
+            this.FILENAME_RESOLVER = filename_resolver;
             this.UUID_FILENAME_RESOLVER = uuid_filename_resolver;
             this.BASE_PATH = basePath;
+        }
+
+        @Override
+        public boolean exists(Q query) {
+            try {
+                return existsInternal(query) != null;
+            } catch (DataQueryException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        public Optional<JsonObject> get(Q query) throws DataLoadException {
+            Path path;
+            try {
+                path = existsInternal(query);
+            } catch (Exception e) {
+                throw new DataLoadException("Query not valid", e);
+            }
+
+            return get(path);
         }
 
         @Override
@@ -186,6 +171,48 @@ public class FlatFileStorageRepository<Q extends IQueryObject> implements IStora
         private Path existsInternal(UUID uuid) {
             Path path = UUID_FILENAME_RESOLVER.apply(uuid);
             if (Files.exists(UUID_FILENAME_RESOLVER.apply(uuid))) {
+                return path;
+            }
+
+            return null;
+        }
+
+
+        @Override
+        public int count(Q query) {
+            return exists(query) ? 1 : 0;
+        }
+
+        @Override
+        public void save(Q query, JsonObject object) throws DataSaveException {
+            try {
+                Path file = FILENAME_RESOLVER.apply(query);
+                save(file, object);
+            } catch (DataQueryException ex) {
+                throw new DataSaveException("Could not save " + query.toString(), ex);
+            }
+        }
+
+        @Override
+        public void delete(Q query) throws DataDeleteException {
+            Path filename;
+            try {
+                filename = FILENAME_RESOLVER.apply(query);
+            } catch (DataQueryException e) {
+                throw new DataDeleteException("Could not find file based on query " + query.toString(), e);
+            }
+
+            try {
+                Files.delete(filename);
+            } catch (IOException e) {
+                throw new DataDeleteException("Could not delete " + filename, e);
+            }
+        }
+
+        @Nullable
+        private Path existsInternal(Q query) throws DataQueryException {
+            Path path = FILENAME_RESOLVER.apply(query);
+            if (Files.exists(FILENAME_RESOLVER.apply(query))) {
                 return path;
             }
 

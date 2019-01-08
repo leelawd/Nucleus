@@ -4,11 +4,6 @@
  */
 package io.github.nucleuspowered.nucleus.storage.queryobjects;
 
-public class UserQueryObject extends AbstractUUIDKeyedQueryObject<UserQueryObject> {
-
-    @Override
-    public final String objectType() {
-        return "userdata";
-    }
+public class UserQueryObject extends AbstractUUIDKeyedQueryObject<IUserQueryObject> implements IUserQueryObject {
 
 }

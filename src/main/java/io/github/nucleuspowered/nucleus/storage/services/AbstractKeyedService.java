@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractKeyedService<Q extends IQueryObject, D extends AbstractDataObject> implements IStorageService<UUID, Q, D> {
+public abstract class AbstractKeyedService<Q extends IQueryObject, D extends AbstractDataObject> implements IStorageService.Keyed<UUID, Q, D> {
 
     final Cache<UUID, D> cache = Caffeine.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 

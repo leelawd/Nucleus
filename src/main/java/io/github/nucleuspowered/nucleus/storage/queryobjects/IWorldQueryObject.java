@@ -4,6 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.storage.queryobjects;
 
-public class WorldQueryObject extends AbstractUUIDKeyedQueryObject<IWorldQueryObject> implements IWorldQueryObject {
+import java.util.UUID;
+
+public interface IWorldQueryObject extends IQueryObject<UUID, IWorldQueryObject> {
 
 }

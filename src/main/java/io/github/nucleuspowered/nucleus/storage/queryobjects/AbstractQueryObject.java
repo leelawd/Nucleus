@@ -10,24 +10,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractQueryObject<K> implements IQueryObject {
+public abstract class AbstractQueryObject<K, T extends IQueryObject<K, T>> implements IQueryObject<K, T> {
 
-    private final Map<QueryKey<?>, List<?>> queryKeyObjectMap = new HashMap<>();
+    private final Map<QueryKey<?, T>, List<?>> queryKeyObjectMap = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    public <T> void addConstraint(QueryKey<T> key, T value) {
+    public <R> void addConstraint(QueryKey<R, T> key, R value) {
         this.queryKeyObjectMap.compute(key, (k, oldValue) -> {
             if (oldValue == null) {
                 oldValue = k.createList();
             }
 
-            ((List<T>) oldValue).add(value);
+            ((List<R>) oldValue).add(value);
             return oldValue;
         });
     }
 
     @Override
-    public Map<QueryKey<?>, List<?>> queries() {
+    public Map<QueryKey<?, T>, List<?>> queries() {
         return ImmutableMap.copyOf(this.queryKeyObjectMap);
     }
 }

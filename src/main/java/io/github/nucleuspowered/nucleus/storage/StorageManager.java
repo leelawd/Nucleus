@@ -7,12 +7,13 @@ package io.github.nucleuspowered.nucleus.storage;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.persistence.configurate.FlatFileStorageRepositoryFactory;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.GeneralQueryObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.UserQueryObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.WorldQueryObject;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IWorldQueryObject;
 import io.github.nucleuspowered.nucleus.storage.services.GeneralService;
 import io.github.nucleuspowered.nucleus.storage.services.UserService;
 import io.github.nucleuspowered.nucleus.storage.services.WorldService;
+
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.inject.Singleton;
@@ -20,9 +21,9 @@ import javax.inject.Singleton;
 @Singleton
 public final class StorageManager implements IStorageManager, Reloadable {
 
-    @Nullable private IStorageRepository<UserQueryObject> userRepository;
-    @Nullable private IStorageRepository<WorldQueryObject> worldRepository;
-    @Nullable private IStorageRepository<GeneralQueryObject> generalRepository;
+    @Nullable private IStorageRepository.Keyed<UUID, IUserQueryObject> userRepository;
+    @Nullable private IStorageRepository.Keyed<UUID, IWorldQueryObject> worldRepository;
+    @Nullable private IStorageRepository.Single generalRepository;
 
     private final GeneralService generalService = new GeneralService();
     private final UserService userService = new UserService();
@@ -44,7 +45,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override @Nullable
-    public IStorageRepository<UserQueryObject> getUserRepository() {
+    public IStorageRepository.Keyed<UUID, IUserQueryObject> getUserRepository() {
         if (this.userRepository == null) {
             // fallback to flat file
             this.userRepository = FlatFileStorageRepositoryFactory.INSTANCE.userRepository();
@@ -53,7 +54,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override @Nullable
-    public IStorageRepository<WorldQueryObject> getWorldRepository() {
+    public IStorageRepository.Keyed<UUID, IWorldQueryObject> getWorldRepository() {
         if (this.worldRepository== null) {
             // fallback to flat file
             this.worldRepository = FlatFileStorageRepositoryFactory.INSTANCE.worldRepository();
@@ -62,7 +63,7 @@ public final class StorageManager implements IStorageManager, Reloadable {
     }
 
     @Override @Nullable
-    public IStorageRepository<GeneralQueryObject> getGeneralRepository() {
+    public IStorageRepository.Single getGeneralRepository() {
         if (this.generalRepository == null) {
             // fallback to flat file
             this.generalRepository = FlatFileStorageRepositoryFactory.INSTANCE.generalRepository();

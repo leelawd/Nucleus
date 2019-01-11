@@ -75,6 +75,14 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         // nothing to do
     }
 
+    @Override public void clearCache() {
+        // noop
+    }
+
+    @Override public boolean hasCache() {
+        return false;
+    }
+
     static class Single extends FlatFileStorageRepository implements IStorageRepository.Single {
 
         private final Supplier<Path> FILENAME_RESOLVER;
@@ -97,10 +105,6 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
             save(FILENAME_RESOLVER.get(), object);
         }
 
-        @Override
-        public void clearCache() {
-            // noop
-        }
     }
 
     static class UUIDKeyed<Q extends IQueryObject<UUID, Q>>
@@ -235,11 +239,6 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
             }
 
             return null;
-        }
-
-        @Override
-        public void clearCache() {
-            // noop
         }
 
         private class UUIDFileWalker extends SimpleFileVisitor<Path> {

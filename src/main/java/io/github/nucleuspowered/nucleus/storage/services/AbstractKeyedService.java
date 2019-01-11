@@ -6,13 +6,10 @@ package io.github.nucleuspowered.nucleus.storage.services;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
-import io.github.nucleuspowered.nucleus.util.ThrownSupplier;
-import org.spongepowered.api.scheduler.Task;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -47,7 +44,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
 
     @Override public CompletableFuture<Void> clearCache() {
         this.cache.invalidateAll();
-        return run(() -> {
+        return ServicesUtil.run(() -> {
             this.storageRepositorySupplier.get().clearCache();
             return null;
         });
@@ -59,7 +56,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
             return CompletableFuture.completedFuture(Optional.of(result));
         }
 
-        return run(() -> {
+        return ServicesUtil.run(() -> {
             Optional<D> r = this.storageRepositorySupplier.get().get(key).map(o -> this.dataAccessSupplier.get().fromJsonObject(o));
             r.ifPresent(d -> this.cache.put(key, d));
             return r;
@@ -90,16 +87,6 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         return CompletableFuture.completedFuture(null);
     }
 
-    private <R> CompletableFuture<R> run(ThrownSupplier<R, Exception> taskConsumer) {
-        CompletableFuture<R> future = new CompletableFuture<>();
-        Task.builder().async().execute(t -> {
-            try {
-                future.complete(taskConsumer.get());
-            } catch (Exception e) {
-                future.completeExceptionally(e);
-            }
-        }).submit(Nucleus.getNucleus());
-        return future;
-    }
+
 
 }

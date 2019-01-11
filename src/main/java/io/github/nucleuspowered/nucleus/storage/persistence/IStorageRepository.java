@@ -48,6 +48,15 @@ public interface IStorageRepository {
     void clearCache();
 
     /**
+     * If true, {@link #clearCache()} will be called automatically by the system when appropriate.
+     *
+     * <p>This should be {@code false} if {@link #clearCache()} is a no-op, else true</p>
+     *
+     * @return true if {@link #clearCache()} performs an action, false otherwise.
+     */
+    boolean hasCache();
+
+    /**
      * A repository where a single document is stored.
      */
     interface Single extends IStorageRepository {

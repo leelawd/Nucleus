@@ -10,26 +10,68 @@ import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class GeneralService implements IStorageService.Single<GeneralDataObject> {
 
+    private final Supplier<IStorageRepository.Single> storageRepository;
+    private final Supplier<IDataAccess<GeneralDataObject>> dataAccess;
+
+    private GeneralDataObject cached = null;
+
+    public GeneralService(Supplier<IDataAccess<GeneralDataObject>> dataAccess, Supplier<IStorageRepository.Single> storageRepository) {
+        this.storageRepository = storageRepository;
+        this.dataAccess = dataAccess;
+    }
+
     @Override public IStorageRepository.Single getStorageRepository() {
-        return null;
-    }
-
-    @Override public CompletableFuture<Optional<GeneralDataObject>> get() {
-        return null;
-    }
-
-    @Override public CompletableFuture<Void> save(GeneralDataObject value) {
-        return null;
+        return this.storageRepository.get();
     }
 
     @Override public IDataAccess<GeneralDataObject> getDataAccess() {
-        return null;
+        return this.dataAccess.get();
+    }
+
+    @Override public CompletableFuture<Optional<GeneralDataObject>> get() {
+        if (this.cached != null) {
+            return CompletableFuture.completedFuture(Optional.of(this.cached));
+        }
+
+        return ServicesUtil.run(() -> {
+            Optional<GeneralDataObject> gdo = getStorageRepository().get().map(getDataAccess()::fromJsonObject);
+            gdo.ifPresent(x -> this.cached = x);
+            return gdo;
+        });
+    }
+
+    @Override
+    public CompletableFuture<GeneralDataObject> getOrNew() {
+        CompletableFuture<GeneralDataObject> d = IStorageService.Single.super.getOrNew();
+        d.whenComplete((r, x) -> {
+            if (r != null) {
+                this.cached = r;
+            }
+        });
+        return d;
+    }
+
+    @Override public CompletableFuture<Void> save(GeneralDataObject value) {
+        return ServicesUtil.run(() -> {
+            getStorageRepository().save(getDataAccess().toJsonObject(value));
+            this.cached = value;
+            return null;
+        });
     }
 
     @Override public CompletableFuture<Void> clearCache() {
-        return null;
+        this.cached = null;
+        if (getStorageRepository().hasCache()) {
+            return ServicesUtil.run(() -> {
+                getStorageRepository().clearCache();
+                return null;
+            });
+        } else {
+            return CompletableFuture.completedFuture(null);
+        }
     }
 }

@@ -58,6 +58,15 @@ public interface IStorageService<D extends AbstractDataObject> {
         CompletableFuture<Optional<D>> get();
 
         /**
+         * Gets the data, or a new {@link D}.
+         *
+         * @return The {@link D}
+         */
+        default CompletableFuture<D> getOrNew() {
+            return get().thenApply(d -> d.orElseGet(() -> getDataAccess().createNew()));
+        }
+
+        /**
          * Save the data.
          *
          * @param value The data to save.
@@ -101,6 +110,16 @@ public interface IStorageService<D extends AbstractDataObject> {
          * @return The object, if it exists
          */
         CompletableFuture<Optional<D>> get(@Nonnull K key);
+
+        /**
+         * Gets the data, or a new {@link D}.
+         *
+         * @param key The key
+         * @return The {@link D}
+         */
+        default CompletableFuture<D> getOrNew(@Nonnull K key) {
+            return get(key).thenApply(d -> d.orElseGet(() -> getDataAccess().createNew()));
+        }
 
         /**
          * Gets an object based on the supplied query, if one can be uniquely identified.

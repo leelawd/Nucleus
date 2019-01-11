@@ -7,11 +7,9 @@ package io.github.nucleuspowered.nucleus.storage.dataaccess;
 import com.google.gson.JsonObject;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
 
-import java.util.function.Supplier;
-
 public interface IDataAccess<R extends AbstractDataObject> {
 
-    Supplier<R> createNew();
+    R createNew();
 
     R fromJsonObject(JsonObject object);
 

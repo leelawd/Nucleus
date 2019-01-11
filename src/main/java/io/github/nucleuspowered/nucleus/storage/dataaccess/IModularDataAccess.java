@@ -16,7 +16,7 @@ public interface IModularDataAccess<R extends ModularDataObject<R>> extends IDat
     default R fromJsonObject(JsonObject object) {
         // Get the ConfigNode from the JsonObject
         ConfigurationNode node = ConfigurationNodeJsonTranslator.INSTANCE.from(object);
-        R obj = createNew().get();
+        R obj = createNew();
         obj.setBackingNode(node);
         return obj;
     }

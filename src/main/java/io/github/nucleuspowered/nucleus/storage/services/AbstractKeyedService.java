@@ -119,6 +119,4 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         });
     }
 
-
-
 }

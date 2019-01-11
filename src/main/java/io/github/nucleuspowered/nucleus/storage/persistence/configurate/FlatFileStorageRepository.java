@@ -4,6 +4,7 @@
  */
 package io.github.nucleuspowered.nucleus.storage.persistence.configurate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -26,10 +27,9 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -92,7 +92,7 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         }
 
         @Override
-        public Optional<JsonObject> get() throws DataLoadException, DataQueryException {
+        public Optional<JsonObject> get() throws DataLoadException {
             if (Files.exists(FILENAME_RESOLVER.get())) {
                 return get(FILENAME_RESOLVER.get());
             }
@@ -151,7 +151,7 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         }
 
         @Override
-        public Optional<JsonObject> get(UUID uuid) throws DataLoadException, DataQueryException {
+        public Optional<JsonObject> get(UUID uuid) throws DataLoadException {
             return get(existsInternal(uuid));
         }
 
@@ -161,13 +161,13 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         }
 
         @Override
-        public Collection<KeyedObject<UUID, JsonObject>> getAll(Q query) throws DataLoadException, DataQueryException {
-            List<KeyedObject<UUID, JsonObject>> j = new ArrayList<>();
+        public Map<UUID, JsonObject> getAll(Q query) throws DataLoadException, DataQueryException {
+            ImmutableMap.Builder<UUID, JsonObject> j = ImmutableMap.builder();
             for (UUID key : getAllKeys(query)) {
-                j.add(new KeyedObject<>(key, get(key).get()));
+                j.put(key, get(key).get()); // should be there
             }
 
-            return j;
+            return j.build();
         }
 
         @Override
@@ -206,23 +206,14 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         }
 
         @Override
-        public void save(Q query, JsonObject object) throws DataSaveException {
-            try {
-                Path file = FILENAME_RESOLVER.apply(query);
-                save(file, object);
-            } catch (DataQueryException ex) {
-                throw new DataSaveException("Could not save " + query.toString(), ex);
-            }
+        public void save(UUID key, JsonObject object) throws DataSaveException {
+            Path file = UUID_FILENAME_RESOLVER.apply(key);
+            save(file, object);
         }
 
         @Override
-        public void delete(Q query) throws DataDeleteException {
-            Path filename;
-            try {
-                filename = FILENAME_RESOLVER.apply(query);
-            } catch (DataQueryException e) {
-                throw new DataDeleteException("Could not find file based on query " + query.toString(), e);
-            }
+        public void delete(UUID key) throws DataDeleteException {
+            Path filename = UUID_FILENAME_RESOLVER.apply(key);
 
             try {
                 Files.delete(filename);

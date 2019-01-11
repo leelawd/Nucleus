@@ -4,12 +4,13 @@
  */
 package io.github.nucleuspowered.nucleus.storage.services;
 
+import io.github.nucleuspowered.nucleus.storage.KeyedObject;
 import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -130,7 +131,7 @@ public interface IStorageService<D extends AbstractDataObject> {
          * @param query The query
          * @return The {@link CompletableFuture} containing the result, or an exception.
          */
-        CompletableFuture<Optional<D>> get(@Nonnull Q query);
+        CompletableFuture<Optional<KeyedObject<K, D>>> get(@Nonnull Q query);
 
         /**
          * Gets all objects that match the specified query.
@@ -141,7 +142,7 @@ public interface IStorageService<D extends AbstractDataObject> {
          * @param query The query
          * @return The {@link CompletableFuture} containing the results, if any
          */
-        CompletableFuture<Collection<D>> getAll(@Nonnull Q query);
+        CompletableFuture<Map<K, D>> getAll(@Nonnull Q query);
 
         /**
          * Gets whether the object with the associated key exists.

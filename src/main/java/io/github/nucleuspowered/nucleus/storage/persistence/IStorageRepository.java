@@ -14,6 +14,7 @@ import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -120,17 +121,17 @@ public interface IStorageRepository {
         /**
          * Saves the supplied {@code object} in the position suggested by the suppleid {@code query}
          *
-         * @param query The query that indicates the location to store the object in
+         * @param key The key that indicates the location to store the object in
          * @param object The object to save
          */
-        void save(Q query, JsonObject object) throws ObjectMappingException, DataSaveException;
+        void save(K key, JsonObject object) throws ObjectMappingException, DataSaveException;
 
         /**
-         * Deletes the object at the supplied {@code query}
+         * Deletes the object at the supplied {@code key}
          *
-         * @param query The query
+         * @param key The key
          */
-        void delete(Q query) throws DataDeleteException;
+        void delete(K key) throws DataDeleteException;
 
         /**
          * Gets whether an object specified by the key exists.
@@ -160,10 +161,10 @@ public interface IStorageRepository {
          * Gets the objects that satisfy the {@code query}
          *
          * @param query The query
-         * @return The objects, if any exist, or an empty collection if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
+         * @return The objects, if any exist, or an empty map if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
          *         just a key.
          */
-        Collection<KeyedObject<K, JsonObject>> getAll(Q query) throws DataLoadException, DataQueryException;
+        Map<K, JsonObject> getAll(Q query) throws DataLoadException, DataQueryException;
 
         /**
          * Gets the objects that satisfy the {@code query}

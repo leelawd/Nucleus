@@ -5,6 +5,11 @@
 package io.github.nucleuspowered.nucleus.storage;
 
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IModularDataAccess;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.GeneralDataObject;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.WorldDataObject;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.persistence.configurate.FlatFileStorageRepositoryFactory;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
@@ -29,6 +34,10 @@ public final class StorageManager implements IStorageManager, Reloadable {
     private final UserService userService = new UserService();
     private final WorldService worldService = new WorldService();
 
+    private final IModularDataAccess<UserDataObject> userDataAccess = () -> UserDataObject::new;
+    private final IModularDataAccess<WorldDataObject> worldDataAccess = () -> WorldDataObject::new;
+    private final IModularDataAccess<GeneralDataObject> generalDataAccess = () -> GeneralDataObject::new;
+
     @Override
     public GeneralService getGeneralService() {
         return this.generalService;
@@ -42,6 +51,18 @@ public final class StorageManager implements IStorageManager, Reloadable {
     @Override
     public WorldService getWorldService() {
         return this.worldService;
+    }
+
+    @Override public IDataAccess<UserDataObject> getUserDataAccess() {
+        return this.userDataAccess;
+    }
+
+    @Override public IDataAccess<WorldDataObject> getWorldDataAccess() {
+        return this.worldDataAccess;
+    }
+
+    @Override public IDataAccess<GeneralDataObject> getGeneralDataAccess() {
+        return this.generalDataAccess;
     }
 
     @Override @Nullable

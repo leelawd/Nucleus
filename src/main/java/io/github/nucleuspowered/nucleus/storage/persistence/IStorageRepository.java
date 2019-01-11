@@ -17,7 +17,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Base class for interfacing with storage engines
+ * Base interface for interfacing with storage engines. Implementors should implement one of the
+ * sub interfaces, {@link Single} or {@link Keyed}, depending on the store.
+ *
+ * <p>Note that all data will be provided as {@link JsonObject}s. It is expected that the json going
+ * into storage is equivalent to that coming out. You may inspect the json as you wish (which you may
+ * want to do to support queries more effectively)</p>
  */
 public interface IStorageRepository {
 
@@ -35,6 +40,11 @@ public interface IStorageRepository {
      * consider data consistency accordingly.</p>
      */
     void shutdown();
+
+    /**
+     * Requests that any cache that the repository provides is cleared.
+     */
+    void clearCache();
 
     /**
      * A repository where a single document is stored.

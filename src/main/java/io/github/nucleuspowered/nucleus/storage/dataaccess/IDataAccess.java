@@ -16,4 +16,5 @@ public interface IDataAccess<R extends AbstractDataObject> {
     R fromJsonObject(JsonObject object);
 
     JsonObject toJsonObject(R object);
+
 }

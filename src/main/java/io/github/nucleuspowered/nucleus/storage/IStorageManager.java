@@ -4,6 +4,10 @@
  */
 package io.github.nucleuspowered.nucleus.storage;
 
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.GeneralDataObject;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.WorldDataObject;
 import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IWorldQueryObject;
@@ -22,6 +26,12 @@ public interface IStorageManager {
     UserService getUserService();
 
     WorldService getWorldService();
+
+    IDataAccess<UserDataObject> getUserDataAccess();
+
+    IDataAccess<WorldDataObject> getWorldDataAccess();
+
+    IDataAccess<GeneralDataObject> getGeneralDataAccess();
 
     @Nullable IStorageRepository.Keyed<UUID, IUserQueryObject> getUserRepository();
 

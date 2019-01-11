@@ -9,10 +9,11 @@ import io.github.nucleuspowered.nucleus.storage.dataaccess.configurate.Configura
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.ModularDataObject;
 import ninja.leaping.configurate.ConfigurationNode;
 
-public abstract class ModularDataAccess<R extends ModularDataObject<?>> implements IDataAccess<R> {
+@FunctionalInterface
+public interface IModularDataAccess<R extends ModularDataObject<R>> extends IDataAccess<R> {
 
     @Override
-    public R fromJsonObject(JsonObject object) {
+    default R fromJsonObject(JsonObject object) {
         // Get the ConfigNode from the JsonObject
         ConfigurationNode node = ConfigurationNodeJsonTranslator.INSTANCE.from(object);
         R obj = createNew().get();
@@ -21,8 +22,9 @@ public abstract class ModularDataAccess<R extends ModularDataObject<?>> implemen
     }
 
     @Override
-    public JsonObject toJsonObject(R object) {
+    default JsonObject toJsonObject(R object) {
         ConfigurationNode node = object.getBackingNode();
         return ConfigurationNodeJsonTranslator.INSTANCE.jsonFrom(node);
     }
+
 }

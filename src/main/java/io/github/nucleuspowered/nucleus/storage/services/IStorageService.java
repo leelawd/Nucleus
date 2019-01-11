@@ -4,7 +4,9 @@
  */
 package io.github.nucleuspowered.nucleus.storage.services;
 
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
+import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
 
 import java.util.Collection;
@@ -20,6 +22,20 @@ import javax.annotation.Nonnull;
 public interface IStorageService<D extends AbstractDataObject> {
 
     /**
+     * Gets the {@link IDataAccess} associated with this service
+     *
+     * @return The {@link IDataAccess}
+     */
+    IDataAccess<D> getDataAccess();
+
+    /**
+     * Gets the {@link IStorageRepository} assocaited with this service
+     *
+     * @return The {@link IStorageRepository}
+     */
+    IStorageRepository getStorageRepository();
+
+    /**
      * Provides a hint to the storage engine that anything that has been cached
      * should be cleared. Implementors may not do anything.
      */
@@ -31,6 +47,8 @@ public interface IStorageService<D extends AbstractDataObject> {
      * @param <D> The data object type
      */
     interface Single<D extends AbstractDataObject> extends IStorageService<D> {
+
+        IStorageRepository.Single getStorageRepository();
 
         /**
          * Gets the data.
@@ -62,7 +80,9 @@ public interface IStorageService<D extends AbstractDataObject> {
      * @param <Q> The {@link IQueryObject} that can contain query parameters
      * @param <D> The {@link AbstractDataObject} that this service deals with.
      */
-    interface Keyed<K, Q extends IQueryObject, D extends AbstractDataObject> extends IStorageService<D> {
+    interface Keyed<K, Q extends IQueryObject<K, Q>, D extends AbstractDataObject> extends IStorageService<D> {
+
+        IStorageRepository.Keyed<K, Q> getStorageRepository();
 
         /**
          * Whether the backing storage engine supports queries that is not simply

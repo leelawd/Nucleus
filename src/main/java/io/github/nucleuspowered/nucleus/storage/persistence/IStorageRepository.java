@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.storage.persistence;
 
 import com.google.gson.JsonObject;
+import io.github.nucleuspowered.nucleus.storage.KeyedObject;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataDeleteException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataLoadException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataQueryException;
@@ -94,9 +95,9 @@ public interface IStorageRepository {
          * Gets an object based on the {@code query}
          *
          * @param query The query
-         * @return The object, if it exists
+         * @return The object, if it exists, along with its primary key
          */
-        Optional<JsonObject> get(Q query) throws DataLoadException, DataQueryException;
+        Optional<KeyedObject<K, JsonObject>> get(Q query) throws DataLoadException, DataQueryException;
 
         /**
          * Gets the number of objects that satisfies the query.
@@ -153,6 +154,16 @@ public interface IStorageRepository {
          * @return The objects, if any exist, or an empty collection if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
          *         just a key.
          */
+        Collection<KeyedObject<K, JsonObject>> getAll(Q query) throws DataLoadException, DataQueryException;
+
+        /**
+         * Gets the objects that satisfy the {@code query}
+         *
+         * @param query The query
+         * @return The objects, if any exist, or an empty collection if {@link #supportsNonKeyQueries()} is {@code false} and the query is more than
+         *         just a key.
+         */
         Collection<K> getAllKeys(Q query) throws DataLoadException, DataQueryException;
     }
+
 }

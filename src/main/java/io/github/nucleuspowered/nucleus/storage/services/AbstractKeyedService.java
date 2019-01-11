@@ -6,21 +6,64 @@ package io.github.nucleuspowered.nucleus.storage.services;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import io.github.nucleuspowered.nucleus.Nucleus;
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
+import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IQueryObject;
+import io.github.nucleuspowered.nucleus.util.ThrownSupplier;
+import org.spongepowered.api.scheduler.Task;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
-public abstract class AbstractKeyedService<Q extends IQueryObject, D extends AbstractDataObject> implements IStorageService.Keyed<UUID, Q, D> {
+public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D extends AbstractDataObject>
+        implements IStorageService.Keyed<UUID, Q, D> {
 
     final Cache<UUID, D> cache = Caffeine.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
-    @Override public CompletableFuture<Optional<D>> get(UUID key) {
-        return CompletableFuture.completedFuture(Optional.empty());
+    private final Supplier<IDataAccess<D>> dataAccessSupplier;
+    private final Supplier<IStorageRepository.Keyed<UUID, Q>> storageRepositorySupplier;
+
+    AbstractKeyedService(Supplier<IDataAccess<D>> dataAccessSupplier, Supplier<IStorageRepository.Keyed<UUID, Q>> storageRepositorySupplier) {
+        this.dataAccessSupplier = Objects.requireNonNull(dataAccessSupplier);
+        this.storageRepositorySupplier = Objects.requireNonNull(storageRepositorySupplier);
+    }
+
+    @Override
+    public IDataAccess<D> getDataAccess() {
+        return this.dataAccessSupplier.get();
+    }
+
+    @Override
+    public IStorageRepository.Keyed<UUID, Q> getStorageRepository() {
+        return this.storageRepositorySupplier.get();
+    }
+
+    @Override public CompletableFuture<Void> clearCache() {
+        this.cache.invalidateAll();
+        return run(() -> {
+            this.storageRepositorySupplier.get().clearCache();
+            return null;
+        });
+    }
+
+    @Override public CompletableFuture<Optional<D>> get(final UUID key) {
+        D result = this.cache.getIfPresent(key);
+        if (result != null) {
+            return CompletableFuture.completedFuture(Optional.of(result));
+        }
+
+        return run(() -> {
+            Optional<D> r = this.storageRepositorySupplier.get().get(key).map(o -> this.dataAccessSupplier.get().fromJsonObject(o));
+            r.ifPresent(d -> this.cache.put(key, d));
+            return r;
+        });
     }
 
     @Override public CompletableFuture<Optional<D>> get(Q query) {
@@ -35,10 +78,6 @@ public abstract class AbstractKeyedService<Q extends IQueryObject, D extends Abs
         return CompletableFuture.completedFuture(false);
     }
 
-    @Override public CompletableFuture<Boolean> exists(Q query) {
-        return CompletableFuture.completedFuture(false);
-    }
-
     @Override public CompletableFuture<Integer> count(Q query) {
         return CompletableFuture.completedFuture(0);
     }
@@ -50,4 +89,17 @@ public abstract class AbstractKeyedService<Q extends IQueryObject, D extends Abs
     @Override public CompletableFuture<Void> delete(UUID key) {
         return CompletableFuture.completedFuture(null);
     }
+
+    private <R> CompletableFuture<R> run(ThrownSupplier<R, Exception> taskConsumer) {
+        CompletableFuture<R> future = new CompletableFuture<>();
+        Task.builder().async().execute(t -> {
+            try {
+                future.complete(taskConsumer.get());
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        }).submit(Nucleus.getNucleus());
+        return future;
+    }
+
 }

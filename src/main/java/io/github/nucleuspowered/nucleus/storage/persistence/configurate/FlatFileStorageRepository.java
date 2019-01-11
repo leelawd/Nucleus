@@ -7,6 +7,7 @@ package io.github.nucleuspowered.nucleus.storage.persistence.configurate;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import io.github.nucleuspowered.nucleus.storage.KeyedObject;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataDeleteException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataLoadException;
 import io.github.nucleuspowered.nucleus.storage.exceptions.DataQueryException;
@@ -25,8 +26,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -93,6 +96,11 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         public void save(JsonObject object) throws DataSaveException {
             save(FILENAME_RESOLVER.get(), object);
         }
+
+        @Override
+        public void clearCache() {
+            // noop
+        }
     }
 
     static class UUIDKeyed<Q extends IQueryObject<UUID, Q>>
@@ -122,7 +130,7 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         }
 
         @Override
-        public Optional<JsonObject> get(Q query) throws DataLoadException {
+        public Optional<KeyedObject<UUID, JsonObject>> get(Q query) throws DataLoadException {
             Path path;
             try {
                 path = existsInternal(query);
@@ -130,7 +138,7 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
                 throw new DataLoadException("Query not valid", e);
             }
 
-            return get(path);
+            return get(path).map(x -> new KeyedObject<>(query.keys().iterator().next(), x));
         }
 
         @Override
@@ -146,6 +154,16 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
         @Override
         public Collection<UUID> getAllKeys() throws DataLoadException {
             return ImmutableSet.copyOf(getAllKeysInternal());
+        }
+
+        @Override
+        public Collection<KeyedObject<UUID, JsonObject>> getAll(Q query) throws DataLoadException, DataQueryException {
+            List<KeyedObject<UUID, JsonObject>> j = new ArrayList<>();
+            for (UUID key : getAllKeys(query)) {
+                j.add(new KeyedObject<>(key, get(key).get()));
+            }
+
+            return j;
         }
 
         @Override
@@ -217,6 +235,11 @@ abstract class FlatFileStorageRepository implements IStorageRepository {
             }
 
             return null;
+        }
+
+        @Override
+        public void clearCache() {
+            // noop
         }
 
         private class UUIDFileWalker extends SimpleFileVisitor<Path> {

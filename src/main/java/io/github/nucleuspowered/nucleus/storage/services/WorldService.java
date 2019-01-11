@@ -4,9 +4,18 @@
  */
 package io.github.nucleuspowered.nucleus.storage.services;
 
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.WorldDataObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.WorldQueryObject;
+import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IWorldQueryObject;
 
-public class WorldService extends AbstractKeyedService<WorldQueryObject, WorldDataObject> {
+import java.util.UUID;
+import java.util.function.Supplier;
 
+public class WorldService extends AbstractKeyedService<IWorldQueryObject, WorldDataObject> {
+
+    public WorldService(Supplier<IDataAccess<WorldDataObject>> dataAccessSupplier,
+            Supplier<IStorageRepository.Keyed<UUID, IWorldQueryObject>> storageRepositorySupplier) {
+        super(dataAccessSupplier, storageRepositorySupplier);
+    }
 }

@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface IQueryObject<K, T extends IQueryObject<?, T>> {
+public interface IQueryObject<K, T extends IQueryObject<K, T>> {
 
     /**
      * Any queries that aren't the primary key.

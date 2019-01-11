@@ -4,9 +4,18 @@
  */
 package io.github.nucleuspowered.nucleus.storage.services;
 
+import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
-import io.github.nucleuspowered.nucleus.storage.queryobjects.UserQueryObject;
+import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
+import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
 
-public class UserService extends AbstractKeyedService<UserQueryObject, UserDataObject> {
+import java.util.UUID;
+import java.util.function.Supplier;
 
+public class UserService extends AbstractKeyedService<IUserQueryObject, UserDataObject> {
+
+    public UserService(Supplier<IDataAccess<UserDataObject>> dataAccessSupplier,
+            Supplier<IStorageRepository.Keyed<UUID, IUserQueryObject>> storageRepositorySupplier) {
+        super(dataAccessSupplier, storageRepositorySupplier);
+    }
 }

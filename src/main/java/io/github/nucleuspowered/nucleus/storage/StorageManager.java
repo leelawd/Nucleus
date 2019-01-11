@@ -30,13 +30,13 @@ public final class StorageManager implements IStorageManager, Reloadable {
     @Nullable private IStorageRepository.Keyed<UUID, IWorldQueryObject> worldRepository;
     @Nullable private IStorageRepository.Single generalRepository;
 
-    private final GeneralService generalService = new GeneralService();
-    private final UserService userService = new UserService();
-    private final WorldService worldService = new WorldService();
-
     private final IModularDataAccess<UserDataObject> userDataAccess = () -> UserDataObject::new;
     private final IModularDataAccess<WorldDataObject> worldDataAccess = () -> WorldDataObject::new;
     private final IModularDataAccess<GeneralDataObject> generalDataAccess = () -> GeneralDataObject::new;
+
+    private final GeneralService generalService = new GeneralService();
+    private final UserService userService = new UserService(() -> this.userDataAccess, () -> this.userRepository);
+    private final WorldService worldService = new WorldService(() -> this.worldDataAccess, () -> this.worldRepository);
 
     @Override
     public GeneralService getGeneralService() {

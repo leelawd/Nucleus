@@ -109,10 +109,24 @@ public abstract class NucleusTextTemplateImpl implements NucleusTextTemplate {
             }
         });
 
-        return Text.of(
-                getPrefix().orElse(Text.EMPTY),
-                this.textTemplate.apply(finalArgs).build(),
-                getSuffix().orElse(Text.EMPTY));
+        Text.Builder builder = Text.builder();
+        TextParsingUtils.StyleTuple st = null;
+        if (this.prefix != null) {
+            builder.append(this.prefix);
+            st = TextParsingUtils.getLastColourAndStyle(this.prefix, null);
+        }
+
+        if (st == null) {
+            builder.append(this.textTemplate.apply(finalArgs).build());
+        } else {
+            builder.append(Text.builder().color(st.colour).style(st.style).append(this.textTemplate.apply(finalArgs).build()).build());
+        }
+
+        if (this.suffix != null) {
+            builder.append(this.suffix);
+        }
+
+        return builder.build();
     }
 
     public Text toText() {

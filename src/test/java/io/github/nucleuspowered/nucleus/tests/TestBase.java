@@ -29,7 +29,7 @@ import io.github.nucleuspowered.nucleus.internal.services.WarmupManager;
 import io.github.nucleuspowered.nucleus.internal.teleport.NucleusTeleportHandler;
 import io.github.nucleuspowered.nucleus.internal.text.TextParsingUtils;
 import io.github.nucleuspowered.nucleus.modules.core.config.WarmupConfig;
-import io.github.nucleuspowered.nucleus.storage.IStorageManager;
+import io.github.nucleuspowered.storage.IStorageManager;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

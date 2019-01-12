@@ -19,8 +19,8 @@ import io.github.nucleuspowered.nucleus.configurate.typeserialisers.NucleusTextT
 import io.github.nucleuspowered.nucleus.configurate.typeserialisers.Vector3dTypeSerialiser;
 import io.github.nucleuspowered.nucleus.configurate.wrappers.NucleusItemStackSnapshot;
 import io.github.nucleuspowered.nucleus.internal.text.NucleusTextTemplateImpl;
-import io.github.nucleuspowered.nucleus.storage.dataaccess.configurate.DataObjectTranslator;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.AbstractDataObject;
+import io.github.nucleuspowered.nucleus.storage.DataObjectTranslator;
+import io.github.nucleuspowered.storage.dataobjects.AbstractConfigurateBackedDataObject;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
 
@@ -33,7 +33,8 @@ public class ConfigurateHelper {
 
     private ConfigurateHelper() {}
 
-    private static final TypeToken<AbstractDataObject> ABSTRACT_DATA_OBJECT_TYPE_TOKEN = TypeToken.of(AbstractDataObject.class);
+    private static final TypeToken<AbstractConfigurateBackedDataObject> ABSTRACT_DATA_OBJECT_TYPE_TOKEN = TypeToken.of(
+            AbstractConfigurateBackedDataObject.class);
 
     private static TypeSerializerCollection typeSerializerCollection = null;
     private static final NeutrinoObjectMapperFactory objectMapperFactory;

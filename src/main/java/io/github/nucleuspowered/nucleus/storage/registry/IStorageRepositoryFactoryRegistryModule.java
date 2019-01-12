@@ -4,15 +4,13 @@
  */
 package io.github.nucleuspowered.nucleus.storage.registry;
 
-import io.github.nucleuspowered.nucleus.internal.annotations.Registry;
 import io.github.nucleuspowered.nucleus.internal.registry.NucleusRegistryModule;
-import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepositoryFactory;
-import io.github.nucleuspowered.nucleus.storage.persistence.configurate.FlatFileStorageRepositoryFactory;
+import io.github.nucleuspowered.storage.persistence.IStorageRepositoryFactory;
+import io.github.nucleuspowered.storage.persistence.configurate.FlatFileStorageRepositoryFactory;
 
 import javax.inject.Singleton;
 
 @Singleton
-@Registry(IStorageRepositoryFactory.class)
 public class IStorageRepositoryFactoryRegistryModule extends NucleusRegistryModule<IStorageRepositoryFactory> {
 
     private static IStorageRepositoryFactoryRegistryModule INSTANCE;

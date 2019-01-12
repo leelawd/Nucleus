@@ -4,10 +4,11 @@
  */
 package io.github.nucleuspowered.nucleus.storage.services;
 
-import io.github.nucleuspowered.nucleus.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
-import io.github.nucleuspowered.nucleus.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.nucleus.storage.queryobjects.IUserQueryObject;
+import io.github.nucleuspowered.storage.dataaccess.IDataAccess;
+import io.github.nucleuspowered.storage.persistence.IStorageRepository;
+import io.github.nucleuspowered.storage.services.AbstractKeyedService;
 
 import java.util.UUID;
 import java.util.function.Supplier;

@@ -4,18 +4,19 @@
  */
 package io.github.nucleuspowered.nucleus.storage.dataobjects.modular;
 
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.modules.DataModule;
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.modules.TransientDataModule;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.ICatalogedGeneralDataModule;
+import io.github.nucleuspowered.storage.dataobjects.modular.ModularDataObject;
+import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 
 import java.util.Optional;
 
-public class GeneralDataObject extends ModularDataObject<GeneralDataObject> {
+public class GeneralDataObject extends ModularDataObject<ICatalogedGeneralDataModule, ITransientDataModule> {
 
-    @Override <T extends TransientDataModule<GeneralDataObject>> Optional<T> tryGetTransient(Class<T> module) {
+    @Override public <T extends ITransientDataModule> Optional<T> tryGetTransient(Class<T> module) {
         return Optional.empty();
     }
 
-    @Override <T extends DataModule<GeneralDataObject>> Optional<T> tryGet(Class<T> module) {
+    @Override public <T extends ICatalogedGeneralDataModule> Optional<T> tryGet(Class<T> module) {
         return Optional.empty();
     }
 }

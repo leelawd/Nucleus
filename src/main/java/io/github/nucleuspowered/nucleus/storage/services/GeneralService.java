@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import javax.annotation.Nonnull;
+
 public class GeneralService implements IStorageService.Single<GeneralDataObject> {
 
     private final Supplier<IStorageRepository.Single> storageRepository;
@@ -55,7 +57,7 @@ public class GeneralService implements IStorageService.Single<GeneralDataObject>
         return d;
     }
 
-    @Override public CompletableFuture<Void> save(GeneralDataObject value) {
+    @Override public CompletableFuture<Void> save(@Nonnull GeneralDataObject value) {
         return ServicesUtil.run(() -> {
             getStorageRepository().save(getDataAccess().toJsonObject(value));
             this.cached = value;

@@ -55,7 +55,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         });
     }
 
-    @Override public CompletableFuture<Optional<D>> get(final UUID key) {
+    @Override public CompletableFuture<Optional<D>> get(@Nonnull final UUID key) {
         D result = this.cache.getIfPresent(key);
         if (result != null) {
             return CompletableFuture.completedFuture(Optional.of(result));
@@ -95,15 +95,15 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         });
     }
 
-    @Override public CompletableFuture<Boolean> exists(UUID key) {
+    @Override public CompletableFuture<Boolean> exists(@Nonnull UUID key) {
         return ServicesUtil.run(() -> getStorageRepository().exists(key));
     }
 
-    @Override public CompletableFuture<Integer> count(Q query) {
+    @Override public CompletableFuture<Integer> count(@Nonnull Q query) {
         return ServicesUtil.run(() -> getStorageRepository().count(query));
     }
 
-    @Override public CompletableFuture<Void> save(final UUID key, final D value) {
+    @Override public CompletableFuture<Void> save(@Nonnull final UUID key, @Nonnull final D value) {
         return ServicesUtil.run(() -> {
             getStorageRepository().save(key, getDataAccess().toJsonObject(value));
             this.cache.put(key, value);
@@ -111,7 +111,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         });
     }
 
-    @Override public CompletableFuture<Void> delete(UUID key) {
+    @Override public CompletableFuture<Void> delete(@Nonnull UUID key) {
         return ServicesUtil.run(() -> {
             getStorageRepository().delete(key);
             this.cache.invalidate(key);

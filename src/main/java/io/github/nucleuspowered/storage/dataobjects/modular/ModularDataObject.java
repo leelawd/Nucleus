@@ -8,8 +8,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.storage.dataobjects.AbstractConfigurateBackedDataObject;
+import io.github.nucleuspowered.storage.dataobjects.modules.DataKey;
 import io.github.nucleuspowered.storage.dataobjects.modules.IDataModule;
 import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("UnstableApiUsage")
 public abstract class ModularDataObject<DM extends IDataModule, TM extends ITransientDataModule>
         extends AbstractConfigurateBackedDataObject {
 
@@ -53,8 +54,7 @@ public abstract class ModularDataObject<DM extends IDataModule, TM extends ITran
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void updateBackingNode() {
+    private void updateBackingNode() {
         if (!this.cached.isEmpty() || !(this.backingNode.isVirtual() || this.backingNode.getValue() == null)) {
             ImmutableMap.copyOf(this.cached).forEach(this::populateNodeFuzzy);
         }
@@ -147,12 +147,14 @@ public abstract class ModularDataObject<DM extends IDataModule, TM extends ITran
 
     protected abstract <T extends DM> Optional<T> tryGet(Class<T> module);
 
+    @SuppressWarnings("unchecked")
     public <T extends DM> void set(T dataModule) {
         synchronized (this.lockingObject) {
             this.cached.put((Class<T>) dataModule.getClass(), dataModule);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends TM> void setTransient(T dataModule) {
         this.transientCache.put((Class<T>) dataModule.getClass(), dataModule);
     }
@@ -163,11 +165,12 @@ public abstract class ModularDataObject<DM extends IDataModule, TM extends ITran
         for (FieldData fieldDatum : fieldData) { // don't look at me, this was autogenned by IntelliJ.
             // get the data from the node
             try {
-                Object obj = this.backingNode.getNode(fieldDatum.path).getValue(fieldDatum.clazz);
+                Object obj = this.backingNode.getNode((Object[]) fieldDatum.path).getValue(fieldDatum.clazz);
                 fieldDatum.field.set(module, obj);
             } catch (ObjectMappingException | IllegalAccessException e) {
                 // couldn't parse, friendly message and be on our way.
-                Nucleus.getNucleus().getLogger().warn("Could not load " + fieldDatum.path + ", falling back to defaults.", e);
+                Nucleus.getNucleus().getLogger()
+                        .warn("Could not load " + String.join(".", (String[]) fieldDatum.path) + ", falling back to defaults.", e);
             }
         }
     }
@@ -187,31 +190,31 @@ public abstract class ModularDataObject<DM extends IDataModule, TM extends ITran
                 saveFieldData(module, fieldDatum.clazz, fieldDatum.field, fieldDatum.path);
             } catch (ObjectMappingException | IllegalAccessException e) {
                 // couldn't parse, friendly message and be on our way.
-                Nucleus.getNucleus().getLogger().warn("Could not save " + fieldDatum.path + ".", e);
+                Nucleus.getNucleus().getLogger().warn("Could not save " + String.join(".", (String[]) fieldDatum.path) + ".", e);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <R> void saveFieldData(Object module, TypeToken<R> typeToken, Field field, String path) throws IllegalAccessException,
+    private <R> void saveFieldData(Object module, TypeToken<R> typeToken, Field field, String[] path) throws IllegalAccessException,
             ObjectMappingException {
         R ret = (R) field.get(module);
-        this.backingNode.getNode(path).setValue(typeToken, ret);
+        this.backingNode.getNode((Object[]) path).setValue(typeToken, ret);
     }
 
     public static class FieldData {
 
-        private final String path;
+        private final String[] path;
         private final TypeToken<?> clazz;
         private final Field field;
 
-        private FieldData(String path, TypeToken<?> clazz, Field field) {
+        private FieldData(String[] path, TypeToken<?> clazz, Field field) {
             this.path = path;
             this.clazz = clazz;
             this.field = field;
         }
 
-        public String getPath() {
+        public String[] getPath() {
             return path;
         }
 

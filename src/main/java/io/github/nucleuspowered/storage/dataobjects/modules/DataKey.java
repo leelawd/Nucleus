@@ -21,5 +21,5 @@ public @interface DataKey {
      *
      * @return The name of the key.
      */
-    String value();
+    String[] value();
 }

@@ -84,20 +84,20 @@ public class RTPConfig {
         return Optional.ofNullable(this.perWorldRTPConfigList.get(worldName.toLowerCase()));
     }
 
-    public int getMinRadius(String worldName) {
+    public int getMinRadius(@Nullable String worldName) {
         return get(worldName).map(x -> x.minRadius).orElse(this.minRadius);
     }
 
-    public int getRadius(String worldName) {
+    public int getRadius(@Nullable String worldName) {
         return get(worldName).map(x -> x.radius).orElse(this.radius);
     }
 
-    public int getMinY(String worldName) {
+    public int getMinY(@Nullable String worldName) {
         return get(worldName).map(x -> GenericMath.clamp(x.minY, 0, Math.min(255, x.maxY)))
                 .orElseGet(() -> GenericMath.clamp(this.minY, 0, Math.min(255, this.maxY)));
     }
 
-    public int getMaxY(String worldName) {
+    public int getMaxY(@Nullable String worldName) {
         return get(worldName).map(x -> GenericMath.clamp(x.maxY, Math.max(0, x.minY), 255))
                 .orElseGet(() -> GenericMath.clamp(this.maxY, Math.max(0, this.minY), 255));
     }

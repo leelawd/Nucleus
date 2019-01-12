@@ -32,7 +32,7 @@ public class RTPOptionsBuilder implements NucleusRTPService.RTPOptions.Builder {
     }
 
     @Override public NucleusRTPService.RTPOptions.Builder setMinHeight(int min) throws IllegalArgumentException {
-        Preconditions.checkArgument(min > 0, "Min must be positive");
+        Preconditions.checkArgument(min >= 0, "Min must be non-negative");
         this.minheight = min;
         return this;
     }

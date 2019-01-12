@@ -16,14 +16,17 @@ import io.github.nucleuspowered.nucleus.modules.rtp.options.RTPOptionsBuilder;
 import io.github.nucleuspowered.nucleus.modules.rtp.registry.RTPRegistryModule;
 import org.spongepowered.api.world.storage.WorldProperties;
 
+import javax.annotation.Nullable;
+
 @APIService(NucleusRTPService.class)
 public class RTPService implements NucleusRTPService, Reloadable, InternalServiceManagerTrait, ServiceBase {
 
     private RTPConfig config = new RTPConfig();
 
     @Override
-    public RTPOptions options(WorldProperties world) {
-        return new io.github.nucleuspowered.nucleus.modules.rtp.options.RTPOptions(this.config, world.getWorldName());
+    public RTPOptions options(@Nullable WorldProperties world) {
+        @Nullable String name = world == null ? null : world.getWorldName();
+        return new io.github.nucleuspowered.nucleus.modules.rtp.options.RTPOptions(this.config, name);
     }
 
     @Override

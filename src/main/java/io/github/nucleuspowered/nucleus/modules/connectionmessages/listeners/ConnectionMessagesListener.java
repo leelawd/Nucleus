@@ -57,8 +57,9 @@ public class ConnectionMessagesListener implements Reloadable, ListenerBase {
                 !lastKnown.orElseGet(pl::getName).equalsIgnoreCase(pl.getName())) {
                     // Name change!
                     joinEvent.getChannel().orElse(MessageChannel.TO_ALL).send(Nucleus.getNucleus(),
-                            this.cmc.getPriorNameMessage().getForCommandSource(pl,
-                            ImmutableMap.of("previousname", cs -> Optional.of(Text.of(lastKnown.get()))), Maps.newHashMap()));
+                            this.cmc.getPriorNameMessage()
+                                    .getForCommandSource(pl,
+                                            ImmutableMap.of("previousname", cs -> Optional.of(Text.of(lastKnown.get()))), Maps.newHashMap()));
             }
         } catch (Exception e) {
             if (Nucleus.getNucleus().isDebugMode()) {

@@ -12,6 +12,7 @@ import io.github.nucleuspowered.nucleus.modules.nickname.services.NicknameServic
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 public class NicknameListener implements ListenerBase, InternalServiceManagerTrait {
 
-    @Listener
+    @Listener(order = Order.FIRST)
     public void onPlayerJoin(ClientConnectionEvent.Join event, @Root Player player) {
         Nucleus.getNucleus().getUserDataManager().get(player).ifPresent(x -> {
             Optional<Text> d = x.get(NicknameUserDataModule.class).getNicknameAsText();
@@ -32,7 +33,7 @@ public class NicknameListener implements ListenerBase, InternalServiceManagerTra
         });
     }
 
-    @Listener
+    @Listener(order = Order.LAST)
     public void onPlayerQuit(ClientConnectionEvent.Disconnect event, @Root Player player) {
         getServiceUnchecked(NicknameService.class).removeFromCache(player.getUniqueId());
     }

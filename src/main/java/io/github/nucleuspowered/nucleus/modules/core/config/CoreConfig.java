@@ -82,6 +82,9 @@ public class CoreConfig {
     @Setting(value = "enable-parent-perms", comment = "config.core.parentperms")
     private boolean useParentPerms = true;
 
+    @Setting(value = "enable-partial-name-matching", comment = "config.core.partialname")
+    private boolean partialMatch = true;
+
     public boolean isDebugmode() {
         return this.debugmode;
     }
@@ -163,6 +166,10 @@ public class CoreConfig {
     }
 
     public boolean isUseParentPerms() {
-        return useParentPerms;
+        return this.useParentPerms;
+    }
+
+    public boolean isPartialMatch() {
+        return this.partialMatch;
     }
 }

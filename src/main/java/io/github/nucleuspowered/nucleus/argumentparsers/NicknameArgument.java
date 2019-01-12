@@ -9,6 +9,7 @@ import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.MessageProviderTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
+import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfig;
 import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.nickname.services.NicknameService;
 import io.github.nucleuspowered.nucleus.modules.vanish.commands.VanishCommand;
@@ -44,11 +45,12 @@ public class NicknameArgument extends CommandElement implements MessageProviderT
     private static int USER_LIMIT = 20;
     private static final String VANISH_PERMISSION = Nucleus.getNucleus().getPermissionRegistry()
             .getPermissionsForNucleusCommand(VanishCommand.class).getPermissionWithSuffix("see");
+    private static boolean PARTIAL_MATCH = true;
 
     public static void onReload() {
-        USER_LIMIT =
-                Math.max(Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(CoreConfigAdapter.class).getNodeOrDefault()
-                        .getNicknameArgOfflineLimit(), 0);
+        CoreConfig cc = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(CoreConfigAdapter.class).getNodeOrDefault();
+        USER_LIMIT = Math.max(cc.getNicknameArgOfflineLimit(), 0);
+        PARTIAL_MATCH = cc.isPartialMatch();
     }
 
     private final Target target;
@@ -116,6 +118,11 @@ public class NicknameArgument extends CommandElement implements MessageProviderT
             }
         }
 
+        if (!PARTIAL_MATCH) {
+            // no match
+            throw exceptionSupplier.apply("args.user.nouser", toParse);
+        }
+
         if (toParse.length() < 3) {
             throw exceptionSupplier.apply("args.user.nouserfuzzy", toParse);
         }
@@ -127,24 +134,31 @@ public class NicknameArgument extends CommandElement implements MessageProviderT
         Sponge.getServer().getOnlinePlayers().stream()
                 .filter(x -> x.getName().toLowerCase().startsWith(parse))
                 .filter(shouldShow)
+                .limit(USER_LIMIT)
                 .forEach(users::add);
         if (this.nicknameService != null) {
             this.nicknameService.startsWith(parse).stream()
                     .map(x -> Sponge.getServer().getPlayer(x).orElse(null))
                     .filter(shouldShow)
                     .filter(Objects::nonNull)
+                    .limit(USER_LIMIT)
                     .forEach(users::add);
         }
 
         List<UUID> uuids = users.stream().map(Identifiable::getUniqueId).collect(Collectors.toList());
         if (this.target == Target.USER) {
-            // This may add vanished players, but that's OK because we're showing all users anyway,
-            // AND if they were hidden, it could give away that they were vanished.
-            uss.match(parse).stream()
-                    .map(x -> uss.get(x).orElse(null))
-                    .filter(Objects::nonNull)
-                    .filter(x -> !uuids.contains(x.getUniqueId()))
-                    .forEach(users::add);
+            if (PARTIAL_MATCH) {
+                // This may add vanished players, but that's OK because we're showing all users anyway,
+                // AND if they were hidden, it could give away that they were vanished.
+                uss.match(parse).stream()
+                        .map(x -> uss.get(x).orElse(null))
+                        .filter(Objects::nonNull)
+                        .filter(x -> !uuids.contains(x.getUniqueId()))
+                        .limit(USER_LIMIT)
+                        .forEach(users::add);
+            } else {
+                uss.get(parse).filter(x -> !uuids.contains(x.getUniqueId())).ifPresent(users::add);
+            }
         }
 
         if (users.isEmpty()) {
@@ -164,12 +178,13 @@ public class NicknameArgument extends CommandElement implements MessageProviderT
                 toParse = toParse.substring(2);
             }
 
-            final Predicate<Player> shouldShow = determinePredicate(source);
             String parse = toParse.toLowerCase();
+            final Predicate<Player> shouldShow = determinePredicate(source);
+            final Predicate<Player> partial = x -> x.getName().toLowerCase().startsWith(parse);
+
             UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
             Sponge.getServer().getOnlinePlayers().stream()
-                    .filter(x -> x.getName().toLowerCase().startsWith(parse))
-                    .filter(shouldShow)
+                    .filter(partial.and(shouldShow))
                     .forEach(player -> {
                         if (playerOnly) {
                             names.add("p:" + player.getName());
@@ -180,7 +195,8 @@ public class NicknameArgument extends CommandElement implements MessageProviderT
 
             if (!playerOnly) {
                 if (this.nicknameService != null) {
-                    this.nicknameService.startsWithGetMap(parse).entrySet().stream()
+                    this.nicknameService.startsWithGetMap(parse)
+                            .entrySet().stream()
                             .map(x -> Sponge.getServer().getPlayer(x.getValue())
                                     .filter(shouldShow)
                                     .map(y -> x.getKey()).orElse(null))
@@ -196,6 +212,7 @@ public class NicknameArgument extends CommandElement implements MessageProviderT
                             .forEach(names::add);
                 }
             }
+
             return names;
         } catch (ArgumentParseException ex) {
             return names;

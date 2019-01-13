@@ -5,10 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.freezeplayer.datamodules;
 
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 
-public class FreezePlayerUserDataModule extends DataModule<ModularUserService> {
+public class FreezePlayerUserDataModule implements IUserDataModule {
 
     @DataKey("isFrozen")
     private boolean isFrozen = false;

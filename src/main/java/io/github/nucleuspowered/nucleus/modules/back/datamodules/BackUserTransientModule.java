@@ -4,8 +4,7 @@
  */
 package io.github.nucleuspowered.nucleus.modules.back.datamodules;
 
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
-import io.github.nucleuspowered.nucleus.dataservices.modular.TransientModule;
+import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.World;
 
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-public class BackUserTransientModule extends TransientModule<ModularUserService> {
+public class BackUserTransientModule implements ITransientDataModule {
 
     @Nullable
     private Transform<World> lastLocation;

@@ -5,23 +5,12 @@
 package io.github.nucleuspowered.nucleus.modules.fly.datamodules;
 
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
-import org.spongepowered.api.data.key.Keys;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 
-public class FlyUserDataModule extends DataModule.ReferenceService<ModularUserService> {
+public class FlyUserDataModule implements IUserDataModule {
 
     @DataKey("fly")
     private boolean fly = false;
-
-    public FlyUserDataModule(ModularUserService modularDataService) {
-        super(modularDataService);
-    }
-
-    public boolean isFlying() {
-        getService().getPlayer().ifPresent(player -> this.fly = player.get(Keys.CAN_FLY).orElse(false));
-        return this.fly;
-    }
 
     public boolean isFlyingSafe() {
         return this.fly;

@@ -2,21 +2,25 @@
  * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
  * at the root of this project for more details.
  */
-package io.github.nucleuspowered.storage.services;
+package io.github.nucleuspowered.storage.services.storage;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import io.github.nucleuspowered.storage.KeyedObject;
 import io.github.nucleuspowered.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.storage.dataobjects.AbstractConfigurateBackedDataObject;
 import io.github.nucleuspowered.storage.persistence.IStorageRepository;
 import io.github.nucleuspowered.storage.queryobjects.IQueryObject;
+import io.github.nucleuspowered.storage.services.ServicesUtil;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +32,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         implements IStorageService.Keyed<UUID, Q, D> {
 
     private final Cache<UUID, D> cache = Caffeine.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
+    private final Set<UUID> dirty = new HashSet<>();
 
     private final Supplier<IDataAccess<D>> dataAccessSupplier;
     private final Supplier<IStorageRepository.Keyed<UUID, Q>> storageRepositorySupplier;
@@ -57,6 +62,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
 
     @Override public CompletableFuture<Optional<D>> get(@Nonnull final UUID key) {
         D result = this.cache.getIfPresent(key);
+        this.dirty.add(key);
         if (result != null) {
             return CompletableFuture.completedFuture(Optional.of(result));
         }
@@ -75,6 +81,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
             r.ifPresent(d -> {
                 if (d.getValue().isPresent()) {
                     this.cache.put(d.getKey(), d.getValue().get());
+                    this.dirty.add(d.getKey());
                 } else {
                     this.cache.invalidate(d.getKey());
                 }
@@ -90,7 +97,10 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
             Map<UUID, D> res = r.entrySet().stream()
                     .filter(x -> x.getValue() != null)
                     .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, v -> dataAccess.fromJsonObject(v.getValue())));
-            res.forEach(this.cache::put);
+            res.forEach((k, v) -> {
+                this.cache.put(k, v);
+                this.dirty.add(k);
+            });
             return res;
         });
     }
@@ -107,6 +117,7 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         return ServicesUtil.run(() -> {
             getStorageRepository().save(key, getDataAccess().toJsonObject(value));
             this.cache.put(key, value);
+            this.dirty.remove(key);
             return null;
         });
     }
@@ -119,4 +130,18 @@ public abstract class AbstractKeyedService<Q extends IQueryObject<UUID, Q>, D ex
         });
     }
 
+    @Override
+    public CompletableFuture<Void> ensureSaved() {
+        return ServicesUtil.run(() -> {
+            for (UUID uuid : ImmutableSet.copyOf(this.dirty)) {
+                D d = this.cache.getIfPresent(uuid);
+                if (d != null) {
+                    save(uuid, d);
+                } else {
+                    this.dirty.remove(uuid);
+                }
+            }
+            return null;
+        });
+    }
 }

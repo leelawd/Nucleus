@@ -5,10 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.teleport.datamodules;
 
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 
-public class TeleportUserDataModule extends DataModule<ModularUserService> {
+public class TeleportUserDataModule implements IUserDataModule {
 
     @DataKey("tptoggle")
     private boolean isTeleportToggled = true;

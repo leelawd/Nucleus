@@ -5,8 +5,7 @@
 package io.github.nucleuspowered.nucleus.storage.dataobjects.modules;
 
 import io.github.nucleuspowered.storage.dataobjects.modules.IDataModule;
-import org.spongepowered.api.CatalogType;
 
-public interface ICatalogedUserDataModule extends IDataModule, CatalogType {
+public interface IUserDataModule extends IDataModule {
 
 }

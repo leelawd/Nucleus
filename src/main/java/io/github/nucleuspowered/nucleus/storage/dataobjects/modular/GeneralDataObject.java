@@ -4,19 +4,18 @@
  */
 package io.github.nucleuspowered.nucleus.storage.dataobjects.modular;
 
-import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.ICatalogedGeneralDataModule;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.DataModuleFactory;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IGeneralDataModule;
 import io.github.nucleuspowered.storage.dataobjects.modular.ModularDataObject;
 import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 
-import java.util.Optional;
+public class GeneralDataObject extends ModularDataObject<IGeneralDataModule, ITransientDataModule> {
 
-public class GeneralDataObject extends ModularDataObject<ICatalogedGeneralDataModule, ITransientDataModule> {
-
-    @Override public <T extends ITransientDataModule> Optional<T> tryGetTransient(Class<T> module) {
-        return Optional.empty();
+    @Override protected <T extends ITransientDataModule> T tryGetTransient(Class<T> module) throws Exception {
+        return DataModuleFactory.getTransientForce(module);
     }
 
-    @Override public <T extends ICatalogedGeneralDataModule> Optional<T> tryGet(Class<T> module) {
-        return Optional.empty();
+    @Override protected <T extends IGeneralDataModule> T tryGet(Class<T> module) throws Exception {
+        return DataModuleFactory.getForce(module);
     }
 }

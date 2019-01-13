@@ -11,28 +11,22 @@ import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.storage.dataobjects.AbstractConfigurateBackedDataObject;
 import io.github.nucleuspowered.storage.dataobjects.modules.DataKey;
 import io.github.nucleuspowered.storage.dataobjects.modules.IDataModule;
-import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
-public abstract class ModularDataObject<DM extends IDataModule, TM extends ITransientDataModule>
-        extends AbstractConfigurateBackedDataObject {
+public abstract class ModularDataObject<DM extends IDataModule> extends AbstractConfigurateBackedDataObject {
 
     private static final Map<Class<? extends IDataModule>, List<FieldData>> moduleFieldData = new HashMap<>();
 
     private final Map<Class<? extends DM>, DM> cached = new HashMap<>();
-    private final Map<Class<? extends TM>, TM> transientCache = new HashMap<>();
 
     private final Object lockingObject = new Object();
 
@@ -78,34 +72,6 @@ public abstract class ModularDataObject<DM extends IDataModule, TM extends ITran
         );
     }
 
-    @SuppressWarnings("unchecked")
-    public final <T extends TM> T getTransient(Class<T> module) {
-        if (this.transientCache.containsKey(module)) {
-            return (T) this.transientCache.get(module);
-        }
-
-        try {
-
-            T dm;
-            Optional<T> m = tryGetTransient(module);
-            if (m.isPresent()) {
-                dm = m.get();
-            } else {
-                Nucleus.getNucleus().getLogger()
-                        .warn("Attempting to construct " + module.getSimpleName() + " by reflection. Please add this to the factory.");
-                dm = module.newInstance();
-            }
-
-            setTransient(dm);
-            return dm;
-        } catch (IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected abstract <T extends TM> Optional<T> tryGetTransient(Class<T> module);
-
     @SuppressWarnings({"unchecked"})
     public final <T extends DM> T get(Class<T> module) {
         synchronized (this.lockingObject) {
@@ -118,45 +84,24 @@ public abstract class ModularDataObject<DM extends IDataModule, TM extends ITran
             }
 
             try {
-                Optional<T> m = tryGet(module);
-                T dm;
-                if (m.isPresent()) {
-                    dm = m.get();
-                } else {
-                    Nucleus.getNucleus().getLogger()
-                            .warn("Attempting to construct " + module.getSimpleName() + " by reflection. Please add this to the factory.");
-
-                    if (IDataModule.Identifiable.class.isAssignableFrom(module)) {
-                        Constructor s = module.getDeclaredConstructor(this.getClass());
-                        s.setAccessible(true);
-                        dm = (T) s.newInstance(this);
-                    } else {
-                        dm = module.newInstance();
-                    }
-                }
-
+                T dm = tryGet(module);
                 populateModule(module, dm);
                 set(dm);
                 return dm;
-            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
     }
 
-    protected abstract <T extends DM> Optional<T> tryGet(Class<T> module);
+    protected abstract <T extends DM> T tryGet(Class<T> module) throws Exception;
 
     @SuppressWarnings("unchecked")
     public <T extends DM> void set(T dataModule) {
         synchronized (this.lockingObject) {
             this.cached.put((Class<T>) dataModule.getClass(), dataModule);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends TM> void setTransient(T dataModule) {
-        this.transientCache.put((Class<T>) dataModule.getClass(), dataModule);
     }
 
     private <T extends DM> void populateModule(Class<T> clazz, T module) {

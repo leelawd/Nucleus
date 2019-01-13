@@ -2,7 +2,7 @@
  * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
  * at the root of this project for more details.
  */
-package io.github.nucleuspowered.storage.services;
+package io.github.nucleuspowered.storage.services.storage;
 
 import io.github.nucleuspowered.storage.KeyedObject;
 import io.github.nucleuspowered.storage.dataaccess.IDataAccess;
@@ -30,11 +30,17 @@ public interface IStorageService<D extends AbstractConfigurateBackedDataObject> 
     IDataAccess<D> getDataAccess();
 
     /**
-     * Gets the {@link IStorageRepository} assocaited with this service
+     * Gets the {@link IStorageRepository} associated with this service
      *
      * @return The {@link IStorageRepository}
      */
     IStorageRepository getStorageRepository();
+
+    /**
+     * Provides a hint to the storage engine that anything that has been not yet been
+     * saved must now be saved.
+     */
+    CompletableFuture<Void> ensureSaved();
 
     /**
      * Provides a hint to the storage engine that anything that has been cached
@@ -49,6 +55,14 @@ public interface IStorageService<D extends AbstractConfigurateBackedDataObject> 
      */
     interface Single<D extends AbstractConfigurateBackedDataObject> extends IStorageService<D> {
 
+        /**
+         * Get the {@link IStorageRepository.Single} that is the backing store for this service.
+         *
+         * <p>Users should not store this as this is subject to change during the lifetime of the
+         * application.</p>
+         *
+         * @return The {@link IStorageRepository.Single}
+         */
         IStorageRepository.Single getStorageRepository();
 
         /**
@@ -92,6 +106,14 @@ public interface IStorageService<D extends AbstractConfigurateBackedDataObject> 
      */
     interface Keyed<K, Q extends IQueryObject<K, Q>, D extends AbstractConfigurateBackedDataObject> extends IStorageService<D> {
 
+        /**
+         * Get the {@link IStorageRepository.Keyed} that is the backing store for this service.
+         *
+         * <p>Users should not store this as this is subject to change during the lifetime of the
+         * application.</p>
+         *
+         * @return The {@link IStorageRepository.Keyed}
+         */
         IStorageRepository.Keyed<K, Q> getStorageRepository();
 
         /**

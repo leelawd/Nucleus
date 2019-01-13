@@ -5,10 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.environment.datamodule;
 
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularWorldService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IWorldDataModule;
 
-public class EnvironmentWorldDataModule extends DataModule<ModularWorldService> {
+public class EnvironmentWorldDataModule implements IWorldDataModule  {
 
     @DataKey("lock-weather")
     private boolean lockWeather = false;

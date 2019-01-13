@@ -10,9 +10,8 @@ import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.api.nucleusdata.Home;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.LocationNode;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.LocationData;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -22,14 +21,10 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class HomeUserDataModule extends DataModule.ReferenceService<ModularUserService> {
+public class HomeUserDataModule implements IUserDataModule {
 
     @DataKey("homes")
     private Map<String, LocationNode> homeData = Maps.newHashMap();
-
-    public HomeUserDataModule(ModularUserService modularDataService) {
-        super(modularDataService);
-    }
 
     public Optional<Home> getHome(String home) {
         if (this.homeData == null) {

@@ -10,7 +10,7 @@ import io.github.nucleuspowered.nucleus.configurate.datatypes.UserCacheDataNode;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.UserCacheVersionNode;
 import io.github.nucleuspowered.nucleus.dataservices.dataproviders.DataProvider;
 import io.github.nucleuspowered.nucleus.dataservices.loaders.UserDataManager;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.util.Identifiable;
@@ -67,8 +67,8 @@ public class UserCacheService extends AbstractService<UserCacheVersionNode> {
                 this.data.getNode().computeIfAbsent(u.getUniqueId(), x -> new UserCacheDataNode()).set(u));
     }
 
-    public void updateCacheForPlayer(ModularUserService u) {
-        this.data.getNode().computeIfAbsent(u.getUniqueId(), x -> new UserCacheDataNode()).set(u);
+    public void updateCacheForPlayer(UUID uuid, UserDataObject u) {
+        this.data.getNode().computeIfAbsent(uuid, x -> new UserCacheDataNode()).set(u);
     }
 
     public void updateCacheForPlayer(UUID uuid) {

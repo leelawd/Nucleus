@@ -2,12 +2,11 @@
  * This file is part of Nucleus, licensed under the MIT License (MIT). See the LICENSE.txt file
  * at the root of this project for more details.
  */
-package io.github.nucleuspowered.nucleus.storage.services;
+package io.github.nucleuspowered.nucleus.storage.services.persistent;
 
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.GeneralDataObject;
 import io.github.nucleuspowered.storage.dataaccess.IDataAccess;
 import io.github.nucleuspowered.storage.persistence.IStorageRepository;
-import io.github.nucleuspowered.storage.services.IStorageService;
 import io.github.nucleuspowered.storage.services.ServicesUtil;
 
 import java.util.Optional;
@@ -16,7 +15,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
-public class GeneralService implements IStorageService.Single<GeneralDataObject> {
+public class GeneralService implements IGeneralDataService {
 
     private final Supplier<IStorageRepository.Single> storageRepository;
     private final Supplier<IDataAccess<GeneralDataObject>> dataAccess;
@@ -28,15 +27,23 @@ public class GeneralService implements IStorageService.Single<GeneralDataObject>
         this.dataAccess = dataAccess;
     }
 
-    @Override public IStorageRepository.Single getStorageRepository() {
+    @Override
+    public IStorageRepository.Single getStorageRepository() {
         return this.storageRepository.get();
     }
 
-    @Override public IDataAccess<GeneralDataObject> getDataAccess() {
+    @Override
+    public IDataAccess<GeneralDataObject> getDataAccess() {
         return this.dataAccess.get();
     }
 
-    @Override public CompletableFuture<Optional<GeneralDataObject>> get() {
+    @Override
+    public Optional<GeneralDataObject> getCached() {
+        return Optional.ofNullable(this.cached);
+    }
+
+    @Override
+    public CompletableFuture<Optional<GeneralDataObject>> get() {
         if (this.cached != null) {
             return CompletableFuture.completedFuture(Optional.of(this.cached));
         }
@@ -50,7 +57,7 @@ public class GeneralService implements IStorageService.Single<GeneralDataObject>
 
     @Override
     public CompletableFuture<GeneralDataObject> getOrNew() {
-        CompletableFuture<GeneralDataObject> d = IStorageService.Single.super.getOrNew();
+        CompletableFuture<GeneralDataObject> d = IGeneralDataService.super.getOrNew();
         d.whenComplete((r, x) -> {
             if (r != null) {
                 this.cached = r;

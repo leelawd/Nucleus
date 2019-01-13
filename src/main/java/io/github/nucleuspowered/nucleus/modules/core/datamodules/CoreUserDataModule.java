@@ -8,8 +8,7 @@ import com.google.common.base.Preconditions;
 import io.github.nucleuspowered.nucleus.api.exceptions.NoSuchWorldException;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.LocationNode;
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -20,7 +19,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CoreUserDataModule extends DataModule<ModularUserService> {
+public class CoreUserDataModule implements IUserDataModule {
 
     // Transient
     private boolean firstPlay;

@@ -5,20 +5,15 @@
 package io.github.nucleuspowered.nucleus.modules.message.datamodules;
 
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 
-public class MessageUserDataModule extends DataModule.ReferenceService<ModularUserService> {
+public class MessageUserDataModule implements IUserDataModule {
 
     @DataKey("socialspy")
     private boolean socialspy = false;
 
     @DataKey("msgtoggle")
     private boolean msgToggle = true;
-
-    public MessageUserDataModule(ModularUserService modularDataService) {
-        super(modularDataService);
-    }
 
     public boolean isSocialSpy() {
         return this.socialspy;

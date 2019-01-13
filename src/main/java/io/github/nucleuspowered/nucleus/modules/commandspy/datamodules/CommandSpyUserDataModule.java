@@ -5,10 +5,9 @@
 package io.github.nucleuspowered.nucleus.modules.commandspy.datamodules;
 
 import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataModule;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
 
-public class CommandSpyUserDataModule extends DataModule<ModularUserService> {
+public class CommandSpyUserDataModule implements IUserDataModule {
 
     @DataKey("isCommandSpy")
     private boolean isCommandSpy = false;
@@ -20,4 +19,5 @@ public class CommandSpyUserDataModule extends DataModule<ModularUserService> {
     public void setCommandSpy(boolean commandSpy) {
         this.isCommandSpy = commandSpy;
     }
+
 }

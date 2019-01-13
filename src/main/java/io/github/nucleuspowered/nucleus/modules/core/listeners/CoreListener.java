@@ -14,12 +14,14 @@ import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.permissions.ServiceChangeListener;
+import io.github.nucleuspowered.nucleus.internal.traits.IDataManagerTrait;
+import io.github.nucleuspowered.nucleus.internal.traits.InternalServiceManagerTrait;
 import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfig;
 import io.github.nucleuspowered.nucleus.modules.core.config.CoreConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.core.datamodules.CoreUserDataModule;
-import io.github.nucleuspowered.nucleus.modules.core.datamodules.UniqueUserCountTransientModule;
 import io.github.nucleuspowered.nucleus.modules.core.events.NucleusOnLoginEvent;
 import io.github.nucleuspowered.nucleus.modules.core.events.OnFirstLoginEvent;
+import io.github.nucleuspowered.nucleus.modules.core.services.UniqueUserService;
 import io.github.nucleuspowered.nucleus.util.CauseStackHelper;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -51,7 +53,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-public class CoreListener implements Reloadable, ListenerBase {
+public class CoreListener implements Reloadable, ListenerBase, InternalServiceManagerTrait, IDataManagerTrait {
 
     @Nullable private NucleusTextTemplate getKickOnStopMessage = null;
     @Nullable private final URL url;
@@ -72,11 +74,12 @@ public class CoreListener implements Reloadable, ListenerBase {
     public void onPlayerLoginFirst(final ClientConnectionEvent.Login event, @Getter("getTargetUser") User user) {
         // This works here. Not complaining.
         if (Util.isFirstPlay(user)) {
-            Nucleus.getNucleus().getUserDataManager().get(user).ifPresent(qsu -> {
-                CoreUserDataModule cu = qsu.get(CoreUserDataModule.class);
+            getOrCreateUser(user.getUniqueId()).thenAccept(o -> {
+                CoreUserDataModule cu = o.get(CoreUserDataModule.class);
                 if (!cu.getLastLogout().isPresent()) {
                     cu.setStartedFirstJoin(true);
                 }
+                o.set(cu);
             });
         }
     }
@@ -88,7 +91,7 @@ public class CoreListener implements Reloadable, ListenerBase {
     public void onPlayerLoginLast(final ClientConnectionEvent.Login event, @Getter("getProfile") GameProfile profile,
         @Getter("getTargetUser") User user) {
 
-        Nucleus.getNucleus().getUserDataManager().get(profile.getUniqueId()).ifPresent(qsu -> {
+        getOrCreateUser(user.getUniqueId()).thenAccept(qsu -> {
             if (event.getFromTransform().equals(event.getToTransform())) {
                 CoreUserDataModule c = qsu.get(CoreUserDataModule.class);
                 // Check this
@@ -129,7 +132,7 @@ public class CoreListener implements Reloadable, ListenerBase {
             c.setFirstPlay(c.isStartedFirstJoin() && !c.getLastLogout().isPresent());
 
             if (c.isFirstPlay()) {
-                Nucleus.getNucleus().getGeneralService().getTransient(UniqueUserCountTransientModule.class).resetUniqueUserCount();
+                getServiceUnchecked(UniqueUserService.class).resetUniqueUserCount();
             }
 
             c.setFirstJoin(player.getJoinData().firstPlayed().get());

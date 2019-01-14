@@ -1,7 +1,9 @@
 package io.github.nucleuspowered.nucleus.internal.traits;
 
 import io.github.nucleuspowered.nucleus.Nucleus;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.GeneralDataObject;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
+import io.github.nucleuspowered.nucleus.storage.services.persistent.IGeneralDataService;
 import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 import io.github.nucleuspowered.storage.services.transients.ITransientService;
 
@@ -17,6 +19,15 @@ public interface IDataManagerTrait {
 
     default CompletableFuture<Optional<UserDataObject>> getUser(UUID uuid) {
         return Nucleus.getNucleus().getStorageManager().getUserService().get(uuid);
+    }
+
+    default CompletableFuture<Void> saveUser(UUID uuid, UserDataObject object) {
+        return Nucleus.getNucleus().getStorageManager().getUserService().save(uuid, object);
+    }
+
+    default GeneralDataObject getGeneral() {
+        IGeneralDataService gs = Nucleus.getNucleus().getStorageManager().getGeneralService();
+        return gs.getCached().orElseGet(() -> gs.getOrNew().join());
     }
 
     default <T extends ITransientDataModule> Optional<T> getOrCreateUserTransient(UUID uuid, Class<T> module) {

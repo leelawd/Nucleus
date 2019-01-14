@@ -9,7 +9,7 @@ import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IWorldDataMo
 import io.github.nucleuspowered.storage.dataobjects.modular.IdentifiableDataObject;
 import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 
-public class WorldDataObject extends IdentifiableDataObject<IWorldDataModule, ITransientDataModule> {
+public class WorldDataObject extends IdentifiableDataObject<IWorldDataModule> {
 
     @Override protected <T extends ITransientDataModule> T tryGetTransient(Class<T> module) throws Exception {
         return DataModuleFactory.getTransientForce(module);

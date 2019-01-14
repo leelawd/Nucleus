@@ -5,12 +5,11 @@
 package io.github.nucleuspowered.storage.dataobjects.modular;
 
 import io.github.nucleuspowered.storage.dataobjects.modules.IDataModule;
-import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 
 import java.util.UUID;
 
-public abstract class IdentifiableDataObject<DM extends IDataModule, TM extends ITransientDataModule>
-        extends ModularDataObject<DM, TM> {
+public abstract class IdentifiableDataObject<DM extends IDataModule>
+        extends ModularDataObject<DM> {
 
     private UUID uuid = null;
 

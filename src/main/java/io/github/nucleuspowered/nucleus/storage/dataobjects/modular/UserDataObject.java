@@ -9,7 +9,7 @@ import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataMod
 import io.github.nucleuspowered.storage.dataobjects.modular.IdentifiableDataObject;
 import io.github.nucleuspowered.storage.dataobjects.modules.ITransientDataModule;
 
-public class UserDataObject extends IdentifiableDataObject<IUserDataModule, ITransientDataModule> {
+public class UserDataObject extends IdentifiableDataObject<IUserDataModule> {
 
     @Override protected <T extends ITransientDataModule> T tryGetTransient(Class<T> module) throws Exception {
         return DataModuleFactory.getTransientForce(module);

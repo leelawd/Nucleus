@@ -4,13 +4,10 @@
  */
 package io.github.nucleuspowered.nucleus.modules.commandspy.commands;
 
-import io.github.nucleuspowered.nucleus.Nucleus;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
 import io.github.nucleuspowered.nucleus.internal.command.AbstractCommand;
 import io.github.nucleuspowered.nucleus.internal.command.NucleusParameters;
-import io.github.nucleuspowered.nucleus.internal.messages.MessageProvider;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
 import io.github.nucleuspowered.nucleus.modules.commandspy.datamodules.CommandSpyUserDataModule;
@@ -41,13 +38,12 @@ public class CommandSpyCommand extends AbstractCommand<Player> {
     }
 
     @Override public CommandResult executeCommand(Player src, CommandContext args, Cause cause) {
-        ModularUserService service = Nucleus.getNucleus().getUserDataManager().getUnchecked(src);
-        CommandSpyUserDataModule c = service.get(CommandSpyUserDataModule.class);
-        boolean to = args.<Boolean>getOne(NucleusParameters.Keys.BOOL).orElseGet(() -> !c.isCommandSpy());
-        c.setCommandSpy(to);
+        saveUserWithDataNoEx(CommandSpyUserDataModule.class, src.getUniqueId(), module -> {
+            boolean to = args.<Boolean>getOne(NucleusParameters.Keys.BOOL).orElseGet(() -> !module.isCommandSpy());
+            module.setCommandSpy(to);
+            sendMessageTo(src, "command.commandspy.success", getMessageFor(src, to ? "standard.enabled" : "standard.disabled"));
+        });
 
-        MessageProvider mp = Nucleus.getNucleus().getMessageProvider();
-        src.sendMessage(mp.getTextMessageWithFormat("command.commandspy.success", mp.getMessageWithFormat(to ? "standard.enabled" : "standard.disabled")));
         return CommandResult.success();
     }
 }

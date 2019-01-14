@@ -7,8 +7,8 @@ package io.github.nucleuspowered.nucleus.modules.core.datamodules;
 import com.google.common.base.Preconditions;
 import io.github.nucleuspowered.nucleus.api.exceptions.NoSuchWorldException;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.LocationNode;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
+import io.github.nucleuspowered.storage.dataobjects.modules.DataKey;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 

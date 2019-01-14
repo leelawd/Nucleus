@@ -5,15 +5,16 @@
 package io.github.nucleuspowered.nucleus.modules.home.services;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.Util;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.nucleusdata.Home;
 import io.github.nucleuspowered.nucleus.api.service.NucleusHomeService;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.annotations.APIService;
 import io.github.nucleuspowered.nucleus.internal.interfaces.ServiceBase;
+import io.github.nucleuspowered.nucleus.internal.traits.IDataManagerTrait;
 import io.github.nucleuspowered.nucleus.internal.traits.PermissionTrait;
 import io.github.nucleuspowered.nucleus.modules.home.commands.SetHomeCommand;
 import io.github.nucleuspowered.nucleus.modules.home.datamodules.HomeUserDataModule;
@@ -21,6 +22,7 @@ import io.github.nucleuspowered.nucleus.modules.home.events.AbstractHomeEvent;
 import io.github.nucleuspowered.nucleus.modules.home.events.CreateHomeEvent;
 import io.github.nucleuspowered.nucleus.modules.home.events.DeleteHomeEvent;
 import io.github.nucleuspowered.nucleus.modules.home.events.ModifyHomeEvent;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
@@ -33,20 +35,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 @APIService(NucleusHomeService.class)
-public class HomeHandler implements NucleusHomeService, PermissionTrait, ServiceBase {
+public class HomeHandler implements NucleusHomeService, PermissionTrait, ServiceBase, IDataManagerTrait {
 
     private final String unlimitedPermission
             = Nucleus.getNucleus().getPermissionRegistry().getPermissionsForNucleusCommand(SetHomeCommand.class).getPermissionWithSuffix("unlimited");
 
     @Override public List<Home> getHomes(UUID user) {
-        Optional<ModularUserService> service = Nucleus.getNucleus().getUserDataManager().get(user); //.get().getHome;
+        Optional<UserDataObject> service = getUser(user).join(); //.get().getHome;
         return service.<List<Home>>map(modularUserService -> Lists.newArrayList(modularUserService.get(HomeUserDataModule.class).getHomes().values()))
-                .orElseGet(Lists::newArrayList);
+                .orElseGet(ImmutableList::of);
 
     }
 
     @Override public Optional<Home> getHome(UUID user, String name) {
-        Optional<ModularUserService> service = Nucleus.getNucleus().getUserDataManager().get(user);
+        Optional<UserDataObject> service = getUser(user).join();
         return service.flatMap(modularUserService -> modularUserService.get(HomeUserDataModule.class).getHome(name));
 
     }
@@ -73,12 +75,13 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
         CreateHomeEvent event = new CreateHomeEvent(name, user, cause, location);
         postEvent(event);
 
-        // Just in case.
-        if (!Nucleus.getNucleus().getUserDataManager().get(user).get().get(HomeUserDataModule.class).setHome(name, location, rotation, false)) {
-            throw new NucleusException(
-                    Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.sethome.seterror", name),
-                NucleusException.ExceptionType.UNKNOWN_ERROR);
-        }
+        saveUserWithData(HomeUserDataModule.class, user.getUniqueId(), m -> {
+            if (!m.setHome(name, location, rotation, false)) {
+                throw new NucleusException(
+                        Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.sethome.seterror", name),
+                        NucleusException.ExceptionType.UNKNOWN_ERROR);
+            }
+        });
     }
 
     @Override public void modifyHome(Cause cause, Home home, Location<World> location, Vector3d rotation) throws NucleusException {
@@ -91,11 +94,14 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
         postEvent(event);
 
         // Just in case.
-        if (!Nucleus.getNucleus().getUserDataManager().getUnchecked(home.getUser()).get(HomeUserDataModule.class).setHome(home.getName(), location, rotation, true)) {
-            throw new NucleusException(
-                    Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.sethome.seterror", home.getName()),
-                NucleusException.ExceptionType.UNKNOWN_ERROR);
-        }
+        saveUserWithData(HomeUserDataModule.class, home.getUser().getUniqueId(), m -> {
+            if (!m.setHome(home.getName(), location, rotation, true)) {
+                throw new NucleusException(
+                        Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.sethome.seterror", home.getName()),
+                        NucleusException.ExceptionType.UNKNOWN_ERROR);
+            }
+
+        });
     }
 
     @Override public void removeHome(Cause cause, Home home) throws NucleusException {
@@ -107,9 +113,11 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
         DeleteHomeEvent event = new DeleteHomeEvent(cause, home);
         postEvent(event);
 
-        if (!Nucleus.getNucleus().getUserDataManager().get(home.getOwnersUniqueId()).get().get(HomeUserDataModule.class).deleteHome(home.getName())) {
-            throw new NucleusException(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.home.delete.fail", home.getName()), NucleusException.ExceptionType.UNKNOWN_ERROR);
-        }
+        saveUserWithData(HomeUserDataModule.class, home.getUser().getUniqueId(), m -> {
+            if (!m.deleteHome(home.getName())) {
+                throw new NucleusException(Nucleus.getNucleus().getMessageProvider().getTextMessageWithFormat("command.home.delete.fail", home.getName()), NucleusException.ExceptionType.UNKNOWN_ERROR);
+            }
+        });
     }
 
     @Override public int getMaximumHomes(UUID uuid) throws IllegalArgumentException {
@@ -136,4 +144,5 @@ public class HomeHandler implements NucleusHomeService, PermissionTrait, Service
             );
         }
     }
+
 }

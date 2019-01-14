@@ -4,8 +4,8 @@
  */
 package io.github.nucleuspowered.nucleus.modules.commandspy.datamodules;
 
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IUserDataModule;
+import io.github.nucleuspowered.storage.dataobjects.modules.DataKey;
 
 public class CommandSpyUserDataModule implements IUserDataModule {
 

@@ -8,9 +8,9 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Maps;
 import io.github.nucleuspowered.nucleus.api.nucleusdata.NamedLocation;
 import io.github.nucleuspowered.nucleus.configurate.datatypes.LocationNode;
-import io.github.nucleuspowered.nucleus.dataservices.modular.DataKey;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.IGeneralDataModule;
 import io.github.nucleuspowered.nucleus.storage.dataobjects.modules.LocationDataModule;
+import io.github.nucleuspowered.storage.dataobjects.modules.DataKey;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 

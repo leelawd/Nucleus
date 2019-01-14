@@ -8,12 +8,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.api.events.NucleusFirstJoinEvent;
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.internal.PermissionRegistry;
 import io.github.nucleuspowered.nucleus.internal.interfaces.ListenerBase;
 import io.github.nucleuspowered.nucleus.internal.interfaces.Reloadable;
 import io.github.nucleuspowered.nucleus.internal.permissions.PermissionInformation;
 import io.github.nucleuspowered.nucleus.internal.permissions.SuggestedLevel;
+import io.github.nucleuspowered.nucleus.internal.traits.IDataManagerTrait;
 import io.github.nucleuspowered.nucleus.modules.connectionmessages.config.ConnectionMessagesConfig;
 import io.github.nucleuspowered.nucleus.modules.connectionmessages.config.ConnectionMessagesConfigAdapter;
 import io.github.nucleuspowered.nucleus.modules.core.datamodules.CoreUserDataModule;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ConnectionMessagesListener implements Reloadable, ListenerBase {
+public class ConnectionMessagesListener implements Reloadable, ListenerBase, IDataManagerTrait {
 
     private ConnectionMessagesConfig cmc = new ConnectionMessagesConfig();
     private final String disablePermission = PermissionRegistry.PERMISSIONS_PREFIX + "connectionmessages.disable";
@@ -50,8 +50,7 @@ public class ConnectionMessagesListener implements Reloadable, ListenerBase {
         }
 
         try {
-            ModularUserService nucleusUser = Nucleus.getNucleus().getUserDataManager().getUnchecked(pl);
-            Optional<String> lastKnown = nucleusUser.get(CoreUserDataModule.class).getLastKnownName();
+            Optional<String> lastKnown = getUser(pl.getUniqueId()).join().flatMap(x -> x.get(CoreUserDataModule.class).getLastKnownName());
             if (this.cmc.isDisplayPriorName() &&
                 !this.cmc.getPriorNameMessage().isEmpty() &&
                 !lastKnown.orElseGet(pl::getName).equalsIgnoreCase(pl.getName())) {

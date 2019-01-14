@@ -4,11 +4,11 @@
  */
 package io.github.nucleuspowered.nucleus.configurate.datatypes;
 
-import io.github.nucleuspowered.nucleus.dataservices.modular.ModularUserService;
 import io.github.nucleuspowered.nucleus.modules.core.datamodules.CoreUserDataModule;
 import io.github.nucleuspowered.nucleus.modules.jail.data.JailData;
 import io.github.nucleuspowered.nucleus.modules.jail.datamodules.JailUserDataModule;
 import io.github.nucleuspowered.nucleus.modules.mute.datamodules.MuteUserDataModule;
+import io.github.nucleuspowered.nucleus.storage.dataobjects.modular.UserDataObject;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -34,11 +34,11 @@ public class UserCacheDataNode {
         // ignored - for Configurate
     }
 
-    public UserCacheDataNode(ModularUserService x) {
+    public UserCacheDataNode(UserDataObject x) {
         set(x);
     }
 
-    public void set(ModularUserService x) {
+    public void set(UserDataObject x) {
         this.ipAddress = x.get(CoreUserDataModule.class).getLastIp().map(y -> y.replace("/", "")).orElse(null);
         this.jail = x.get(JailUserDataModule.class).getJailData().map(JailData::getJailName).orElse(null);
         this.isMuted = x.get(MuteUserDataModule.class).getMuteData().isPresent();

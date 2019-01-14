@@ -38,6 +38,20 @@ public interface IQueryObject<K, T extends IQueryObject<K, T>> {
     Class<K> keyType();
 
     /**
+     * Add a primary key to this query.
+     *
+     * @param key The key to add
+     */
+    void addKey(K key);
+
+    /**
+     * Adds multiple primary keys to this query.
+     *
+     * @param collection The keys to add.
+     */
+    void addAllKeys(Collection<K> collection);
+
+    /**
      * Keys to restrict to
      *
      * @return The keys to restrict to
